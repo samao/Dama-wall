@@ -19,7 +19,9 @@ module.exports = {
     },
     module:{
         loaders:[
-            {test: /\.tsx?$/, loader:'ts-loader'}
+            {test: /\.tsx?$/, loader:'ts-loader?'+JSON.stringify({
+                configFile:'tsconfig.browser.json'
+            })}
         ]
     },
     plugins:[
