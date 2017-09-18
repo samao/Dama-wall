@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
     entry:{
-
+        s
     },
     output:{
         path:path.resolve(__dirname,'dist'),
@@ -22,5 +22,15 @@ module.exports = {
             {test: /\.tsx?$/, loader:'ts-loader'}
         ]
     },
+    plugins:[
+        new webpack.optimize.UglifyJsPlugin({
+            compress:{
+                
+            },
+            output:{
+                
+            }
+        })
+    ],
     externals:[]
 }
