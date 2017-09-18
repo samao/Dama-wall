@@ -1,10 +1,10 @@
 {
   "name": "great-dm-wall",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "弹幕影院全代码",
   "main": "index.js",
   "scripts": {
-    "build:all": "webpack && tsc",
+    "build:all": "webpack && echo build server codes waiting a second!!! && tsc && echo \"build:all\" completed",
     "start":"node dist/server/index.js"
   },
   "repository": {
