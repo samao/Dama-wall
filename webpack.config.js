@@ -3,10 +3,10 @@ const path = require('path');
 
 module.exports = {
     entry:{
-        s
+        main:'./src/browser/index.ts'
     },
     output:{
-        path:path.resolve(__dirname,'dist'),
+        path:path.resolve(__dirname,'dist','browser'),
         filename:'[name].js'
     },
     resolve:{
@@ -30,6 +30,9 @@ module.exports = {
             output:{
                 
             }
+        }),
+        new webpack.DefinePlugin({
+            __VERSION__:`"${require('./package').version}"`
         })
     ],
     externals:[]
