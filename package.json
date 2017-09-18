@@ -1,0 +1,31 @@
+{
+  "name": "great-dm-wall",
+  "version": "1.0.0",
+  "description": "弹幕影院全代码",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samao/GreatDMWall.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samao/GreatDMWall/issues"
+  },
+  "homepage": "https://github.com/samao/GreatDMWall#readme",
+  "devDependencies": {
+    "@types/express": "^4.0.37",
+    "@types/node": "^8.0.28",
+    "ts-loader": "^2.3.7",
+    "typescript": "^2.5.2",
+    "webpack": "^3.6.0"
+  },
+  "dependencies": {
+    "express": "^4.15.4",
+    "pug": "^2.0.0-rc.4"
+  }
+}
