@@ -4,8 +4,10 @@
   "description": "弹幕影院全代码",
   "main": "index.js",
   "scripts": {
-    "build:all": "webpack && echo build server codes waiting a second!!! && tsc && echo \"build:all\" completed",
-    "start":"node dist/server/index.js"
+    "build:all": "webpack && echo build server codes waiting a second!!! && tsc && echo \"build:all\" command completed",
+    "build:server":"echo build server codes waiting a second!!! && tsc && echo \"build:server\" command completed",
+    "build":"webpack",
+    "start": "node dist/server/index.js"
   },
   "repository": {
     "type": "git",
