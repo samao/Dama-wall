@@ -1,1 +1,1 @@
-console.log(__VERSION__)
+console.log(__VERSION__);
