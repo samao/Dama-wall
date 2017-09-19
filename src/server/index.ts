@@ -1,7 +1,7 @@
-import expressSession = require('express-session');
-import express = require('express');
-import cookieParser = require('cookie-parser');
-import bodyParser = require("body-parser");
+import * as expressSession from 'express-session';
+import * as express from 'express';
+import * as cookieParser from 'cookie-parser';
+import * as bodyParser from "body-parser";
 
 import {log} from 'util';
 
@@ -39,7 +39,7 @@ log('运行环境：' + app.get('env'));
 const userMap = new Map<string,any>();
 
 app.route('/').get((req,res) => {
-	//console.log(req.cookies,req.session,req.sessionID)
+	console.log(req.cookies,req.session,req.sessionID)
     if(userMap.has(<string>req.sessionID)){
         res.end('welcome come back');
     }else{
