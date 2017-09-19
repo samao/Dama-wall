@@ -41,7 +41,7 @@ const userMap = new Map<string,any>();
 app.route('/').get((req,res) => {
 	console.log(req.cookies,req.session,req.sessionID)
     if(userMap.has(<string>req.sessionID)){
-        res.end('welcome come back');
+        res.end(`welcome come back: ${req.sessionID}`);
     }else{
         userMap.set(<string>req.sessionID,{time:Date.now()});
         res.end('hello')
