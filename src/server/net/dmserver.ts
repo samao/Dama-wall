@@ -1,11 +1,13 @@
-import * as WebSocket from 'ws';
 import * as http from 'http';
 import * as url from 'url';
+import * as cluster from 'cluster';
+
+import {log} from 'util';
+
+import * as WebSocket from 'ws';
 import { WebSocketEvent } from './events';
 import { WebSocketStatus } from "./status";
 import { connections } from "./connectionsPool";
-
-import {log} from 'util';
 
 class DanmuServer {
 
@@ -24,16 +26,20 @@ class DanmuServer {
     }
 
     private createWs(port?: number,host?: string|undefined, server?: http.Server|undefined): void {
+        
         this._wss = new WebSocket.Server({
             host,
             port,
             server
         });
-        this._wss.on(WebSocketEvent.CONNECTION,this.entry);
+        this._wss.on(WebSocketEvent.CONNECTION,this.entry)
+            .once(WebSocketEvent.LISTENING,() => {
+                log(`websocket 服务运行在：${port}`)
+            })
     }
 
     private entry(ws: WebSocket, req: http.IncomingMessage): void {
-        this.vaild(req.url).then(() => {
+        this.vaild(req.url).then((pathname) => {
             //log(`路径验证成功：${req.url}`);
             //监听下个用户登录包
             ws.once(WebSocketEvent.MESSAGE,(data:WebSocket.Data) => {
@@ -47,8 +53,8 @@ class DanmuServer {
                     ws.close(WebSocketStatus.ERROR,'用户认证消息参数错误');
                     return;
                 }
-                log('收到用户登陆');
-                this.setAuthUser(info.id,ws);
+                log('收到用户登陆 >' + process.pid);
+                this.setAuthUser(info.id, ws, pathname);
             })
             let delayid = setTimeout(() => ws.close(),30000);
         },(reason) => {
@@ -63,7 +69,7 @@ class DanmuServer {
      * 返回 ts Promise<any>
      * @param path 用户连接的ws路径
      */
-    private vaild(path: string|undefined): Promise<any>{
+    private vaild(path: string|undefined): Promise<string>{
         return new Promise((res,rej) => {
             if(typeof path === 'undefined'|| typeof path === 'string' && path.replace(/\//,'') === '') {
                 setImmediate(rej,'please check your path');
@@ -72,14 +78,22 @@ class DanmuServer {
             let {pathname} = url.parse(path);
             if(pathname) {
                 //检查路径
-                setImmediate(res)
+                setImmediate(res,pathname)
             }else{
                 setImmediate(rej,'illegal path!!!')
             }
         })
     }
 
-    private setAuthUser(id: string,ws: WebSocket): void {
+    private setAuthUser(id: string,ws: WebSocket,pathname: string): void {
+        //通知主线程用户在那个房间，那个线程
+        cluster.worker.send({
+            action:'entry',
+            data:{
+                pathname,
+                uid:id
+            }
+        })
         ws.on(WebSocketEvent.MESSAGE,data => {
             log('用户心跳');
         });
@@ -88,9 +102,17 @@ class DanmuServer {
         ws.on(WebSocketEvent.CLOSE,(code,message) => {
             ws.removeAllListeners();
             connections.remove(id);
-            log(`客户端连接关闭: ${id}`);
+
+            //通知主线程连接关闭
+            cluster.worker.send({
+                action:'leave',
+                data:{
+                    pathname,
+                    uid:id,
+                }
+            })
         })
-        connections.add(id,ws);
+        connections.add(id,ws,pathname);
         ws.send(JSON.stringify({action:'auth',command:{level:15,admin:true,total:connections.size}}));
     }
 }

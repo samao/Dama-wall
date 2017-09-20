@@ -7,6 +7,10 @@ export enum WebSocketEvent {
      */
     CONNECTION = 'connection',
     /**
+     * 服务器端口监听事件
+     */
+    LISTENING = 'listening',
+    /**
      * 收到消息
      */
     MESSAGE = 'message',

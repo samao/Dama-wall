@@ -2,8 +2,9 @@ import * as expressSession from 'express-session';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from "body-parser";
-import {secret} from './config/conf'
+import {secret,ports} from './config/conf'
 
+import * as cluster from 'cluster';
 import {log} from 'util';
 
 //import * as multer from "multer";
@@ -57,9 +58,9 @@ app.route('/user').get((req,res,next) => {
 
 let clearid:NodeJS.Timer;
 
-const server = app.listen(3000,() => {
+const server = app.listen(ports.web,() => {
     const {address,port} = server.address();
-    log(`服务器启动: http://${address}:${port}`);
+    log(`http服务器启动: http://${address}:${port}`);
 
     clearid = setInterval(() => {
         let keys = Reflect.ownKeys(userMap);
@@ -73,10 +74,40 @@ const server = app.listen(3000,() => {
     clearInterval(clearid);
 })
 
-import('./net/dmworker').then(mod => {
-    let {DanmuServer} = mod;
-    log('模块加载成功，启动弹幕服务');
-    const wss = new DanmuServer({
-        server
+//线程管理
+if(cluster.isMaster){
+    //启动弹幕线程
+    log('启动弹幕线程...')
+    cluster.setupMaster({
+        exec: `${__dirname}/dmworker.js`,
+        args:[ports.ws.toString()],
     });
-})
+
+    import('os').then(os => {
+        let {cpus} = os;
+        //按cpu数启动线程
+        for(let i = 0; i < cpus().length; ++i) {
+            cluster.fork()
+        }
+    })
+
+    cluster.on('exit',(worker,code,signal) => {
+        if(signal){
+			log(`worker was killed by signal:${signal}`)
+		}else if(code !== 0) {
+			log(`worker exited with error code:${code}`)
+		}else{
+			log(`worker success ${worker.process.pid}`)
+        }
+        //重启线程
+        if(!worker.exitedAfterDisconnect)
+            cluster.fork();
+    }).on('message',(worker,message) => {
+        /*
+        子线程处理用户消息，不同的用户可能连接到不同的线程，
+        所以需要master作为桥，同步所有room 消息
+        */
+        let {data: {pathname, uid}} = message;
+        log(`子线程报告 -> 用户 ${uid} 房间 ${pathname}, 线程id ${worker.id}`);
+    })
+}

@@ -1,4 +1,4 @@
-var ws = new WebSocket('ws://localhost:3000');
+var ws = new WebSocket('ws://localhost:8080');
 ws.onopen = function(){
     console.log('open');
     ws.send(JSON.stringify({id:'9527',name:'wangerxiao',age:18}));

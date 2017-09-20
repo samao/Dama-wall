@@ -12,8 +12,9 @@ class ConnectionsPool {
      * 添加用户连接管理
      * @param key 用户标识
      * @param ws 用户连接
+     * @param pathname 需要分组用户，还没实现。
      */
-    add(key: string, ws: WebSocket):boolean {
+    add(key: string, ws: WebSocket,pathname: string):boolean {
         if(this.has(key)) return false;
         this._map.set(key, ws);
         return true;
