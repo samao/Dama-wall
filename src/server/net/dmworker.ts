@@ -1,6 +1,5 @@
 import * as WebSocket from 'ws';
 import * as http from 'http';
-import * as EventDispatcher from 'events';
 import * as url from 'url';
 import { WebSocketEvent } from './events';
 import { WebSocketStatus } from "./status";
@@ -8,7 +7,7 @@ import { connections } from "./connectionsPool";
 
 import {log} from 'util';
 
-class DanmuServer extends EventDispatcher {
+class DanmuServer {
 
     private _wss: WebSocket.Server;
 
@@ -17,7 +16,6 @@ class DanmuServer extends EventDispatcher {
         port?: number,
         server?: http.Server
     }){
-        super();
         
         this.entry = this.entry.bind(this);
         this.setAuthUser = this.setAuthUser.bind(this);

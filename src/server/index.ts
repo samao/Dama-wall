@@ -73,7 +73,7 @@ const server = app.listen(3000,() => {
     clearInterval(clearid);
 })
 
-import('./net/dmserver').then(mod => {
+import('./net/dmworker').then(mod => {
     let {DanmuServer} = mod;
     log('模块加载成功，启动弹幕服务');
     const wss = new DanmuServer({
