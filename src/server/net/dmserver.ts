@@ -8,6 +8,7 @@ import * as WebSocket from 'ws';
 import { WebSocketEvent } from './events';
 import { WebSocketStatus } from "./status";
 import { connections } from "./connectionsPool";
+import { WorkerEvent } from '../worker/events';
 
 class DanmuServer {
 
@@ -50,7 +51,7 @@ class DanmuServer {
                     log(data.toString())
                     //检查用户身份
                 }catch(e){
-                    ws.close(WebSocketStatus.ERROR,'用户认证消息参数错误');
+                    ws.close(undefined,'用户认证消息参数错误');
                     return;
                 }
                 log('收到用户登陆 >' + process.pid);
@@ -59,9 +60,10 @@ class DanmuServer {
             let delayid = setTimeout(() => ws.close(),30000);
         },(reason) => {
             log(`不存在的连接路径: ${reason}`)
-            ws.close(WebSocketStatus.ILLEGAL,reason);
-        }).catch(() => {
-            ws.close(WebSocketStatus.ERROR,'无法验证访问路径');
+            ws.close(undefined,reason);
+        }).catch((reason) => {
+            log('无法验证访问路径，请检查代码:' + reason);
+            ws.close(undefined,reason);
         })
     }
 
@@ -93,6 +95,9 @@ class DanmuServer {
                 pathname,
                 uid:id
             }
+        })
+        cluster.worker.on(WorkerEvent.MESSAGE, (message,handle) => {
+            //收到主线程消息
         })
         ws.on(WebSocketEvent.MESSAGE,data => {
             log('用户心跳');

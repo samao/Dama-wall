@@ -2,10 +2,13 @@ import * as expressSession from 'express-session';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from "body-parser";
-import {secret,ports} from './config/conf'
 
 import * as cluster from 'cluster';
+import * as path from 'path';
 import {log} from 'util';
+
+import {secret,ports} from './config/conf'
+import {WorkerEvent} from './worker/events';
 
 //import * as multer from "multer";
 
@@ -79,7 +82,7 @@ if(cluster.isMaster){
     //启动弹幕线程
     log('启动弹幕线程...')
     cluster.setupMaster({
-        exec: `${__dirname}/dmworker.js`,
+        exec: path.resolve(__dirname,'worker','dmworker.js'),
         args:[ports.ws.toString()],
     });
 
@@ -91,7 +94,7 @@ if(cluster.isMaster){
         }
     })
 
-    cluster.on('exit',(worker,code,signal) => {
+    cluster.on(WorkerEvent.EXIT,(worker,code,signal) => {
         if(signal){
 			log(`worker was killed by signal:${signal}`)
 		}else if(code !== 0) {
@@ -102,7 +105,7 @@ if(cluster.isMaster){
         //重启线程
         if(!worker.exitedAfterDisconnect)
             cluster.fork();
-    }).on('message',(worker,message) => {
+    }).on(WorkerEvent.MESSAGE, (worker,message) => {
         /*
         子线程处理用户消息，不同的用户可能连接到不同的线程，
         所以需要master作为桥，同步所有room 消息
