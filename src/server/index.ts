@@ -2,6 +2,7 @@ import * as expressSession from 'express-session';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from "body-parser";
+import {secret} from './config/conf'
 
 import {log} from 'util';
 
@@ -14,17 +15,16 @@ app.use(bodyParser.json());
 // application/x-www-form-url
 app.use(bodyParser.urlencoded({extended:true}));
 // 获取请求cookie
-app.use(cookieParser('idzeir'));
+app.use(cookieParser(secret));
 //multipart/form-data
 //app.use(multer());
 app.use(expressSession({
-    name:'client',
-    resave:true,
+    resave:false,
     saveUninitialized:true,
-    secret:'idzeir',
+    secret,
     genid:(req) => {
-        let time = Date.now() + '#' + Math.floor(Math.random() * 1000);
-        return '$_'+Buffer.from(time).toString('base64')
+        let time = Date.now() + `_${secret}_` + Math.floor(Math.random() * 1000);
+        return Buffer.from(time).toString('base64');
     }
 }))
 
@@ -38,14 +38,21 @@ log('运行环境：' + app.get('env'));
 
 const userMap = new Map<string,any>();
 
+app.use((req,res,next) => {
+    log(<string>req.sessionID);
+    next();
+})
 app.route('/').get((req,res) => {
-	console.log(req.cookies,req.session,req.sessionID)
     if(userMap.has(<string>req.sessionID)){
         res.end(`welcome come back: ${req.sessionID}`);
     }else{
         userMap.set(<string>req.sessionID,{time:Date.now()});
         res.end('hello')
     }
+})
+
+app.route('/user').get((req,res,next) => {
+    res.end(`${req.sessionID}`);
 })
 
 let clearid:NodeJS.Timer;
