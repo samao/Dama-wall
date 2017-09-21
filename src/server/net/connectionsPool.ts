@@ -49,6 +49,7 @@ class ConnectionsPool {
             }else{
                 const allws = this._map.entries();
                 let node: {done: boolean,value: [string,WebSocket]};
+
                 do{
                     node = allws.next();
                     const {value:[key, ws]} = node;

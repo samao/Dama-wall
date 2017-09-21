@@ -9,6 +9,7 @@ import { WebSocketEvent } from './events';
 import { WebSocketStatus } from "./status";
 import { connections } from "./connectionsPool";
 import { WorkerEvent } from '../worker/events';
+import { Actions } from "../worker/actions";
 
 class DanmuServer {
 
@@ -19,7 +20,7 @@ class DanmuServer {
         port?: number,
         server?: http.Server
     }){
-        
+
         this.entry = this.entry.bind(this);
         this.setAuthUser = this.setAuthUser.bind(this);
 
@@ -35,8 +36,25 @@ class DanmuServer {
         });
         this._wss.on(WebSocketEvent.CONNECTION,this.entry)
             .once(WebSocketEvent.LISTENING,() => {
-                log(`websocket 服务运行在：${port}`)
+                log(`WS <${process.pid}> 服务端口：${port}`)
             })
+        
+        cluster.worker.on(WorkerEvent.MESSAGE, (message) => {
+            //收到主线程消息
+            let {action,data} = message;
+            log('工作线程执行同步：' + action);
+            switch(action) {
+                case Actions.ENTRY:
+
+                break;
+                case Actions.LEAVE:
+
+                break;
+                case Actions.POST:
+                    log('有人说话了：' + data);
+                break;
+            }
+        })
     }
 
     private entry(ws: WebSocket, req: http.IncomingMessage): void {
@@ -87,20 +105,25 @@ class DanmuServer {
         })
     }
 
+    private sendMaster(action: string,data:any): void {
+        cluster.worker.send({action, data});
+    }
+
+    /**
+     * 保存连接信息
+     * @param id 用户id
+     * @param ws 连接ws
+     * @param pathname 连接路径
+     */
     private setAuthUser(id: string,ws: WebSocket,pathname: string): void {
         //通知主线程用户在那个房间，那个线程
-        cluster.worker.send({
-            action:'entry',
-            data:{
+        this.sendMaster(Actions.ENTRY,{
                 pathname,
                 uid:id
-            }
-        })
-        cluster.worker.on(WorkerEvent.MESSAGE, (message,handle) => {
-            //收到主线程消息
-        })
+            })
         ws.on(WebSocketEvent.MESSAGE,data => {
-            log('用户心跳');
+            let msg: {action: string,data:any} = JSON.parse(data.toString());
+            this.sendMaster(msg.action,msg.data);
         });
         ws.on(WebSocketEvent.ERROR,err => {});
         //客户端关闭
@@ -109,14 +132,11 @@ class DanmuServer {
             connections.remove(id);
 
             //通知主线程连接关闭
-            cluster.worker.send({
-                action:'leave',
-                data:{
+            this.sendMaster(Actions.LEAVE,{
                     pathname,
                     uid:id,
-                }
-            })
-        })
+                });
+        });
         connections.add(id,ws,pathname);
         ws.send(JSON.stringify({action:'auth',command:{level:15,admin:true,total:connections.size}}));
     }

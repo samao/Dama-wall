@@ -40,7 +40,7 @@ app.set('view engine','pug');
 
 log('运行环境：' + app.get('env'));
 
-const userMap = new Map<string,any>();
+const userMap = new Map<string,{time: number}>();
 
 app.use((req,res,next) => {
     log(<string>req.sessionID);
@@ -66,10 +66,10 @@ const server = app.listen(ports.web,() => {
     log(`http服务器启动: http://${address}:${port}`);
 
     clearid = setInterval(() => {
-        let keys = Reflect.ownKeys(userMap);
-        for(let k of keys) {
-            if(Reflect.get(userMap,k).time < Date.now()) {
-                userMap.delete(k.toString());
+        for(let [key,{time}] of userMap.entries()) {
+            if(time < Date.now()) {
+                userMap.delete(key);
+                return;
             }
         }
     },1000 * 60 * 2)
@@ -80,10 +80,10 @@ const server = app.listen(ports.web,() => {
 //线程管理
 if(cluster.isMaster){
     //启动弹幕线程
-    log('启动弹幕线程...')
+    log(`主线程 <${process.pid}> 启动弹幕线程...`);
     cluster.setupMaster({
         exec: path.resolve(__dirname,'worker','dmworker.js'),
-        args:[ports.ws.toString()],
+        args:[ports.ws.toString()]
     });
 
     import('os').then(os => {
@@ -102,6 +102,7 @@ if(cluster.isMaster){
 		}else{
 			log(`worker success ${worker.process.pid}`)
         }
+        log(`ctrl+c 关闭主线程 pid:<${process.pid}>`)
         //重启线程
         if(!worker.exitedAfterDisconnect)
             cluster.fork();
@@ -110,7 +111,12 @@ if(cluster.isMaster){
         子线程处理用户消息，不同的用户可能连接到不同的线程，
         所以需要master作为桥，同步所有room 消息
         */
-        let {data: {pathname, uid}} = message;
-        log(`子线程报告 -> 用户 ${uid} 房间 ${pathname}, 线程id ${worker.id}`);
+        for(let k of Reflect.ownKeys(cluster.workers)) {
+            let toWorker = cluster.workers[<string>k];
+            if(toWorker && toWorker.id !== worker.id){
+                log('同步工作线程：' + toWorker.id);
+                toWorker.send(message);
+            }
+        }
     })
 }
