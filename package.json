@@ -1,7 +1,7 @@
 {
-  "name": "great-dm-wall",
+  "name": "dama-wall",
   "version": "1.0.1",
-  "description": "弹幕影院全代码",
+  "description": "dama wall",
   "main": "index.js",
   "scripts": {
     "build:all": "webpack && echo build server codes waiting a second!!! && tsc && echo \"build:all\" command completed",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samao/GreatDMWall.git"
+    "url": "git+https://github.com/samao/dama-wall.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/samao/GreatDMWall/issues"
+    "url": "https://github.com/samao/dama-wall/issues"
   },
-  "homepage": "https://github.com/samao/GreatDMWall#readme",
+  "homepage": "https://github.com/samao/dama-wall#readme",
   "devDependencies": {
     "@types/body-parser": "^1.16.5",
     "@types/cookie-parser": "^1.4.1",
