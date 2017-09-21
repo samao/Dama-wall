@@ -14,4 +14,8 @@ export enum Actions {
      * 用户聊天内容线程同步
      */
     POST = 'post',
+    /**
+     * 当前房间用户数请求
+     */
+    ONLINE = 'online'
 }

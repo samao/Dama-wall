@@ -7,13 +7,16 @@ import {log} from 'util';
 import * as WebSocket from 'ws';
 import { WebSocketEvent } from './events';
 import { WebSocketStatus } from "./status";
-import { connections } from "./connectionsPool";
+//import { connections } from "./connectionsPool";
 import { WorkerEvent } from '../worker/events';
 import { Actions } from "../worker/actions";
+import { lobby } from "../lobby/lobby";
 
 class DanmuServer {
 
     private _wss: WebSocket.Server;
+
+    private _onlineMap: Map<string,number> = new Map();
 
     constructor(options:{
         host?: string,
@@ -45,16 +48,26 @@ class DanmuServer {
             log('工作线程执行同步：' + action);
             switch(action) {
                 case Actions.ENTRY:
-
+                    this.increase(data.pathname)
                 break;
                 case Actions.LEAVE:
-
+                    this.reduce(data.pathname);
                 break;
                 case Actions.POST:
                     log('有人说话了：' + data);
                 break;
             }
         })
+    }
+
+    private increase(rid: string): void {
+        let total = this._onlineMap.get(rid) || 0;
+        this._onlineMap.set(rid, ++total);
+    }
+
+    private reduce(rid: string): void {
+        let total = this._onlineMap.get(rid) || 1;
+        this._onlineMap.set(rid, --total);
     }
 
     private entry(ws: WebSocket, req: http.IncomingMessage): void {
@@ -66,7 +79,7 @@ class DanmuServer {
                 let info:{id: string};
                 try{
                     info = JSON.parse(data.toString());
-                    log(data.toString())
+                    //log(data.toString())
                     //检查用户身份
                 }catch(e){
                     ws.close(undefined,'用户认证消息参数错误');
@@ -123,23 +136,44 @@ class DanmuServer {
             })
         ws.on(WebSocketEvent.MESSAGE,data => {
             let msg: {action: string,data:any} = JSON.parse(data.toString());
-            this.sendMaster(msg.action,msg.data);
+            switch(msg.action){
+                case Actions.POST:
+                    this.sendMaster(msg.action,msg.data);
+                break;
+                case Actions.ONLINE:
+                    let total = this._onlineMap.get(pathname)||1;
+                    send(ws, {action:Actions.ONLINE, data:total})
+                break;
+            }
         });
         ws.on(WebSocketEvent.ERROR,err => {});
         //客户端关闭
         ws.on(WebSocketEvent.CLOSE,(code,message) => {
             ws.removeAllListeners();
-            connections.remove(id);
-
+            lobby.get(pathname).remove(id,ws);
             //通知主线程连接关闭
             this.sendMaster(Actions.LEAVE,{
                     pathname,
                     uid:id,
                 });
         });
-        connections.add(id,ws,pathname);
-        ws.send(JSON.stringify({action:'auth',command:{level:15,admin:true,total:connections.size}}));
+        //按房间分组用户，允许用户建立多个连接
+        lobby.get(pathname).add(id, ws);
+        //log(`当前线程用户数：${lobby.get(pathname).size}`);
+        send(ws, {action: 'auth', data: {level: 15, admin: true}})
     }
 }
+
+/**
+ * 规范发送内容
+ * @param ws 
+ * @param data keys: action & data
+ */
+const send = (ws: WebSocket, data: {action: string,data: any}) => {
+    ws.send(JSON.stringify(data));
+}
+
+let uuid: number = 0;
+const GEN = () =>  ++uuid;
 
 export {DanmuServer};
