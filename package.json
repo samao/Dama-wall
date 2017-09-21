@@ -4,7 +4,7 @@
   "description": "dama wall",
   "main": "index.js",
   "scripts": {
-    "build:all": "webpack && echo build server codes waiting a second!!! && tsc && echo \"build:all\" command completed",
+    "build:all": "npm install && npm run build && npm run build:server",
     "build:server": "echo build server codes waiting a second!!! && tsc && echo \"build:server\" command completed",
     "build": "webpack",
     "start": "node dist/server/index.js"
