@@ -1,13 +1,11 @@
 import * as http from 'http';
 import * as url from 'url';
 import * as cluster from 'cluster';
-
-import {log} from 'util';
-
 import * as WebSocket from 'ws';
+
+import {log, error} from '../../utils/log';
 import { WebSocketEvent } from './events';
 import { WebSocketStatus } from "./status";
-//import { connections } from "./connectionsPool";
 import { WorkerEvent } from '../worker/events';
 import { Actions } from "../worker/actions";
 import { lobby } from "../lobby/lobby";
@@ -39,13 +37,13 @@ class DanmuServer {
         });
         this._wss.on(WebSocketEvent.CONNECTION,this.entry)
             .once(WebSocketEvent.LISTENING,() => {
-                log(`WS <${process.pid}> 服务端口：${port}`)
+                log(`弹幕服务工作线程端口：${port}`,`PID: ${process.pid}`)
             })
         
         cluster.worker.on(WorkerEvent.MESSAGE, (message) => {
             //收到主线程消息
             let {action,data} = message;
-            log('工作线程执行同步：' + action);
+            //log('工作线程执行同步：' + action);
             switch(action) {
                 case Actions.ENTRY:
                     this.increase(data.pathname)
@@ -85,15 +83,15 @@ class DanmuServer {
                     ws.close(undefined,'用户认证消息参数错误');
                     return;
                 }
-                log('收到用户登陆 >' + process.pid);
+                log(`用户 ${info.id} 登录成功,当前线程 PID: ${process.pid}`);
                 this.setAuthUser(info.id, ws, pathname);
             })
             let delayid = setTimeout(() => ws.close(),30000);
         },(reason) => {
-            log(`不存在的连接路径: ${reason}`)
+            error(`不存在的连接路径: ${reason}`)
             ws.close(undefined,reason);
         }).catch((reason) => {
-            log('无法验证访问路径，请检查代码:' + reason);
+            error('无法验证访问路径，请检查代码:' + reason);
             ws.close(undefined,reason);
         })
     }

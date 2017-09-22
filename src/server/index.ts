@@ -5,7 +5,7 @@ import * as bodyParser from "body-parser";
 
 import * as cluster from 'cluster';
 import * as path from 'path';
-import {log} from 'util';
+import {log} from '../utils/log';
 
 import {secret,ports} from './config/conf'
 import {WorkerEvent} from './worker/events';
@@ -38,7 +38,7 @@ app.use('static',express.static('public'));
 app.set('views','./views');
 app.set('view engine','pug');
 
-log('运行环境：' + app.get('env'));
+log('服务器运行环境：' + app.get('env'));
 
 const userMap = new Map<string,{time: number}>();
 
@@ -79,44 +79,29 @@ const server = app.listen(ports.web,() => {
 
 //线程管理
 if(cluster.isMaster){
-    //启动弹幕线程
-    log(`主线程 <${process.pid}> 启动弹幕线程...`);
+    async function workerGo() {
+        let { syncTransfer } = await import('./worker/syncTransfer');
+        let { cpus } = await import('os');
+        return {syncTransfer, cpuNum: cpus().length};
+    }
+    
     cluster.setupMaster({
         exec: path.resolve(__dirname,'worker','dmworker.js'),
         args:[ports.ws.toString()]
     });
-
-    import('os').then(os => {
-        let {cpus} = os;
-        //按cpu数启动线程
-        for(let i = 0; i < cpus().length; ++i) {
+    workerGo().then(({syncTransfer,cpuNum}) => {
+        //启动弹幕线程
+        log(`主线程 PID: ${process.pid}, CPU: ${cpuNum} 个`);
+        for(let i = 0; i < cpuNum; ++i) {
             cluster.fork()
         }
-    })
-
-    cluster.on(WorkerEvent.EXIT,(worker,code,signal) => {
-        if(signal){
-			log(`worker was killed by signal:${signal}`)
-		}else if(code !== 0) {
-			log(`worker exited with error code:${code}`)
-		}else{
-			log(`worker success ${worker.process.pid}`)
-        }
-        log(`ctrl+c 关闭主线程 pid:<${process.pid}>`)
-        //重启线程
-        if(!worker.exitedAfterDisconnect)
-            cluster.fork();
-    }).on(WorkerEvent.MESSAGE, (worker,message) => {
-        /*
-        子线程处理用户消息，不同的用户可能连接到不同的线程，
-        所以需要master作为桥，同步所有room 消息
-        */
-        for(let k of Reflect.ownKeys(cluster.workers)) {
-            let toWorker = cluster.workers[<string>k];
-            if(toWorker && toWorker.id !== worker.id){
-                log('同步工作线程：' + toWorker.id);
-                toWorker.send(message);
+        cluster.on(WorkerEvent.EXIT,(worker,code,signal) => {
+            log(`工作线程意外关闭 code: ${code}, signal: ${signal}`);
+            //重启线程
+            if(!worker.exitedAfterDisconnect) {
+                log('主线程重启工作线程');
+                cluster.fork();
             }
-        }
+        }).on(WorkerEvent.MESSAGE, syncTransfer);
     })
 }

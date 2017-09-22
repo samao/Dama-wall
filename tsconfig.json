@@ -50,12 +50,13 @@
     /* Experimental Options */
     // "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
-    "outDir": "./dist/server/"
+    "outDir": "./dist/"
   },
   "include": [
-    "src/server/**/*"
+    "src/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/browser"
   ]
 }
