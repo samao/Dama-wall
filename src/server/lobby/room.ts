@@ -10,10 +10,6 @@ export interface IRoom {
      */
     size: number
     /**
-     * 房间内的用户连接 每个ws单独id,可以允许客户端多实例连接
-     */
-    clients:Map<string, WebSocket[]>;
-    /**
      * 添加用户
      * @param uid 用户id
      * @param ws 用户连接websocket
@@ -25,7 +21,15 @@ export interface IRoom {
      * @param ws 用户websocket
      */
     remove(uid: string, ws:WebSocket): void;
-
+    /**
+     * 收到心跳，重置次数
+     */
+    active(ws: WebSocket): void;
+    /**
+     * 全局检查，减少次数
+     * 返回 失效的ws
+     */
+    deactive(): WebSocket[];
     /**
      * 房间广播
      * @param data 广播消息
@@ -35,9 +39,18 @@ export interface IRoom {
 }
 
 export class Room implements IRoom {
+    /**
+     * 心跳丢包容错数 连续3次检查没心跳就丢弃连接
+     */
+    private readonly MISS_BEATS: number = 3;
 
     private _size: number = 0;
-    clients:Map<string, WebSocket[]> = new Map();
+    /**
+     * 房间内的用户连接 每个ws单独id,可以允许客户端多实例连接
+     */
+    private clients:Map<string, WebSocket[]> = new Map();
+
+    private hearts: Map<WebSocket, number> = new Map();
 
     constructor(public id: string) {}
 
@@ -45,6 +58,7 @@ export class Room implements IRoom {
         let cons = this.clients.get(uid);
         if(cons) cons.push(ws)
         else this.clients.set(uid, [ws]);
+        this.hearts.set(ws, this.MISS_BEATS)
         ++this._size;
     }
 
@@ -52,8 +66,25 @@ export class Room implements IRoom {
         let cons = this.clients.get(uid);
         if(cons && cons.includes(ws)) {
            cons.splice(cons.indexOf(ws), 1);
+           this.hearts.delete(ws)
         }
         --this._size;
+    }
+
+    active(ws: WebSocket): void {
+        this.hearts.set(ws, this.MISS_BEATS);
+    }
+
+    deactive(): WebSocket[] {
+        let websockets = new Array<WebSocket>();
+        let entries = this.hearts.entries();
+        for(let [ws,times] of entries) {
+            if(--times === 0)
+                websockets.push(ws);
+            else
+                this.hearts.set(ws, times);
+        }
+        return websockets;
     }
 
     broadcast(data: string, ws?: WebSocket): void {

@@ -11,6 +11,10 @@ import { Actions } from "../worker/actions";
 import { lobby } from "../lobby/lobby";
 
 class DanmuServer {
+    /**
+     * 心跳循环间隔时间 10s
+     */
+    private readonly DELAY: number = 10000;
 
     private _wss: WebSocket.Server;
 
@@ -154,7 +158,8 @@ class DanmuServer {
                     response(ws, {status: WebSocketStatus.ONLINE, data: total});
                     break;
                 case Actions.HEART:
-                    //用户心跳
+                    //用户心跳 激活当前连接
+                    lobby.get(pathname).active(ws);
                 break;
             }
         });
@@ -178,7 +183,14 @@ class DanmuServer {
         this.sendMaster(pathname, Actions.ENTRY, {
             pathname,
             uid:id
-        })
+        });
+
+        //心跳轮询检查
+        setInterval(() => {
+            lobby.allDeactives().forEach((websocket) => {
+                websocket.close(undefined,`僵尸连接，长连接请发送"${Actions.HEART}"`)
+            })
+        }, this.DELAY);
     }
     /**
      * 增加本线程人数
