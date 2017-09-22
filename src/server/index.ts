@@ -83,12 +83,19 @@ if(cluster.isMaster){
      * 异步模块调用, 后期启动慢可改为Promise.all
      */
     async function workerGo() {
-        let { syncTransfer } = await import('./worker/syncTransfer');
-        let { Actions: actions } = await import('./worker/actions');
-        let {increaseOne, reduceOne, reduceAll} = await import('./online');
-        let { cpus } = await import('os');
+        const [
+            { syncTransfer },
+            { Actions: actions },
+            {increaseOne, reduceOne, reduceAll},
+            { cpus }
+        ] = await Promise.all([
+            import('./worker/syncTransfer'),
+            import('./worker/actions'),
+            import('./online'),
+            import('os')
+        ])
 
-        return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length,};
+        return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length};
     }
     
     cluster.setupMaster({
@@ -107,7 +114,7 @@ if(cluster.isMaster){
             //重启线程
             if(!worker.exitedAfterDisconnect) {
                 log('主线程重启工作线程');
-                cluster.fork();
+                process.nextTick(() => cluster.fork());
             }
         }).on(WorkerEvent.MESSAGE, (worker,message) => {
             let {action,pathname} = message;

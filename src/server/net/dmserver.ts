@@ -64,7 +64,14 @@ class DanmuServer {
                     this.workerDestroy(data);
                 break;
             }
-        })
+        });
+
+        //心跳轮询检查
+        setInterval(() => {
+            lobby.allDeactives().forEach((websocket) => {
+                websocket.close(undefined,`僵尸连接，长连接请发送"${Actions.HEART}"`)
+            })
+        }, this.DELAY);
     }
 
     /**
@@ -184,13 +191,6 @@ class DanmuServer {
             pathname,
             uid:id
         });
-
-        //心跳轮询检查
-        setInterval(() => {
-            lobby.allDeactives().forEach((websocket) => {
-                websocket.close(undefined,`僵尸连接，长连接请发送"${Actions.HEART}"`)
-            })
-        }, this.DELAY);
     }
     /**
      * 增加本线程人数

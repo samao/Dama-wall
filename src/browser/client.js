@@ -1,10 +1,13 @@
 (function(){
-    var ws = new WebSocket('ws://localhost:8080/9999');
+    let heartId,onlineId;
+    let ws = new WebSocket('ws://localhost:8080/9999');
     ws.onopen = function(){
         ws.send(JSON.stringify({action:'entry',data:{id:'9527',name:'wangerxiao',age:18}}));
     }
     ws.onclose = function(code,err){
-        console.log('close',code,err)
+        console.log('close',code,err);
+        clearInterval(onlineId);
+        clearInterval(heartId);
     }
     ws.onmessage = function(message) {
         console.log(message);
@@ -20,10 +23,10 @@
             switch(data.status) {
                 case 201:
                     console.log('登录成功开始发送在线数和心跳');
-                    let onlineId = setInterval(() => {
+                    onlineId = setInterval(() => {
                         ws.send(JSON.stringify({action:'online',data:{}}));
                     },10000);
-                    let heartId = setInterval(() => {
+                    heartId = setInterval(() => {
                         ws.send(JSON.stringify({action:'heart',data:{}}))
                     },5000)
                     ws.send(JSON.stringify({action:'post',data:'隔壁有个大奶妹子'}))
