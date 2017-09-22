@@ -4,6 +4,14 @@ export enum WebSocketStatus {
      */
     POST = 200,
     /**
+     * 登录消息成功
+     */
+    AUTH,
+    /**
+     * 房间用户数
+     */
+    ONLINE,
+    /**
      * 权限不够状态吗
      */
     FORBID = 403,

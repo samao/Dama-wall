@@ -11,5 +11,5 @@ ws.onclose = function(code,err){
     console.log('close',code,err)
 }
 ws.onmessage = function(message) {
-    console.log(JSON.parse(message.data).data);
+    console.log(message.data);
 }

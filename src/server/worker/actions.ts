@@ -17,5 +17,14 @@ export enum Actions {
     /**
      * 当前房间用户数请求
      */
-    ONLINE = 'online'
+    ONLINE = 'online',
+    /**
+     * 心跳
+     */
+    HEART = 'heart',
+
+    /**
+     * 工作线程退出销毁
+     */
+    DESTROY = 'destroy'
 }

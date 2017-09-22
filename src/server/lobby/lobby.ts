@@ -12,7 +12,9 @@ class Lobby {
         }
         return room;
     }
-
+    has(rid: string): boolean {
+        return this.rooms.has(rid);
+    }
     get(rid: string): IRoom {
         return this.add(rid);
     }

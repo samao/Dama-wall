@@ -79,17 +79,23 @@ const server = app.listen(ports.web,() => {
 
 //线程管理
 if(cluster.isMaster){
+    /**
+     * 异步模块调用, 后期启动慢可改为Promise.all
+     */
     async function workerGo() {
         let { syncTransfer } = await import('./worker/syncTransfer');
+        let { Actions: actions } = await import('./worker/actions');
+        let {increaseOne, reduceOne, reduceAll} = await import('./online');
         let { cpus } = await import('os');
-        return {syncTransfer, cpuNum: cpus().length};
+
+        return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length,};
     }
     
     cluster.setupMaster({
         exec: path.resolve(__dirname,'worker','dmworker.js'),
         args:[ports.ws.toString()]
     });
-    workerGo().then(({syncTransfer,cpuNum}) => {
+    workerGo().then(({syncTransfer, cpuNum, actions, increaseOne, reduceOne, reduceAll}) => {
         //启动弹幕线程
         log(`主线程 PID: ${process.pid}, CPU: ${cpuNum} 个`);
         for(let i = 0; i < cpuNum; ++i) {
@@ -97,11 +103,20 @@ if(cluster.isMaster){
         }
         cluster.on(WorkerEvent.EXIT,(worker,code,signal) => {
             log(`工作线程意外关闭 code: ${code}, signal: ${signal}`);
+            syncTransfer(worker,{action: actions.DESTROY, data: reduceAll(worker)});
             //重启线程
             if(!worker.exitedAfterDisconnect) {
                 log('主线程重启工作线程');
                 cluster.fork();
             }
-        }).on(WorkerEvent.MESSAGE, syncTransfer);
+        }).on(WorkerEvent.MESSAGE, (worker,message) => {
+            let {action,pathname} = message;
+            if(action === actions.ENTRY) {
+                Object.assign(message,{total:increaseOne(worker, pathname)});
+            }else if(action === actions.LEAVE) {
+                Object.assign(message,{total:reduceOne(worker, pathname)});
+            }
+            syncTransfer(worker, message);
+        });
     })
 }

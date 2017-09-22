@@ -25,6 +25,13 @@ export interface IRoom {
      * @param ws 用户websocket
      */
     remove(uid: string, ws:WebSocket): void;
+
+    /**
+     * 房间广播
+     * @param data 广播消息
+     * @param ws 消息来源，默认或者undefined 时发给全部用户。否则传入ws除外
+     */
+    broadcast(data: string, ws?: WebSocket): void;
 }
 
 export class Room implements IRoom {
@@ -47,6 +54,16 @@ export class Room implements IRoom {
            cons.splice(cons.indexOf(ws), 1);
         }
         --this._size;
+    }
+
+    broadcast(data: string, ws?: WebSocket): void {
+        for(let [,websockets] of this.clients) {
+            websockets.forEach((el) => {
+                if(!ws || el !== ws) {
+                    el.send(data);
+                }
+            })
+        }
     }
 
     /**
