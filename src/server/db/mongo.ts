@@ -27,4 +27,5 @@ const find = async (data: any) => {
 const remove = async (data: any) => {
     
 }
+
 export {insert, update, find, remove}
