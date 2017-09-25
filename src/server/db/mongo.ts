@@ -5,41 +5,45 @@ import { MongoClient as mongo } from "mongodb";
 
 import { promisify } from "util";
 
-const dburl = `mongodb://localhost:${ports.db}`;
+const dburl = `mongodb://localhost:${ports.db}/dama`;
 
-const connect = async (col: string) => {
-    let db = await promisify(mongo.connect)(`${dburl}/${col}`,{}).catch(reason => error('数据库链接失败',reason));
-    if(db) {
-        let collection = db.collection(col);
-        return {db, collection};
-    }
+const connect = () => {
+    return promisify(mongo.connect)(`${dburl}`,{});
 }
 
 const insert = async (col: string, data: any) => {
-    let db = await connect(col);
-    if(db) {
-        let {result} = await db.collection.insert({name:'samao',pwd:'samao'});
-        if(result.ok) {
-            log('完成');
-        }else{
-            error('失败');
+    let db = await connect();
+    let collection = db.collection(col);
+    collection.insert(data,(err,data) => {
+        if(err) { 
+            db.close(); 
+            return
         }
-        db.db.close();
-    }
+        db.close();
+    })
 }
-const update = async (col: string, data: any) => {
-
+const update = async (col: string, query:any, data: any,options:{upsert:boolean, multi: boolean} = {upsert:false, multi: false}) => {
+    let db = await connect();
+    let collection = db.collection(col);
+    collection.update(query, data, options);
+    db.close();
 }
 const find = async (col: string, data?: any) => {
-    let db = await connect(col);
-     if(db) {
-        let result = await db.collection.find(data).toArray();
-        log('获取到得数组：',JSON.stringify(result));
-        db.db.close();
-    }
+    let db = await connect();
+    let collection = db.collection(col);
+    let origin = await promisify(collection.find(data).toArray)
+    return origin;
 }
-const remove = async (data: any) => {
-    
+const remove = async (type: string, query: any, options:{single:boolean} = {single: false}) => {
+    let db = await connect();
+    let collection = db.collection(type);
+    collection.remove(query,(err) => {
+        if(err) { 
+            db.close(); 
+            return
+        }
+        db.close();
+    })
 }
 
 export {insert, update, find, remove}
