@@ -1,4 +1,4 @@
-data/db/journal
+data/db/journal/
 dist/
 node_modules/
 package-lock.json
