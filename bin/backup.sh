@@ -10,4 +10,4 @@ echo "*** 备份完毕 ***"
 echo "=== 提交备份到github ==="
 #定义时间
 now=`date`
-. bin/push.sh "'数据库备份：'$now"
+. bin/push.sh '数据库备份：'$now
