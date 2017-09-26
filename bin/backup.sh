@@ -1,4 +1,5 @@
 #!/bin/bash
+#备份数据了脚本
 echo "*** 备份mg数据库 ***"
 mongodump -o data/db_back
 echo "*** 压缩备份文件 ***"
