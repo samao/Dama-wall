@@ -10,7 +10,4 @@ echo "*** 备份完毕 ***"
 echo "=== 提交备份到github ==="
 #定义时间
 now=`date`
-git add --all
-git commit -a --message "'数据库备份：'$now"
-git push origin master
-echo '数据库推送github 完成'$now
+. bin/push.sh "'数据库备份：'$now"
