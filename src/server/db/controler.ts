@@ -39,7 +39,7 @@ class DbControler extends Emit {
     }
 
     getDB(cb: (db:Db) =>void): void {
-        
+        //20000并发连接
     }
 }
 
