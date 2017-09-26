@@ -1,4 +1,5 @@
 data/db/
+data/db_back/
 dist/
 node_modules/
 package-lock.json
