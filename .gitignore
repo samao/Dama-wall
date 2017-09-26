@@ -1,5 +1,4 @@
-data/db/diagnostic.data/
-data/db/journal/
+data/db/
 dist/
 node_modules/
 package-lock.json
