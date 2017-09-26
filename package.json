@@ -4,10 +4,10 @@
   "description": "dama wall",
   "main": "index.js",
   "scripts": {
-    "build:all": "npm install && npm run build && npm run build:server",
-    "build:server": "echo build server codes waiting a second!!! && tsc && echo \"build:server\" command completed",
-    "build": "webpack",
-    "start": "node dist/server/index.js"
+    "build:all": ". bin/build.sh all",
+    "build:server": ". bin/build.sh server",
+    "build": ". bin/build.sh",
+    "start": ". bin/start.sh"
   },
   "repository": {
     "type": "git",
