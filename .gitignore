@@ -1,3 +1,6 @@
+damaClient/bin-debug
+damaClient/bin-release
+
 data/db/
 data/db_back/
 dist/
