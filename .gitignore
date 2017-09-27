@@ -1,5 +1,4 @@
-damaClient/bin-debug
-damaClient/bin-release
+client/bin-debug
 
 data/db/
 data/db_back/

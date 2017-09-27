@@ -45,9 +45,13 @@
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
   <buildTargets>
     <buildTarget buildTargetName="default" platformId="default">
-      <airSettings airCertificatePath="/Users/user/work/git/dama-wall/damaClient/keys/cert.p12" airTimestamp="false" anePathSet="true" version="1">
+      <airSettings airCertificatePath="/Users/user/work/git/dama-wall/client/keys/cert.p12" airTimestamp="false" anePathSet="true" version="1">
         <airExcludes/>
         <anePaths/>
+        <newLaunchParams/>
+        <modifiedLaunchParams/>
+        <newPackagingParams/>
+        <modifiedPackagingParams/>
       </airSettings>
       <actionScriptSettings version="1"/>
     </buildTarget>
