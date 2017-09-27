@@ -6,7 +6,7 @@
 
 #### 2. `begin.sh` 
 
-强制checkout -f 代码。启动mongodb，恢复导入备份数据库。
+`git pull`拉取代码。启动mongodb，恢复导入备份数据库。
 
 #### 3. `build.sh`
 
@@ -35,3 +35,7 @@
 #### 8. `complete.sh`
 
 备份数据库，所有变更（包括代码）推送到github，参数是提交信息
+
+#### 9. `reset.sh`
+
+`git checkout -f` 强制检出当前版本代码，然后重重数据库

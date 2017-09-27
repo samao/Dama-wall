@@ -9,6 +9,7 @@ import { WebSocketStatus } from "./status";
 import { WorkerEvent } from '../worker/events';
 import { Actions } from "../worker/actions";
 import { lobby } from "../lobby/lobby";
+import { get as checkout, put as restore } from "../db/pool";
 
 class DanmuServer {
     /**
@@ -93,8 +94,23 @@ class DanmuServer {
                 try{
                     let info: {action: string, data: {id: string}} = JSON.parse(data.toString()); 
                     if(info.action === Actions.ENTRY) {
-                        this.setAuthUser(info.data.id, ws, pathname);
-                        log(`用户 ${info.action} ${info.data.id} 登录成功,当前线程 PID: ${process.pid}`);
+                        checkout((db) => {
+                            db.collection('user').findOne({name:info.data.id}).then(data => {
+                                if(data) {
+                                    this.setAuthUser(info.data.id, ws, pathname);
+                                    log(`用户 ${info.action} ${info.data.id} 登录成功,当前线程 PID: ${process.pid}`);
+                                }else{
+                                    ws.close(undefined,`不存在用户 ${info.data.id} 无法建立连接`);
+                                    error(`不存在用户 ${info.data.id} 无法建立连接`)
+                                }
+                            },reason => {
+                                ws.close(undefined,`无效用户 ${info.data.id}`);
+                            }).then(() => {
+                                restore(db);
+                            })
+                        },reason => {
+                            ws.close(undefined,`无法建立数据库连接`)
+                        })
                     }else
                         ws.close(undefined, `需要发送登录action "${Actions.ENTRY}"`);
                 }catch(e){

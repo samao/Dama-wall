@@ -2,7 +2,7 @@
     let heartId,onlineId;
     let ws = new WebSocket('ws://localhost:8080/9999');
     ws.onopen = function(){
-        ws.send(JSON.stringify({action:'entry',data:{id:'9527',name:'wangerxiao',age:18}}));
+        ws.send(JSON.stringify({action:'entry',data:{id:'admin',name:'wangerxiao',age:18}}));
     }
     ws.onclose = function(code,err){
         console.log('close',code,err);
