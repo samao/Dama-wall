@@ -33,7 +33,7 @@ async function connect() {
  * @param resolve 成功获取连接
  * @param reject 建立连接失败
  */
-function get(resolve: (db: Db) => any, reject?: (reason: any) => any): void {
+function checkout(resolve: (db: Db) => any, reject?: (reason: any) => any): void {
     if(idleMap.length > 0) {
         let idle = idleMap.shift()
         if(idle) {
@@ -50,7 +50,7 @@ function get(resolve: (db: Db) => any, reject?: (reason: any) => any): void {
  * 空闲db连接返回对象池
  * @param db db连接
  */
-function put(db: Db): void {
+function restore(db: Db): void {
     log('搁置空闲连接');
     idleMap.push({db, delay: DELAY});
 }
@@ -75,4 +75,4 @@ function clear(): void {
 
 call(clear, 5000);
 
-export {get, put}
+export {checkout, restore}

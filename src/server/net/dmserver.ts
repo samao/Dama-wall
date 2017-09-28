@@ -9,7 +9,7 @@ import { WebSocketStatus } from "./status";
 import { WorkerEvent } from '../worker/events';
 import { Actions } from "../worker/actions";
 import { lobby } from "../lobby/lobby";
-import { get as checkout, put as restore } from "../db/pool";
+import { checkout, restore } from "../db/pool";
 
 class DanmuServer {
     /**

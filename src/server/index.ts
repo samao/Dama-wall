@@ -91,7 +91,7 @@ if(cluster.isMaster){
         ] = await Promise.all([
             import('./worker/syncTransfer'),
             import('./worker/actions'),
-            import('./online'),
+            import('./net/online'),
             import('os')
         ])
 
