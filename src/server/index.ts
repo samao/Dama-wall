@@ -48,10 +48,11 @@ app.use((req,res,next) => {
 })
 app.route('/').get((req,res) => {
     if(userMap.has(<string>req.sessionID)){
-        res.end(`welcome come back: ${req.sessionID}`);
+        //res.end(`welcome come back: ${req.sessionID}`);
+        res.render('index',{message:'又来了'})
     }else{
         userMap.set(<string>req.sessionID,{time:Date.now()});
-        res.end('hello')
+        res.render('index',{message:'你好啊'})
     }
 })
 
