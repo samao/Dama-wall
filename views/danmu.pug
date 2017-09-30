@@ -1,0 +1,10 @@
+doctype html
+html
+    head
+        title #{title}
+    body
+        form(method="post")
+            input(type="text" name="message")
+            input(type="submit" value="发送")
+        if ok
+            p(style={color:'red'})#info 发送成功

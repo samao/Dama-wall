@@ -57,6 +57,7 @@ class DanmuServer {
                     this._onlineMap.set(pathname, total);
                 break;
                 case Actions.POST:
+                    log('同步聊天消息',JSON.stringify(message))
                     //3.其它工作线程聊天消息,同步到本线程相关用户
                     if(lobby.has(pathname))
                         lobby.get(pathname).broadcast(JSON.stringify({action, data}));

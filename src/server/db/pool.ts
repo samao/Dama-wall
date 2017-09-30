@@ -66,7 +66,7 @@ function clear(): void {
         idle.delay -= CHECK;
     }
 
-    if(map.size > 0) log('长时间空置连接关闭')
+    if(map.size > 0) log('长时间空闲DB连接关闭')
     for(let [idle,db] of map) {
         db.close(true);
         idleMap.splice(idleMap.indexOf(idle), 1);
