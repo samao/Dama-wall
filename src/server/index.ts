@@ -33,7 +33,9 @@ app.use(expressSession({
 }))
 
 //静态资源
-app.use('static',express.static('public'));
+app.use('/static',express.static('public'));
+app.use('/js',express.static('dist/browser'));
+
 //模板路径
 app.set('views','./views');
 app.set('view engine','pug');
