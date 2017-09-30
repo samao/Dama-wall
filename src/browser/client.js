@@ -46,3 +46,5 @@
         console.log('发送成功');
     })
 })()
+
+//form 发送参照 views/danmu.pug
