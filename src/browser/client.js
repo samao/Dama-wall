@@ -1,3 +1,4 @@
+// websocket 长连接
 (function(){
     let heartId,onlineId;
     let ws = new WebSocket('ws://localhost:8080/9999');
@@ -29,7 +30,7 @@
                     heartId = setInterval(() => {
                         ws.send(JSON.stringify({action:'heart',data:{}}))
                     },5000)
-                    ws.send(JSON.stringify({action:'post',data:'隔壁有个大奶妹子'}))
+                    ws.send(JSON.stringify({action:'post',data:'发送了一条聊天信息'}))
                 break;
                 case 202:
                     console.log('当前房间用户数',data.data)
@@ -37,4 +38,11 @@
             }
         }
     }
+})()
+
+//http 发送弹幕
+(function(){
+    $.post('http://localhost:3000/danmu/9999',{message:'又说那话'},() => {
+        console.log('发送成功');
+    })
 })()

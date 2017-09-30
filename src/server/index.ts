@@ -47,6 +47,8 @@ const userMap = new Map<string,{time: number}>();
 
 app.use((req,res,next) => {
     log(<string>req.sessionID);
+    //所有内容允许跨域
+    res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 })
 app.route('/').get((req,res) => {

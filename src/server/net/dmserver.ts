@@ -10,6 +10,7 @@ import { WorkerEvent } from '../worker/events';
 import { Actions } from "../worker/actions";
 import { lobby } from "../lobby/lobby";
 import { checkout, restore } from "../db/pool";
+import { roomParser } from "../lobby/roomParser";
 
 class DanmuServer {
     /**
@@ -57,7 +58,7 @@ class DanmuServer {
                     this._onlineMap.set(pathname, total);
                 break;
                 case Actions.POST:
-                    log('同步聊天消息',JSON.stringify(message))
+                    //log('同步聊天消息',JSON.stringify(message))
                     //3.其它工作线程聊天消息,同步到本线程相关用户
                     if(lobby.has(pathname))
                         lobby.get(pathname).broadcast(JSON.stringify({action, data}));
@@ -88,7 +89,7 @@ class DanmuServer {
     }
 
     private entry(ws: WebSocket, req: http.IncomingMessage): void {
-        this.vaild(req.url).then((pathname) => {
+        roomParser(req.url).then((pathname) => {
             //监听下个用户登录包
             ws.once(WebSocketEvent.MESSAGE, (data: WebSocket.Data) => {
                 clearTimeout(delayid);
@@ -126,26 +127,6 @@ class DanmuServer {
         }).catch((reason) => {
             error('无法验证访问路径，请检查代码:' + reason);
             ws.close(undefined, reason);
-        })
-    }
-
-    /**
-     * 返回 ts Promise<any>
-     * @param path 用户连接的ws路径
-     */
-    private vaild(path: string|undefined): Promise<string>{
-        return new Promise((res,rej) => {
-            if(typeof path === 'undefined'|| typeof path === 'string' && path.replace(/\//,'') === '') {
-                setImmediate(rej,'please check your path');
-                return;
-            }
-            let {pathname} = url.parse(path);
-            if(pathname) {
-                //检查路径
-                setImmediate(res,pathname)
-            }else{
-                setImmediate(rej,'illegal path!!!')
-            }
         })
     }
 
