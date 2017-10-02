@@ -90,6 +90,8 @@ class DanmuServer {
 
     private entry(ws: WebSocket, req: http.IncomingMessage): void {
         roomParser(req.url).then((pathname) => {
+            //要求求客户端发送登录
+            response(ws, {status: WebSocketStatus.REQUIRE_AUTH,data:{}});
             //监听下个用户登录包
             ws.once(WebSocketEvent.MESSAGE, (data: WebSocket.Data) => {
                 clearTimeout(delayid);

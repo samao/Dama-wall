@@ -12,6 +12,10 @@ export enum WebSocketStatus {
      */
     ONLINE,
     /**
+     * 服务器请求客户端登录
+     */
+    REQUIRE_AUTH,
+    /**
      * 权限不够状态吗
      */
     FORBID = 403,

@@ -3,7 +3,6 @@
     let heartId,onlineId;
     let ws = new WebSocket('ws://localhost:8080/9999');
     ws.onopen = function(){
-        ws.send(JSON.stringify({action:'entry',data:{id:'admin',name:'wangerxiao',age:18}}));
     }
     ws.onclose = function(code,err){
         console.log('close',code,err);
@@ -35,6 +34,9 @@
                 case 202:
                     console.log('当前房间用户数',data.data)
                 break;
+                case 203:
+                    ws.send(JSON.stringify({action:'entry',data:{id:'admin',name:'wangerxiao',age:18}}));
+                break;
             }
         }
     }
@@ -42,9 +44,13 @@
 
 //http 发送弹幕
 (function(){
-    $.post('http://localhost:3000/danmu/9999',{message:'又说那话'},() => {
-        console.log('发送成功');
+    $.post('http://localhost:3000/danmu/9999',{message:'又说那话'},(data) => {
+        data = JSON.parse(data);
+        if(data.ok) 
+            console.log('发送成功')
+        else
+            console.log(data.reason);
     })
 })()
 
-//form 发送参照 views/danmu.pug
+//发送参照 views/danmu.pug

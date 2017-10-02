@@ -2,9 +2,22 @@ doctype html
 html
     head
         title #{title}
+        script(src='/static/jquery-2.2.4.min.js')
     body
-        form(method="post")
-            input(type="text" name="message")
-            input(type="submit" value="发送")
-        if ok
-            p(style={color:'red'})#info 发送成功
+        .box
+            input(type="text" name="message" placeholder="输入发送内容")
+            input(type="submit" value="发送")#sendBtn
+            p(style={color:'red',display:'none'})#info
+        script.
+            $('#sendBtn').click(function(){
+                let input = $('input[type="text"]');
+                $.post(location.href, {message:input.val()},(data) => {
+                    data = JSON.parse(data);
+                    if(data.ok) 
+                        $('#info').html('发送成功');
+                    else
+                        $('#info').html(data.reason);
+                    $('#info').fadeIn().fadeOut();
+                })
+                input.val('');
+            })
