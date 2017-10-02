@@ -25,9 +25,9 @@ router.route('/:rid').all((req, res, next) => {
         log(`Http 房间地址 ${pathname}`);
         next();
     },reason => {
-        res.end(`发送链接错误 ${req.url}`);
+        res.end(`发送链接错误 ${req.url}, ${reason}`);
     }).catch(reason => {
-        res.end(`发送链接错误 ${req.url}`);
+        res.end(`发送链接错误 ${req.url}, ${reason}`);
     })
 }).get((req, res, next) => {
     res.render('danmu',info);

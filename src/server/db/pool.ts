@@ -73,6 +73,6 @@ function clear(): void {
     }
 }
 
-call(clear, 5000);
+call(clear, CHECK);
 
 export {checkout, restore}
