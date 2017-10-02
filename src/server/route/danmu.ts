@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as cluster from "cluster";
+
 import { syncTransfer } from '../worker/syncTransfer';
 import { Actions } from '../worker/actions';
 import { roomParser } from "../lobby/roomParser";
@@ -44,19 +45,14 @@ router.route('/:rid').all((req, res, next) => {
         syncTransfer({action: Actions.POST,data: req.body.message, pathname:`${req.params.rid}`});
         res.json({ok: true});
     },reason => {
-        error(reason);
         sendFailure(res, reason)
     }).catch(reason => {
-        error(reason);
         sendFailure(res, reason)
     });
 })
 
-router.route('/recive/:rid').post((req,res,next) => {
-    syncTransfer({action: Actions.POST,data: req.body.message, pathname:`${req.params.rid}`});
-})
-
 function sendFailure(res:{json: (data: any) => any}, reason: string): void {
+    error(reason);
     res.json({ok:false, reason});
 }
 
