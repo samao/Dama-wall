@@ -119,7 +119,7 @@ if(cluster.isMaster){
         }
         cluster.on(WorkerEvent.EXIT,(worker,code,signal) => {
             log(`工作线程意外关闭 code: ${code}, signal: ${signal}`);
-            syncTransfer(worker,{action: actions.DESTROY, data: reduceAll(worker)});
+            syncTransfer({action: actions.DESTROY, data: reduceAll(worker)}, worker);
             //重启线程
             if(!worker.exitedAfterDisconnect) {
                 log('主线程重启工作线程');
@@ -132,7 +132,7 @@ if(cluster.isMaster){
             }else if(action === actions.LEAVE) {
                 Object.assign(message,{total:reduceOne(worker, pathname)});
             }
-            syncTransfer(worker, message);
+            syncTransfer(message, worker);
         });
     })
 }
