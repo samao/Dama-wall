@@ -2,11 +2,10 @@ import * as expressSession from 'express-session';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from "body-parser";
-
 import * as cluster from 'cluster';
 import * as path from 'path';
-import {log} from '../utils/log';
 
+import {log} from '../utils/log';
 import {secret,ports} from './config/conf'
 import {WorkerEvent} from './worker/events';
 import danmuRouter from './route/danmu'
@@ -107,6 +106,7 @@ if(cluster.isMaster){
         ])
 
         //全局敏感词初始化
+        log('加载全局通用敏感词')
         await sensitive.setup();
 
         return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length, sensitives: sensitive.words};
@@ -120,9 +120,9 @@ if(cluster.isMaster){
             exec: path.resolve(__dirname,'worker','dmworker.js'),
             args:[ports.ws.toString()],
         });
-
+        let workerSet: Set<cluster.Worker> = new Set();
         for(let i = 0; i < cpuNum; ++i) {
-            cluster.fork({sensitives})
+            workerSet.add(cluster.fork({sensitives}));
         }
         cluster.on(WorkerEvent.EXIT,(worker,code,signal) => {
             log(`工作线程意外关闭 code: ${code}, signal: ${signal}`);
@@ -140,6 +140,12 @@ if(cluster.isMaster){
                 Object.assign(message,{total:reduceOne(worker, pathname)});
             }
             syncTransfer(message, worker);
-        });
+        }).on(WorkerEvent.FORK,(worker) => {
+            workerSet.delete(worker);
+            if(workerSet.size === 0) {
+                cluster.removeAllListeners(WorkerEvent.FORK);
+                log('=== 所有服务启动完毕 ===');
+            }
+        })
     })
 }

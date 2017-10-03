@@ -70,6 +70,7 @@ class DanmuServer {
             }
         });
 
+        //初始化线程通用敏感词
         const sensitives = (<any>cluster.worker.process).env.sensitives;
         sensitive.setupFromMaster(sensitives)
         //心跳轮询检查

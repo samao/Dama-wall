@@ -18,5 +18,10 @@ export enum WorkerEvent {
     /**
      * 进程退出
      */
-    EXIT = 'exit'
+    EXIT = 'exit',
+
+    /**
+     * fork 线程激发
+     */
+    FORK = 'fork'
 }
