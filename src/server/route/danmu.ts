@@ -6,6 +6,7 @@ import { Actions } from '../worker/actions';
 import { roomParser } from "../lobby/roomParser";
 import { log, error } from "../../utils/log";
 import { checkout, restore } from "../db/pool";
+import { default as sensitive } from "../db/sensitive";
 
 const router = express.Router();
 
@@ -28,30 +29,30 @@ router.route('/:rid').all((req, res, next) => {
         next();
     },reason => {
         error(reason);
-        sendFailure(res, reason)
+        responseFailure(res, reason)
     }).catch(reason => {
         error(reason);
-        sendFailure(res, reason);
+        responseFailure(res, reason);
     })
 }).get((req, res, next) => {
     //渲染发送页面
     res.render('danmu',info);
 }).post((req, res, next) => {
     roomParser(req.url).then(pathname => {
-        if(req.body.message === 'fuck') {
-            sendFailure(res, '敏感词');
-            return;
-        }
+        //加工敏感词
+        req.body.message = sensitive.vaild(req.body.message);
+        //回复用户
+        res.json({ok: true, message: req.body.message});
+        //同步线程消息
         syncTransfer({action: Actions.POST,data: req.body.message, pathname:`${req.params.rid}`});
-        res.json({ok: true});
     },reason => {
-        sendFailure(res, reason)
+        responseFailure(res, reason)
     }).catch(reason => {
-        sendFailure(res, reason)
+        responseFailure(res, reason)
     });
 })
 
-function sendFailure(res:{json: (data: any) => any}, reason: string): void {
+function responseFailure(res:{json: (data: any) => any}, reason: string): void {
     error(reason);
     res.json({ok:false, reason});
 }

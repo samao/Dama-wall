@@ -47,7 +47,7 @@
     $.post('http://localhost:3000/danmu/9999',{message:'又说那话'},(data) => {
         data = JSON.parse(data);
         if(data.ok) 
-            console.log('发送成功')
+            console.log('发送成功:'+ data.message)
         else
             console.log(data.reason);
     })

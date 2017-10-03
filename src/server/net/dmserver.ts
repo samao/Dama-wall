@@ -10,6 +10,7 @@ import { WorkerEvent } from '../worker/events';
 import { Actions } from "../worker/actions";
 import { lobby } from "../lobby/lobby";
 import { checkout, restore } from "../db/pool";
+import { default as sensitive } from "../db/sensitive";
 import { roomParser } from "../lobby/roomParser";
 
 class DanmuServer {
@@ -69,6 +70,8 @@ class DanmuServer {
             }
         });
 
+        const sensitives = (<any>cluster.worker.process).env.sensitives;
+        sensitive.setupFromMaster(sensitives)
         //心跳轮询检查
         setInterval(() => {
             lobby.allDeactives().forEach((websocket) => {
@@ -153,6 +156,8 @@ class DanmuServer {
             let msg: {action: string, data:any} = JSON.parse(data.toString());
             switch(msg.action){
                 case Actions.POST:
+                    //加工敏感词
+                    msg.data = sensitive.vaild(msg.data);
                     //1.回复用户自己
                     response(ws, {status: WebSocketStatus.POST, data: msg.data});
                     //2.分发本线程房间

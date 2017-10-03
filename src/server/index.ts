@@ -89,33 +89,40 @@ const server = app.listen(ports.web,() => {
 //线程管理
 if(cluster.isMaster){
     /**
-     * 异步模块调用, 后期启动慢可改为Promise.all
+     * 异步模块调用
      */
     async function workerGo() {
         const [
             { syncTransfer },
             { Actions: actions },
             {increaseOne, reduceOne, reduceAll},
-            { cpus }
+            { cpus },
+            {default: sensitive}
         ] = await Promise.all([
             import('./worker/syncTransfer'),
             import('./worker/actions'),
             import('./net/online'),
-            import('os')
+            import('os'),
+            import('./db/sensitive')
         ])
 
-        return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length};
+        //全局敏感词初始化
+        await sensitive.setup();
+
+        return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length, sensitives: sensitive.words};
     }
     
-    cluster.setupMaster({
-        exec: path.resolve(__dirname,'worker','dmworker.js'),
-        args:[ports.ws.toString()]
-    });
-    workerGo().then(({syncTransfer, cpuNum, actions, increaseOne, reduceOne, reduceAll}) => {
+    workerGo().then(({syncTransfer, cpuNum, actions, increaseOne, reduceOne, reduceAll, sensitives}) => {
         //启动弹幕线程
         log(`主线程 PID: ${process.pid}, CPU: ${cpuNum} 个`);
+
+        cluster.setupMaster({
+            exec: path.resolve(__dirname,'worker','dmworker.js'),
+            args:[ports.ws.toString()],
+        });
+
         for(let i = 0; i < cpuNum; ++i) {
-            cluster.fork()
+            cluster.fork({sensitives})
         }
         cluster.on(WorkerEvent.EXIT,(worker,code,signal) => {
             log(`工作线程意外关闭 code: ${code}, signal: ${signal}`);
@@ -123,7 +130,7 @@ if(cluster.isMaster){
             //重启线程
             if(!worker.exitedAfterDisconnect) {
                 log('主线程重启工作线程');
-                process.nextTick(() => cluster.fork());
+                process.nextTick(() => cluster.fork({sensitives}));
             }
         }).on(WorkerEvent.MESSAGE, (worker,message) => {
             let {action,pathname} = message;
