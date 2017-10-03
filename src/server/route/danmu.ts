@@ -10,8 +10,6 @@ import { default as sensitive } from "../db/sensitive";
 
 const router = express.Router();
 
-const info = {title:'弹幕墙HTTP发送端'}
-
 router.use((req, res, next) => {
     //utf8编码
     res.setHeader('Content-Type', 'text/html;charset=utf-8');
@@ -24,6 +22,7 @@ router.route('/').all((req, res, next) => {
 })
 
 router.route('/:rid').all((req, res, next) => {
+    //房间验证
     roomParser(req.url).then(pathname => {
         log(`Http 房间地址 ${pathname}`);
         next();
@@ -36,11 +35,12 @@ router.route('/:rid').all((req, res, next) => {
     })
 }).get((req, res, next) => {
     //渲染发送页面
-    res.render('danmu',info);
+    res.render('danmu', {title:'弹幕墙HTTP发送端'});
 }).post((req, res, next) => {
+    //弹幕数据处理
     roomParser(req.url).then(pathname => {
         //加工敏感词
-        req.body.message = sensitive.vaild(req.body.message);
+        req.body.message = sensitive.parse(req.body.message);
         //回复用户
         res.json({ok: true, message: req.body.message});
         //同步线程消息
@@ -51,7 +51,11 @@ router.route('/:rid').all((req, res, next) => {
         responseFailure(res, reason)
     });
 })
-
+/**
+ * 接口调用错误反馈
+ * @param res 
+ * @param reason 错误原因
+ */
 function responseFailure(res:{json: (data: any) => any}, reason: string): void {
     error(reason);
     res.json({ok:false, reason});

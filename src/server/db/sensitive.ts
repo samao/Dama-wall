@@ -43,11 +43,18 @@ export class Sensitive {
         this._cMap.push(...words.split(','));
     }
 
+    /**
+     * 弹幕敏感词
+     */
     get words(): string[] {
         return this._cMap;
     }
 
-    vaild(msg: string): string {
+    /**
+     * 敏感词替换为*号输出
+     * @param msg 源字符串
+     */
+    parse(msg: string): string {
         return msg.replace(new RegExp(this._cMap.join('|'),'ig'),(data) => {
             return '*'.repeat(data.length);
         })
