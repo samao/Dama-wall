@@ -54,7 +54,7 @@ export class Sensitive {
      * 敏感词替换为*号输出
      * @param msg 源字符串
      */
-    parse(msg: string): string {
+    filter(msg: string): string {
         return msg.replace(new RegExp(this._cMap.join('|'),'ig'),(data) => {
             return '*'.repeat(data.length);
         })

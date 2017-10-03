@@ -157,7 +157,7 @@ class DanmuServer {
             switch(msg.action){
                 case Actions.POST:
                     //加工敏感词
-                    msg.data = sensitive.parse(msg.data);
+                    msg.data = sensitive.filter(msg.data);
                     //1.回复用户自己
                     response(ws, {status: WebSocketStatus.POST, data: msg.data});
                     //2.分发本线程房间

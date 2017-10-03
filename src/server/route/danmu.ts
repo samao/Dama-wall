@@ -40,7 +40,7 @@ router.route('/:rid').all((req, res, next) => {
     //弹幕数据处理
     roomParser(req.url).then(pathname => {
         //加工敏感词
-        req.body.message = sensitive.parse(req.body.message);
+        req.body.message = sensitive.filter(req.body.message);
         //回复用户
         res.json({ok: true, message: req.body.message});
         //同步线程消息
