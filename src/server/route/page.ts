@@ -34,17 +34,17 @@ function getNavFail(res:IRespond,reason: string): void {
 }
 
 router.route('/').all((req, res, next) => {
-    res.render('index',{navlist:res.locals.pages});
+    res.render('index', {navlist: res.locals.pages});
 })
 /**
  * 介绍路由
  */
 router.route('/intro').all((req, res, next) => {
-    res.render('intro',{})
+    res.render('intro', {navlist: res.locals.pages});
 })
 
 router.route('/concat').all((req, res, next) => {
-    res.render('concat',{});
+    res.render('concat', {navlist: res.locals.pages});
 })
 
 export default router
