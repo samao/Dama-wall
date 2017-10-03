@@ -8,7 +8,8 @@ import * as path from 'path';
 import {log} from '../utils/log';
 import {secret,ports} from './config/conf'
 import {WorkerEvent} from './worker/events';
-import danmuRouter from './route/danmu'
+import danmuRouter from './route/danmu';
+import pageRouter from "./route/page";
 
 //import * as multer from "multer";
 
@@ -66,6 +67,7 @@ app.route('/user').get((req,res,next) => {
 
 //http 接受聊天信息路由
 app.use('/danmu',danmuRouter);
+app.use(pageRouter);
 
 let clearid:NodeJS.Timer;
 

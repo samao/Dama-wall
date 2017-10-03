@@ -1,0 +1,7 @@
+- var navlist = [{ref:'/',label:'首页'},{ref:'/intro',label:'产品介绍'},{ref:'/concat',label:'联系大妈'}]
+#topbar
+    ul(class='nav')
+        each item in navlist
+            li(class='area')
+                a(href=item.ref) #{item.label}
+    include login
