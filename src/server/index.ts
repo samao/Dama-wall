@@ -51,14 +51,16 @@ app.use((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 })
-app.route('/').get((req,res) => {
+
+app.route('/').get((req, res, next) => {
     if(userMap.has(<string>req.sessionID)){
         //res.end(`welcome come back: ${req.sessionID}`);
-        res.render('index',{message:'又来了'})
+        //res.render('index',{message:'又来了'})
     }else{
         userMap.set(<string>req.sessionID,{time:Date.now()});
-        res.render('index',{message:'你好啊'})
+        //res.render('index',{message:'你好啊'})
     }
+    next();
 })
 
 app.route('/user').get((req,res,next) => {
