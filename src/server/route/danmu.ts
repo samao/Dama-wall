@@ -14,7 +14,7 @@ router.use((req, res, next) => {
     //utf8编码
     res.setHeader('Content-Type', 'text/html;charset=utf-8');
     //禁止跨域调用
-    //res.removeHeader('Access-Control-Allow-Origin');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 })
 router.route('/').all((req, res, next) => {

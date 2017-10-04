@@ -6,6 +6,7 @@
     width:100%;
     height: 500px;
     background: #999;
+    position: relative;
 }
 #topbar {
     position: relative;
@@ -59,4 +60,26 @@ a {
 
 a:hover {
     color: red;
+}
+
+#register{
+    position: absolute;
+    width: 230px;
+    right:100px;
+    top:100px;
+    background: #ccc;
+    padding: 10px;
+    border-radius: 6px;
+}
+.group {
+    height: 40px;
+    width: 100%;
+    line-height: 40px;
+    align-items: center;
+    display: -webkit-flex;
+    position: relative;
+}
+.group input {
+    position: absolute;
+    right:0px;
 }

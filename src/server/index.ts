@@ -43,50 +43,13 @@ app.set('view engine','pug');
 
 log('服务器运行环境：' + app.get('env'));
 
-const userMap = new Map<string,{time: number}>();
-
-app.use((req,res,next) => {
-    log(<string>req.sessionID);
-    //所有内容允许跨域
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    next();
-})
-
-app.route('/').get((req, res, next) => {
-    if(userMap.has(<string>req.sessionID)){
-        //res.end(`welcome come back: ${req.sessionID}`);
-        //res.render('index',{message:'又来了'})
-    }else{
-        userMap.set(<string>req.sessionID,{time:Date.now()});
-        //res.render('index',{message:'你好啊'})
-    }
-    next();
-})
-
-app.route('/user').get((req,res,next) => {
-    res.end(`${req.sessionID}`);
-})
-
 //http 接受聊天信息路由
 app.use('/danmu',danmuRouter);
 app.use(pageRouter);
 
-let clearid:NodeJS.Timer;
-
 const server = app.listen(ports.web,() => {
     const {address,port} = server.address();
     log(`http服务器启动: http://${address}:${port}`);
-
-    clearid = setInterval(() => {
-        for(let [key,{time}] of userMap.entries()) {
-            if(time < Date.now()) {
-                userMap.delete(key);
-                return;
-            }
-        }
-    },1000 * 60 * 2)
-}).once('close',() => {
-    clearInterval(clearid);
 })
 
 //线程管理

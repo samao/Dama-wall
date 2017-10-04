@@ -1,0 +1,33 @@
+extends index
+mixin input(label, type, name)
+    .group
+        if label != ''
+            label #{label}
+        input(type=type name=name)&attributes(attributes)
+    
+block title 
+    title 注册会员
+block main
+    #main
+        #register
+            +input('用户名', 'text', 'username')
+            +input('密码', 'password', 'pwd') 
+            +input('密码确认', 'password', 'confimPwd')
+            +input('','button','')(value='注册')#registerBtn
+        script.
+            $('#registerBtn').click(function(){
+                $.post('/register',{
+                    username:$('input[name="username"]').val(),
+                    pwd:$('input[name="pwd"]').val()
+                }, data => {
+                    console.log(data)
+                    if(data.ok) {
+                        $('#register').html('注册成功, 3秒后跳转');
+                        setTimeout(function(){
+                            location.href = '/'
+                        }, 3000)
+                    }else{
+                        console.log(data.result)
+                    }
+                })
+            })
