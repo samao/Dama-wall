@@ -3,7 +3,9 @@ const path = require('path');
 
 module.exports = {
     entry:{
-        main:'./src/browser/index.ts'
+        main:'./src/browser/index.ts',
+        send:'./src/browser/send.ts',
+        register:'./src/browser/register.ts'
     },
     output:{
         path:path.resolve(__dirname,'dist','browser'),
@@ -37,5 +39,7 @@ module.exports = {
             __VERSION__:`"${require('./package').version}"`
         })
     ],
-    externals:[]
+    externals: {
+        'jquery':'jQuery'
+    }
 }
