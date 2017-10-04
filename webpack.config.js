@@ -28,12 +28,14 @@ module.exports = {
     },
     plugins:[
         new webpack.optimize.UglifyJsPlugin({
-            compress:{
-                
-            },
             output:{
-                
-            }
+                comments:false,
+                'ascii_only':true,
+                beautify:false,
+            },
+            compress:{
+                warnings:false,
+            },
         }),
         new webpack.DefinePlugin({
             __VERSION__:`"${require('./package').version}"`
