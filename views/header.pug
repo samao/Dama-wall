@@ -1,6 +1,7 @@
-#topbar
-    ul(class='nav')
-        each item in navlist
-            li(class='area')
-                a(href=item.ref) #{item.label}
-    include login
+.com-header-warp
+    .com-header
+        include login
+        ul(class='list')
+            each item in navlist
+                li(class='item')
+                    a(href=item.ref).nav #{item.label}
