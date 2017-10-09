@@ -10,6 +10,7 @@ import {secret,ports} from './config/conf'
 import {WorkerEvent} from './worker/events';
 import danmuRouter from './route/danmu';
 import pageRouter from "./route/page";
+import Api from "./route/api";
 
 //import * as multer from "multer";
 
@@ -45,7 +46,10 @@ log('服务器运行环境：' + app.get('env'));
 
 //http 接受聊天信息路由
 app.use('/danmu',danmuRouter);
+//页面导航
 app.use(pageRouter);
+//接口api
+app.use('/api', Api);
 
 const server = app.listen(ports.web,() => {
     const {address,port} = server.address();

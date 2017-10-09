@@ -13,13 +13,9 @@ const userMap = new Map<string,{time: number}>();
  */
 const SESSION_LIVE = 2 * 60 * 1000;
 
-interface IRespond {
-    end(msg: string): any;
-}
-
 function getNavFail(res:IRespond,reason: string): void {
     error(reason);
-    res.end(reason);
+    res.json({ok: false, reason});
 }
 
 //获取导航栏配置

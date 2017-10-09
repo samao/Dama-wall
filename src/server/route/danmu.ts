@@ -56,7 +56,7 @@ router.route('/:rid').all((req, res, next) => {
  * @param res 
  * @param reason 错误原因
  */
-function responseFailure(res:{json: (data: any) => any}, reason: string): void {
+function responseFailure(res:IRespond, reason: string): void {
     error(reason);
     res.json({ok:false, reason});
 }
