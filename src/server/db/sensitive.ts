@@ -1,5 +1,6 @@
 import { checkout, restore } from './pool';
 import { log, error } from "../../utils/log";
+import { Collection } from "./collection";
 
 export class Sensitive {
 
@@ -11,6 +12,10 @@ export class Sensitive {
      * 全局通用的敏感词
      */
     private _cMap: string[] = [];
+    /**
+     * 全局敏感词正则
+     */
+    private _cReg: RegExp;
 
     constructor() {}
 
@@ -20,7 +25,7 @@ export class Sensitive {
     async setup() {
         return await new Promise((res,rej) => {
             checkout(db => {
-                db.collection('sensitive').find().toArray().then((all) => {
+                db.collection(Collection.SENSITIVE).find().toArray().then((all) => {
                     this._cMap.push(...all.map(data => data.words))
                     res()
                 },reason => {
@@ -55,7 +60,10 @@ export class Sensitive {
      * @param msg 源字符串
      */
     filter(msg: string): string {
-        return msg.replace(new RegExp(this._cMap.join('|'),'ig'),(data) => {
+        if(!this._cReg) {
+            this._cReg = new RegExp(this._cMap.join('|'),'ig');
+        }
+        return msg.replace(this._cReg,(data) => {
             return '*'.repeat(data.length);
         })
     }

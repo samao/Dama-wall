@@ -1,6 +1,7 @@
 import * as express from "express";
 
 import { checkout, restore } from "../db/pool";
+import { Collection } from "../db/collection";
 import { log, error } from "../../utils/log";
 import { call } from "../../utils/ticker";
 
@@ -24,7 +25,7 @@ function getNavFail(res:IRespond,reason: string): void {
 //获取导航栏配置
 router.use((req, res,next) => {
     checkout(db => {
-        db.collection('pages').find().toArray().then(data => {
+        db.collection(Collection.PAGES).find().toArray().then(data => {
             if(data) {
                 res.locals.pages = data;
                 next();
@@ -72,7 +73,7 @@ router.route('/register').get((req, res, next) => {
     res.render('register',{navlist: res.locals.pages});
 }).post((req, res, next) => {
     checkout(db => {
-        let userTable = db.collection('user');
+        let userTable = db.collection(Collection.USER);
         userTable.findOne({name:req.body.username}).then(data => {
             if(data) {
                 error('已存在用户名，请更换其他昵称');

@@ -11,6 +11,7 @@ import { Actions } from "../worker/actions";
 import { lobby } from "../lobby/lobby";
 import { checkout, restore } from "../db/pool";
 import { default as sensitive } from "../db/sensitive";
+import { Collection } from "../db/collection";
 import { roomParser } from "../lobby/roomParser";
 
 class DanmuServer {
@@ -103,7 +104,7 @@ class DanmuServer {
                     let info: {action: string, data: {id: string}} = JSON.parse(data.toString()); 
                     if(info.action === Actions.ENTRY) {
                         checkout((db) => {
-                            db.collection('user').findOne({name:info.data.id}).then(data => {
+                            db.collection(Collection.USER).findOne({name:info.data.id}).then(data => {
                                 if(data) {
                                     this.setAuthUser(info.data.id, ws, pathname);
                                     log(`用户 ${info.action} ${info.data.id} 登录成功,当前线程 PID: ${process.pid}`);

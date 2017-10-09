@@ -2,6 +2,7 @@ import * as url from 'url';
 
 import { checkout, restore } from "../db/pool";
 import { log, error } from "../../utils/log";
+import { Collection } from "../db/collection";
 /**
 * 返回 ts Promise<any>
 * @param path 用户连接的ws路径
@@ -17,7 +18,7 @@ export function roomParser(path: string|undefined): Promise<string>{
             if(roomid) {
                 //检查路径
                 checkout(db => {
-                    db.collection('activity').findOne({ rid:roomid }).then(data => {
+                    db.collection(Collection.ACTIVITY).findOne({ rid:roomid }).then(data => {
                         //log(JSON.stringify(data));
                         if(data) {
                             log('有房间号',roomid)
