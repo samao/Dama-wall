@@ -1,7 +1,14 @@
-.com-header-warp
-    .com-header
-        include login
-        ul(class='list')
-            each item in navlist
-                li(class='item')
-                    a(href=item.ref).nav #{item.label}
+.header-warp
+    .header-box
+        .lf-box
+            .logo
+                a(href='/')
+                    img(src='http://static.youku.com/ddshow/img/laifeng/header/logo-v2.png')
+            .nav
+                ul
+                    each item in navlist
+                        li
+                            a(href=item.ref) #{item.label}
+                            if pageId == item.id
+                                span.current
+            include login

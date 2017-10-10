@@ -23,7 +23,9 @@ router.use((req, res,next) => {
     checkout(db => {
         db.collection(Collection.PAGES).find().toArray().then(data => {
             if(data) {
-                res.locals.pages = data;
+                //按照配置id顺序排序从小到大
+                res.locals.pages = data.sort((a,b) => a.id - b.id);
+                res.locals.pageId = data.filter(e => e.ref === req.url)[0].id;
                 next();
             }else{
                 getNavFail(res, '没有导航数据');
@@ -49,24 +51,24 @@ router.use((req, res, next) => {
 })
 
 router.route('/').all((req, res, next) => {
-    res.render('index', {navlist: res.locals.pages});
+    res.render('index', merge(res));
 })
 /**
  * 介绍路由
  */
 router.route('/intro').all((req, res, next) => {
-    res.render('intro', {navlist: res.locals.pages});
+    res.render('intro', merge(res));
 })
 
 /**
  * 联系我们路由
  */
 router.route('/concat').all((req, res, next) => {
-    res.render('concat', {navlist: res.locals.pages});
+    res.render('concat', merge(res));
 })
 
 router.route('/register').get((req, res, next) => {
-    res.render('register',{navlist: res.locals.pages});
+    res.render('register',merge(res));
 }).post((req, res, next) => {
     checkout(db => {
         let userTable = db.collection(Collection.USER);
@@ -90,6 +92,14 @@ router.route('/register').get((req, res, next) => {
         res.json({ok:false,reason});
     })
 })
+
+router.route('/download').get((req, res, next) => {
+    res.render('download',merge(res,{link:'/static/download/dama.exe'}))
+})
+
+function merge(res: IRespond, data?: any): any {
+    return {navlist:res.locals.pages, pageId: res.locals.pageId, ...data}
+}
 
 call(() => {
     for(let [key,{time}] of userMap.entries()) {
