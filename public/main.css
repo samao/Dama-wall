@@ -11,6 +11,7 @@ body {
     -webkit-overflow-scrolling: touch;
     background: #f1f1f1;
     font-family: 微软雅黑,arial,宋体;
+    min-height: 100%;
 }
 li,ol,ul {
     list-style: none;
@@ -50,6 +51,7 @@ textarea{
 .body-warp {
     min-width: 1252px;
     width: 100%;
+    min-height:100%;
 }
 .header-warp {
     background: url(http://static.youku.com/ddshow/img/laifeng/header/header-min-left.jpg) #fff no-repeat left center;
@@ -133,22 +135,20 @@ textarea{
 .pager {
     margin: 0 auto;
     width:952px;
-    height:370px;
-    margin-bottom: 100px;
-    padding-top: 6px;
-}
-.pager > * {
-    text-align: center;
-    vertical-align: middle;
-    width:100%;
+    min-height: 600px;
     height:100%;
-    line-height: 370px;
+    padding: 6px 0;
+}
+.pager > p {
+    text-align: center;
 }
 
 .footer {
     clear: both;
     background: #000;
     color:#999;
+    bottom: 0px;
+    width: 100%;
 }
 .footer .footer-box {
     padding: 30px 0;
