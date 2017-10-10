@@ -2,16 +2,17 @@ extends index
 mixin input(label, type, name)
     .group
         if label != ''
-            label #{label}
-        input(type=type name=name)&attributes(attributes)
+            label(for=name) #{label}
+        input(type=type name=name id=name)&attributes(attributes)
     
 block title 
     title 注册会员
 block main
-    #register
-        +input('用户名', 'text', 'username')
-        +input('密码', 'password', 'pwd') 
-        +input('密码确认', 'password', 'confirmPwd')
-        +input('','button','')(value='注册')#registerBtn
+    .register-warp
+        .reg-box
+            +input('用户名', 'text', 'username')(placeholder='输入用户名')
+            +input('密码', 'password', 'pwd')(placeholder='输入密码')
+            +input('密码确认', 'password', 'confirmPwd')(placeholder='确认密码')
+            +input('','button','')(value='注册')#registerBtn
 block script
     script(src="/js/register.js")

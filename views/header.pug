@@ -9,6 +9,6 @@
                     each item in navlist
                         li
                             a(href=item.ref) #{item.label}
-                            if pageId == item.id
+                            if currentPage == item.id
                                 span.current
             include login

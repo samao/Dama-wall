@@ -168,3 +168,35 @@ textarea{
     padding: 0 12px;
     color:#eee;
 }
+
+.register-warp{
+    width:100%;
+    position: relative;
+}
+.register-warp .reg-box{
+    width: 280px;
+    position: absolute;
+    right: 100px;
+    top:100px;
+}
+.register-warp .reg-box .group {
+    height: 25px;
+    line-height: 25px;
+    padding:15px;
+}
+.register-warp .reg-box .group label {
+    height: 100%;
+    float: left;
+}
+.register-warp .reg-box .group input {
+    height:100%;
+    width:180px;
+    float: right;
+    padding-left: 6px;
+}
+#registerBtn {
+    background:#ffd727;
+    width:80px;
+    border-radius: 5px;
+    cursor: pointer;
+}

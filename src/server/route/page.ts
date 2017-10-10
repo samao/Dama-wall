@@ -23,9 +23,13 @@ router.use((req, res,next) => {
     checkout(db => {
         db.collection(Collection.PAGES).find().toArray().then(data => {
             if(data) {
+                data = data.sort((a,b) => a.id - b.id)
                 //按照配置id顺序排序从小到大
-                res.locals.pages = data.sort((a,b) => a.id - b.id);
-                res.locals.pageId = data.filter(e => e.ref === req.url)[0].id;
+                res.locals.pages = data;
+                let currentPage = data.filter(e => e.ref === req.url)
+                if(currentPage.length !== 0){
+                    res.locals.currentPage = currentPage[0].id;
+                }
                 next();
             }else{
                 getNavFail(res, '没有导航数据');
@@ -51,20 +55,20 @@ router.use((req, res, next) => {
 })
 
 router.route('/').all((req, res, next) => {
-    res.render('index', merge(res));
+    res.render('index', merge(res, {currentPage: res.locals.currentPage}));
 })
 /**
  * 介绍路由
  */
 router.route('/intro').all((req, res, next) => {
-    res.render('intro', merge(res));
+    res.render('intro', merge(res, {currentPage: res.locals.currentPage}));
 })
 
 /**
  * 联系我们路由
  */
 router.route('/concat').all((req, res, next) => {
-    res.render('concat', merge(res));
+    res.render('concat', merge(res, {currentPage: res.locals.currentPage}));
 })
 
 router.route('/register').get((req, res, next) => {
@@ -94,11 +98,11 @@ router.route('/register').get((req, res, next) => {
 })
 
 router.route('/download').get((req, res, next) => {
-    res.render('download',merge(res,{link:'/static/download/dama.exe'}))
+    res.render('download',merge(res,{link:'/static/download/dama.txt'}))
 })
 
 function merge(res: IRespond, data?: any): any {
-    return {navlist:res.locals.pages, pageId: res.locals.pageId, ...data}
+    return {navlist:res.locals.pages, ...data};
 }
 
 call(() => {
