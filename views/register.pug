@@ -5,8 +5,8 @@ mixin input(label, type, name)
             label(for=name) #{label}
         input(type=type name=name id=name)&attributes(attributes)
     
-block title 
-    title 注册会员
+append title 
+    | | 注册会员
 block main
     .register-warp
         .reg-box

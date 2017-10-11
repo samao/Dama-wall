@@ -51,7 +51,7 @@ function setupNavigatorInfo(ref: string, res: IRespond, next: Function): void {
     res.locals.pages = pagesConf;
     let currentPage = pagesConf.filter(e => e.ref === ref)
     if (currentPage.length !== 0) {
-        res.locals.currentPage = currentPage[0].id;
+        res.locals.currentPage = currentPage[0];
     }
     next();
 }
@@ -110,7 +110,7 @@ router.route('/concat').all((req, res, next) => {
 })
 
 router.route('/register').get((req, res, next) => {
-    res.render('register', merge(res));
+    res.render('register', merge(res, { currentPage: res.locals.currentPage }));
 }).post((req, res, next) => {
     checkout(db => {
         let userTable = db.collection(Collection.USER);

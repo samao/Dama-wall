@@ -2,16 +2,13 @@
     margin: 0px;
     padding: 0px;
 }
-body {
+html,body {
+    width: 100%;
+    height: 100%;
     line-height: 1;
     font-size: 12px;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
     background: #f1f1f1;
     font-family: 微软雅黑,arial,宋体;
-    min-height: 100%;
 }
 li,ol,ul {
     list-style: none;
@@ -48,12 +45,12 @@ textarea{
 }
 
 
-.body-warp {
-    min-width: 1252px;
+.wrapper {
+    min-width: 1000px;
     width: 100%;
-    min-height:100%;
+    min-height: 100%;
 }
-.header-warp {
+.header {
     background: url(http://static.youku.com/ddshow/img/laifeng/header/header-min-left.jpg) #fff no-repeat left center;
     height: 70px;
     border-bottom: 1px solid #f3de86;
@@ -62,14 +59,43 @@ textarea{
     -ms-box-shadow: 0 4px 5px rgba(0,0,0,0.05);
     box-shadow: 0 4px 5px rgba(0,0,0,0.05);
 }
-.header-warp .header-box {
+
+.header .header-box {
     background:url(http://static.youku.com/ddshow/img/laifeng/header/header-min-right.jpg) no-repeat right center;
+}
+
+@media screen and (min-width:1550px) {
+    .header {
+        background: url(http://static.youku.com/ddshow/img/laifeng/header/header_bg_v2.jpg) #ffd728 no-repeat center center;
+    }
+    .header .header-box {
+        background: none;
+    }
+}
+.main {
+    height:100%;
+    padding-bottom: 100px;
+}
+.content {
+    text-align: center;
+    width:1000px;
+    margin: 0 auto;
+}
+.footer {
+    clear: both;
+    width: 100%;
+    min-width: 1000px;
+    height: 100px;
+    margin-top: -100px;
+    background: #000;
+    color:#999;
 }
 
 .header-box .lf-box {
     margin: 0 auto;
-    width: 1252px;
+    width: 1000px;
     height: 70px;
+    position: relative;
 }
 
 .header-box .logo {
@@ -101,6 +127,7 @@ textarea{
     line-height: 70px;
     color:#000;
     font-size: 16px;
+    font-weight: bold;
 }
 .header-box .nav li a:hover {
     background:#eee;
@@ -119,9 +146,9 @@ textarea{
 }
 
 .header-box .user {
-    float: right;
     height: 70ppx;
-    margin-right: 22px;
+    position: absolute;
+    right: 20px;
 }
 .header-box .user .no-login {
     line-height: 70px;
@@ -132,31 +159,18 @@ textarea{
 .header-box .user .no-login cite {
     padding: 0 10px;
 }
-.pager {
-    margin: 0 auto;
-    width:952px;
-    min-height: 600px;
-    height:100%;
-    padding: 6px 0;
-}
-.pager > p {
+
+.main > p {
     text-align: center;
 }
 
-.footer {
-    clear: both;
-    background: #000;
-    color:#999;
-    bottom: 0px;
-    width: 100%;
-}
 .footer .footer-box {
     padding: 30px 0;
     font-size: 14px;
     line-height: 24px;
     text-align: center;
     margin: 0 auto;
-    width:1190px;
+    width:100%;
 }
 .footer .footer-box .light {
     color:#eee;
@@ -187,6 +201,7 @@ textarea{
 .register-warp .reg-box .group label {
     height: 100%;
     float: left;
+    font-size: 14px;
 }
 .register-warp .reg-box .group input {
     height:100%;

@@ -1,13 +1,15 @@
 doctype html
 html
     head
-        block title
-            title 大妈弹幕墙
+        title
+            block title
+                | Big Ma Ma 
         include includes/head
     body
-        #body-warp
-            include header
-            .pager 
-                block main
-                    p 首页显示内容
-            include footer
+        .wrapper
+            .main
+                include header
+                section.content
+                    block main
+                        p 首页显示内容
+        include footer
