@@ -109,6 +109,10 @@ router.route('/concat').all((req, res, next) => {
     res.render('concat', merge(res, { currentPage: res.locals.currentPage }));
 })
 
+router.route('/login').post((req, res, next) => {
+    //if(req.body.body.)
+})
+
 router.route('/register').get((req, res, next) => {
     res.render('register', merge(res, { currentPage: res.locals.currentPage }));
 }).post((req, res, next) => {
