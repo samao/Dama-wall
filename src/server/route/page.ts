@@ -11,7 +11,7 @@ const userMap = new Map<string, { time: number ,user: string}>();
 /**
  * session 有效期 2 min
  */
-const SESSION_LIVE = 2 * 60 * 1000;
+const SESSION_LIVE = 2 * 60 * 60 * 1000;
 
 /** 页面导航数据接口 */
 interface IPageConf {
@@ -117,7 +117,8 @@ router.route('/login').get((req, res, next) =>{
     checkout(db => {
         db.collection(Collection.USER).findOne({name:username,pwd}).then(data => {
             if(data) {
-                userMap.set(<string>req.sessionID, { time: Date.now() , user: data.name});
+                log('连接sessionId',req.sessionID)
+                userMap.set(<string>req.sessionID, { time: Date.now() + SESSION_LIVE , user: data.name});
                 res.json({ok:true})
             }else{
                 res.json({ok:false,reason:'用户名或者密码错误'})
