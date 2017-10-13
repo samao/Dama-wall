@@ -210,6 +210,9 @@ textarea{
     float: right;
     padding-left: 6px;
 }
+.register-warp .reg-box .info {
+    color:red;
+}
 #registerBtn {
     background:#ffd727;
     width:80px;

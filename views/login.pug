@@ -1,0 +1,18 @@
+extends index
+mixin input(label, type, name)
+    .group
+        if label != ''
+            label(for=name) #{label}
+        input(type=type name=name id=name)&attributes(attributes)
+    
+append title 
+    | | 登录
+block main
+    .register-warp
+        .reg-box
+            +input('用户名', 'text', 'username')(placeholder='输入用户名')
+            +input('密码', 'password', 'pwd')(placeholder='输入密码')
+            +input('','button','')(value='登录')#registerBtn
+            p.info
+block script
+    script(src="/js/login.js")

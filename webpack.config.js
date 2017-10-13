@@ -5,7 +5,8 @@ module.exports = {
     entry:{
         main:'./src/browser/index.ts',
         send:'./src/browser/send.ts',
-        register:'./src/browser/register.ts'
+        register:'./src/browser/register.ts',
+        login:'./src/browser/login.ts'
     },
     output:{
         path:path.resolve(__dirname,'dist','browser'),

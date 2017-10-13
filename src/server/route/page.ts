@@ -7,7 +7,7 @@ import { call } from "../../utils/ticker";
 
 const router = express.Router();
 
-const userMap = new Map<string, { time: number }>();
+const userMap = new Map<string, { time: number ,user: string}>();
 /**
  * session 有效期 2 min
  */
@@ -85,9 +85,10 @@ router.use((req, res, next) => {
 router.use((req, res, next) => {
     if (!userMap.has(<string>req.sessionID)) {
         //log('欢迎您 未登录')
-        userMap.set(<string>req.sessionID, { time: Date.now() });
+        res.locals.loginUser = null;
     } else {
         //log('欢迎回来已登录')
+        res.locals.loginUser = userMap.get(<string>req.sessionID);
     }
     next();
 })
@@ -109,8 +110,22 @@ router.route('/concat').all((req, res, next) => {
     res.render('concat', merge(res, { currentPage: res.locals.currentPage }));
 })
 
-router.route('/login').post((req, res, next) => {
-    //if(req.body.body.)
+router.route('/login').get((req, res, next) =>{
+    res.render('login', merge(res, { currentPage: res.locals.currentPage}));
+}).post((req, res, next) => {
+    let {username,pwd} = req.body;
+    checkout(db => {
+        db.collection(Collection.USER).findOne({name:username,pwd}).then(data => {
+            if(data) {
+                userMap.set(<string>req.sessionID, { time: Date.now() , user: data.name});
+                res.json({ok:true})
+            }else{
+                res.json({ok:false,reason:'用户名或者密码错误'})
+            }
+        })
+    }, reason => {
+        error('登录失败', reason);
+    })
 })
 
 router.route('/register').get((req, res, next) => {
@@ -144,7 +159,7 @@ router.route('/download').get((req, res, next) => {
 })
 
 function merge(res: IRespond, data?: any): any {
-    return { navlist: res.locals.pages, ...data };
+    return { navlist: res.locals.pages, loginUser: res.locals.loginUser || false, ...data };
 }
 
 call(() => {

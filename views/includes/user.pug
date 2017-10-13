@@ -1,0 +1,8 @@
+.user
+    .no-login
+        if !loginUser
+            a(href='/login') 登录
+            span #[strong  |] 
+            a(href='/register') 注册
+        else
+            a(href='/userSetting') >>> #{loginUser.user}
