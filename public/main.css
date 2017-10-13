@@ -100,11 +100,11 @@ textarea{
 
 .header-box .logo {
     float: left;
-    height: 54px;
-    margin-top: 17px;
+    width: 130px;
+    height: 50px;
+    margin-top: 12px;
     margin-left: 22px;
-    margin-right: 26px;
-    width: 160px;
+    margin-right: 20px;
 }
 .header-box .logo a{
     display: block;
