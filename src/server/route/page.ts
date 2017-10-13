@@ -169,8 +169,12 @@ router.route('/download').get((req, res, next) => {
     res.render('download', merge(res, { link: '/static/download/dama.txt' }))
 })
 
+router.route('/setting').get((req, res, next) => {
+    res.render('setting',{user:res.locals.loginUser})
+})
+
 function merge(res: IRespond, data?: any): any {
-    return { navlist: res.locals.pages, loginUser: res.locals.loginUser || false, ...data };
+    return { navlist: res.locals.pages, loginUser: res.locals.loginUser, ...data };
 }
 
 call(() => {
