@@ -5,4 +5,18 @@
             span #[strong  |] 
             a(href='/register') 注册
         else
-            a(href='/userSetting') >>> #{loginUser.user}
+            a(href='javascript:void') 您好 #[strong #{loginUser.user}]
+            span #[strong  |] 
+            a(href='/userSetting') 设置
+            span #[strong  |] 
+            a.logout(href='javascript:void') 退出
+            script.
+                $('.logout').click(function(){
+                    console.log('用户登出')
+                    $.post('/logout',function(){
+                        console.log('登出成功');
+                        setTimeout(function(){
+                            location.reload();
+                        }, 1000)
+                    })
+                })

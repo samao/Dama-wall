@@ -7,11 +7,10 @@ import { call } from "../../utils/ticker";
 
 const router = express.Router();
 
-const userMap = new Map<string, { time: number ,user: string}>();
-/**
- * session 有效期 2 min
- */
-const SESSION_LIVE = 2 * 60 * 60 * 1000;
+interface ISessionData {
+    expires: number;
+    user: string;
+}
 
 /** 页面导航数据接口 */
 interface IPageConf {
@@ -29,6 +28,12 @@ interface IPageConf {
     label: string;
     template?: string;
 }
+//session 缓存
+const userMap = new Map<string, ISessionData>();
+/**
+ * session 有效期 2 min
+ */
+const SESSION_LIVE = 2 * 60 * 60 * 1000;
 
 /**
  * 缓存页面导航数据
@@ -60,9 +65,9 @@ function setupNavigatorInfo(ref: string, res: IRespond, next: Function): void {
 router.use((req, res, next) => {
     if (!pagesConf) {
         checkout(db => {
-            db.collection(Collection.PAGES).find().toArray().then(data => {
+            //查询按id排序1,2,...
+            db.collection(Collection.PAGES).find().sort({id:1}).toArray().then(data => {
                 if (data) {
-                    data = data.sort((a, b) => a.id - b.id)
                     pagesConf = [...data];
                     //log(`页面导航数据：${JSON.stringify(pagesConf)}`);
                     setupNavigatorInfo(req.url, res, next);
@@ -118,7 +123,7 @@ router.route('/login').get((req, res, next) =>{
         db.collection(Collection.USER).findOne({name:username,pwd}).then(data => {
             if(data) {
                 log('连接sessionId',req.sessionID)
-                userMap.set(<string>req.sessionID, { time: Date.now() + SESSION_LIVE , user: data.name});
+                userMap.set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: data.name});
                 res.json({ok:true})
             }else{
                 res.json({ok:false,reason:'用户名或者密码错误'})
@@ -127,6 +132,11 @@ router.route('/login').get((req, res, next) =>{
     }, reason => {
         error('登录失败', reason);
     })
+})
+
+router.route('/logout').post((req, res, next) => {
+    userMap.delete(<string>req.sessionID);
+    res.json({ok:true})
 })
 
 router.route('/register').get((req, res, next) => {
@@ -164,8 +174,8 @@ function merge(res: IRespond, data?: any): any {
 }
 
 call(() => {
-    for (let [key, { time }] of userMap.entries()) {
-        if (time < Date.now()) {
+    for (let [key, { expires }] of userMap.entries()) {
+        if (expires < Date.now()) {
             userMap.delete(key);
             return;
         }
