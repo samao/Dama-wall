@@ -1,13 +1,9 @@
 const webpack = require('webpack');
 const path = require('path');
+const { entry } = require('./webpack/conf')
 
 module.exports = {
-    entry:{
-        main:'./src/browser/index.ts',
-        send:'./src/browser/send.ts',
-        register:'./src/browser/register.ts',
-        login:'./src/browser/login.ts'
-    },
+    entry,
     output:{
         path:path.resolve(__dirname,'dist','browser'),
         filename:'[name].js'

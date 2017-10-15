@@ -170,6 +170,7 @@ router.route('/download').get((req, res, next) => {
 })
 
 router.route('/setting').get((req, res, next) => {
+    log(`用户个人设置 ${req.sessionID}`);
     res.render('setting',{user:res.locals.loginUser})
 })
 

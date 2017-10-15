@@ -1,5 +1,6 @@
 import * as $ from 'jquery';
 import { log, error } from "../utils/log";
+import { parse } from 'querystring';
 
 $(() => {
     $('#registerBtn').click(function(){
@@ -21,13 +22,13 @@ $(() => {
             username,
             pwd
         }, data => {
-            console.log(data)
             let responseTxt = $('.register-warp .reg-box .info');
             if(data.ok) {
                 $('.group').fadeOut();
                 responseTxt.html('登录成功, 3秒后跳转');
+                const {'?return':returnUrl = '/'} = parse(location.search);
                 setTimeout(function(){
-                    location.href = '/'
+                    location.href = returnUrl;
                 }, 3000)
             }else{
                 console.log(data.reason)

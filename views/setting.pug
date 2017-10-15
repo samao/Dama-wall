@@ -3,4 +3,8 @@ html
     head
         title 用户设置后台
     body
-        .main 用户设置活动后台 #{user.user}
+        .main
+            if user
+                | 用户设置活动后台 #{user.user}
+            else
+                | 请先#[a(href='/login?return=/setting') 登录]
