@@ -21,5 +21,9 @@ export enum Collection {
     /**
      * 弹幕敏感词
      */
-    SENSITIVE = 'sensitive'
+    SENSITIVE = 'sensitive',
+    /**
+     * 弹幕表情配置
+     */
+    EMOTION = 'emotion'
 }

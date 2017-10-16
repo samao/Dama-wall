@@ -1,3 +1,7 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
 input::-webkit-input-placeholder,textarea::-webkit-input-placeholder {
     color: #d1cece;
 }
@@ -98,7 +102,13 @@ textarea{
 .emojPanel ul li {
     float: left;
     margin: 0;
-    padding: 5px;
+    text-align: center;
+    line-height: 40px;
+    width:40px;
+    height:40px;
+}
+.emojPanel ul li img {
+    margin: 5px;
 }
 
 #info {
