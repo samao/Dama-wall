@@ -15,7 +15,8 @@ html
                                 li(data-tag=emo.tag)
                                     img(src=emo.url)
                 .speak
-                    input(type="text" name="message" placeholder="输入发送内容")
+                    cite 30
+                    input(type="text" name="message" placeholder="输入发送内容" maxlength='30')
                 #sendBtn 发送
             p#info
         script(src='/js/send.js')

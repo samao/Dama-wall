@@ -1,8 +1,25 @@
 import * as $ from 'jquery';
-$(() => {
-    let input = $('input[type="text"]');
+import { log, error } from "../utils/log";
 
-    $('#sendBtn').click(function(){
+$(() => {
+    //最多输入字个数
+    const MAX_INPUT = 30;
+    //表情面板状态
+    let hiden: boolean = true;
+
+    const input = $('input[type="text"]');
+    const remain = $('.speak cite');
+    const emoj = $('.emojPanel');
+
+    input.on('input', () => {
+        let putStr = input.val();
+        if(typeof putStr === 'string') {
+            let left = MAX_INPUT - putStr.length;
+            remain.text(left);
+        }
+    })
+
+    $('#sendBtn').click(() => {
         $.post(location.href, {message:input.val()},(data) => {
             data = JSON.parse(data);
             if(data.ok) 
@@ -13,9 +30,6 @@ $(() => {
         })
         input.val('');
     })
-
-    let hiden: boolean = true;
-    const emoj = $('.emojPanel');
 
     $('.face-toggle').click(() => {
         if(hiden) {
