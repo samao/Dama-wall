@@ -3,10 +3,47 @@ html
     head
         title #{title}
         script(src='/static/jquery.min.js')
+        link(rel="stylesheet", href="/static/chat.css")
     body
         .box
-            input(type="text" name="message" placeholder="输入发送内容")
-            input(type="submit" value="发送")#sendBtn
-            p(style={color:'red',display:'none'})#info
+            .talk
+                .emotion
+                    a.face-toggle(href='javascript:void(0)')
+                    .emojPanel
+                        - 
+                            var emoMap = [
+                                {tag:'[亲亲]',url:'http://static.youku.com/ddshow/img/emoticons/511/f000.png'},
+                                {tag:'[害羞]',url:'http://static.youku.com/ddshow/img/emoticons/511/f001.png'},
+                                {tag:'[痛苦]',url:'http://static.youku.com/ddshow/img/emoticons/511/f002.png'},
+                                {tag:'[无奈]',url:'http://static.youku.com/ddshow/img/emoticons/511/f003.png'},
+                                {tag:'[美满]',url:'http://static.youku.com/ddshow/img/emoticons/511/f004.png'},
+                                {tag:'[瞪眼]',url:'http://static.youku.com/ddshow/img/emoticons/511/f005.png'},
+                                {tag:'[呲牙]',url:'http://static.youku.com/ddshow/img/emoticons/511/f006.png'},
+                                {tag:'[开怀]',url:'http://static.youku.com/ddshow/img/emoticons/511/f007.png'},
+                                {tag:'[哀伤]',url:'http://static.youku.com/ddshow/img/emoticons/511/f008.png'},
+                                {tag:'[偷笑]',url:'http://static.youku.com/ddshow/img/emoticons/511/f009.png'},
+                                {tag:'[愤怒]',url:'http://static.youku.com/ddshow/img/emoticons/511/f010.png'},
+                                {tag:'[大哭]',url:'http://static.youku.com/ddshow/img/emoticons/511/f011.png'},
+                                {tag:'[傻笑]',url:'http://static.youku.com/ddshow/img/emoticons/511/f012.png'},
+                                {tag:'[爱你]',url:'http://static.youku.com/ddshow/img/emoticons/511/f013.png'},
+                                {tag:'[尴尬]',url:'http://static.youku.com/ddshow/img/emoticons/511/f014.png'},
+                                {tag:'[幸福]',url:'http://static.youku.com/ddshow/img/emoticons/511/f015.png'},
+                                {tag:'[哭]',url:'http://static.youku.com/ddshow/img/emoticons/511/f016.png'},
+                                {tag:'[悲伤]',url:'http://static.youku.com/ddshow/img/emoticons/511/f017.png'},
+                                {tag:'[坏笑]',url:'http://static.youku.com/ddshow/img/emoticons/511/f018.png'},
+                                {tag:'[汗]',url:'http://static.youku.com/ddshow/img/emoticons/511/f019.png'},
+                                {tag:'[开心]',url:'http://static.youku.com/ddshow/img/emoticons/511/f020.png'},
+                                {tag:'[歪嘴]',url:'http://static.youku.com/ddshow/img/emoticons/511/f021.png'},
+                                {tag:'[鬼脸]',url:'http://static.youku.com/ddshow/img/emoticons/511/f022.png'},
+                                {tag:'[微笑]',url:'http://static.youku.com/ddshow/img/emoticons/511/f023.png'},
+                            ]
+                        ul
+                            each emo in emoMap
+                                li(data-tag=emo.tag)
+                                    img(src=emo.url)
+                .speak
+                    input(type="text" name="message" placeholder="输入发送内容")
+                #sendBtn 发送
+            p#info
         script(src='/js/send.js')
             
