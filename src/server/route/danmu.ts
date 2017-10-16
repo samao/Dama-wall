@@ -8,6 +8,7 @@ import { log, error } from "../../utils/log";
 import { checkout, restore } from "../db/pool";
 import { default as sensitive } from "../db/sensitive";
 import { Collection } from "../db/collection";
+import { cache, get } from "../../utils/caches";
 
 const router = express.Router();
 
@@ -17,8 +18,8 @@ interface IEmoj {
     /** 表情连接*/
     url: string;
 }
-
-let emojMap: IEmoj[];
+/** 缓存数据的标识 */
+let syEmoj: Symbol;
 
 router.use((req, res, next) => {
     //utf8编码
@@ -45,12 +46,12 @@ router.route('/:rid').all((req, res, next) => {
     })
 }).get((req, res, next) => {
     //渲染发送页面
-    if(!emojMap) {
+    if(!syEmoj) {
         checkout(db => {
             db.collection(Collection.EMOTION).find({active:true}).sort({key:1}).toArray().then(data => {
                 if(data){
-                    emojMap = [...data];
-                    res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap});
+                    syEmoj = cache(data)
+                    res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap: get<IEmoj[]>(syEmoj)});
                 }else{
                     responseFailure(res, '没有表情数据')
                 }
@@ -61,7 +62,7 @@ router.route('/:rid').all((req, res, next) => {
             responseFailure(res, reason);
         })
     }else{
-        res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap});
+        res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap: get<IEmoj[]>(syEmoj)});
     }   
 }).post((req, res, next) => {
     //弹幕数据处理

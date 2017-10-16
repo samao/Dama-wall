@@ -4,6 +4,7 @@ import { checkout, restore } from "../db/pool";
 import { Collection } from "../db/collection";
 import { log, error } from "../../utils/log";
 import { call } from "../../utils/ticker";
+import { cache, get } from "../../utils/caches";
 
 const router = express.Router();
 
@@ -38,7 +39,7 @@ const SESSION_LIVE = 2 * 60 * 60 * 1000;
 /**
  * 缓存页面导航数据
  */
-let pagesConf: IPageConf[];
+let syPages: Symbol;
 
 //获取导航数据失败
 function getNavigatorFailure(res: IRespond, reason: string): void {
@@ -53,8 +54,9 @@ function getNavigatorFailure(res: IRespond, reason: string): void {
  * @param next
  */
 function setupNavigatorInfo(ref: string, res: IRespond, next: Function): void {
-    res.locals.pages = pagesConf;
-    let currentPage = pagesConf.filter(e => e.ref === ref)
+    const pages = get<IPageConf[]>(syPages);
+    res.locals.pages = pages;
+    let currentPage = pages.filter(e => e.ref === ref)
     if (currentPage.length !== 0) {
         res.locals.currentPage = currentPage[0];
     }
@@ -63,13 +65,13 @@ function setupNavigatorInfo(ref: string, res: IRespond, next: Function): void {
 
 //获取导航栏配置
 router.use((req, res, next) => {
-    if (!pagesConf) {
+    if (!syPages) {
         checkout(db => {
             //查询按id排序1,2,...
             db.collection(Collection.PAGES).find().sort({id:1}).toArray().then(data => {
                 if (data) {
-                    pagesConf = [...data];
-                    //log(`页面导航数据：${JSON.stringify(pagesConf)}`);
+                    syPages = cache(data)
+                    //log(`页面导航数据：${JSON.stringify(syPages)}`);
                     setupNavigatorInfo(req.url, res, next);
                 } else {
                     getNavigatorFailure(res, '没有导航数据');
