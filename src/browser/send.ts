@@ -10,6 +10,12 @@ $(() => {
     const input = $('input[type="text"]');
     const remain = $('.speak cite');
     const emoj = $('.emojPanel');
+    const info = $('#info');
+
+    function reset(): void {
+        input.val('');
+        remain.text(MAX_INPUT);
+    }
 
     input.on('input', () => {
         let putStr = input.val();
@@ -20,15 +26,21 @@ $(() => {
     })
 
     $('#sendBtn').click(() => {
-        $.post(location.href, {message:input.val()},(data) => {
-            data = JSON.parse(data);
-            if(data.ok) 
-                $('#info').html('发送成功:'+ data.message);
-            else
-                $('#info').html(data.reason);
-            $('#info').fadeIn().fadeOut(3000);
-        })
-        input.val('');
+        let putStr = input.val();
+        if(typeof putStr === 'string' && putStr.trim().length !== 0) {
+            $.post(location.href, {message:input.val()},(data) => {
+                data = JSON.parse(data);
+                if(data.ok) 
+                    info.text('发送成功:'+ data.message);
+                else
+                    info.text(data.reason);
+                info.fadeIn().fadeOut(3000);
+            })
+            reset();
+        }else{
+            info.text('发送内容不能为空');
+            reset();
+        }
     })
 
     $('.face-toggle').click(() => {
