@@ -11,6 +11,15 @@ import { Collection } from "../db/collection";
 
 const router = express.Router();
 
+interface IEmoj {
+    /** 标识*/
+    tag: string;
+    /** 表情连接*/
+    url: string;
+}
+
+let emojMap: IEmoj[];
+
 router.use((req, res, next) => {
     //utf8编码
     res.setHeader('Content-Type', 'text/html;charset=utf-8');
@@ -36,19 +45,24 @@ router.route('/:rid').all((req, res, next) => {
     })
 }).get((req, res, next) => {
     //渲染发送页面
-    checkout(db => {
-        db.collection(Collection.EMOTION).find({active:true}).sort({key:1}).toArray().then(data => {
-            if(data){
-                res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap:data});
-            }else{
-                responseFailure(res, '没有表情数据')
-            }
+    if(!emojMap) {
+        checkout(db => {
+            db.collection(Collection.EMOTION).find({active:true}).sort({key:1}).toArray().then(data => {
+                if(data){
+                    emojMap = [...data];
+                    res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap});
+                }else{
+                    responseFailure(res, '没有表情数据')
+                }
+            }, reason => {
+                responseFailure(res, reason);
+            })
         }, reason => {
             responseFailure(res, reason);
         })
-    }, reason => {
-        responseFailure(res, reason);
-    })
+    }else{
+        res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap});
+    }   
 }).post((req, res, next) => {
     //弹幕数据处理
     roomParser(req.url).then(pathname => {
