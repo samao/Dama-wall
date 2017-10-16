@@ -30,7 +30,7 @@ interface IPageConf {
     template?: string;
 }
 //session 缓存
-const userMap = new Map<string, ISessionData>();
+let sySession: Symbol;
 /**
  * session 有效期 2 min
  */
@@ -90,12 +90,13 @@ router.use((req, res, next) => {
 })
 //生成session
 router.use((req, res, next) => {
-    if (!userMap.has(<string>req.sessionID)) {
+    const sMap = sessions();
+    if (!sMap.has(<string>req.sessionID)) {
         //log('欢迎您 未登录')
         res.locals.loginUser = null;
     } else {
         //log('欢迎回来已登录')
-        res.locals.loginUser = userMap.get(<string>req.sessionID);
+        res.locals.loginUser = sMap.get(<string>req.sessionID);
     }
     next();
 })
@@ -124,9 +125,8 @@ router.route('/login').get((req, res, next) =>{
     checkout(db => {
         db.collection(Collection.USER).findOne({name:username,pwd}).then(data => {
             if(data) {
-                log('连接sessionId',req.sessionID)
-                userMap.set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: data.name});
-                res.json({ok:true})
+                sessions().set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: data.name});
+                res.json({ok:true});
             }else{
                 res.json({ok:false,reason:'用户名或者密码错误'})
             }
@@ -137,7 +137,7 @@ router.route('/login').get((req, res, next) =>{
 })
 
 router.route('/logout').post((req, res, next) => {
-    userMap.delete(<string>req.sessionID);
+    sessions().delete(<string>req.sessionID);
     res.json({ok:true})
 })
 
@@ -180,10 +180,20 @@ function merge(res: IRespond, data?: any): any {
     return { navlist: res.locals.pages, loginUser: res.locals.loginUser, ...data };
 }
 
+/**
+ * 获取缓存模块中的 用户 session 数据 
+ */
+function sessions():Map<string, ISessionData> {
+    if(!sySession)
+        sySession = cache(new Map())
+    return get<Map<string, ISessionData>>(sySession)
+}
+
 call(() => {
-    for (let [key, { expires }] of userMap.entries()) {
+    const map = sessions();
+    for (let [key, { expires }] of map.entries()) {
         if (expires < Date.now()) {
-            userMap.delete(key);
+            map.delete(key);
             return;
         }
     }
