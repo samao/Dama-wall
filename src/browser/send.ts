@@ -17,6 +17,11 @@ $(() => {
         remain.text(MAX_INPUT);
     }
 
+    function tips(msg: string): void {
+        info.text(msg);
+        info.fadeIn().fadeOut(2000);
+    }
+
     input.on('input', () => {
         let putStr = input.val();
         if(typeof putStr === 'string') {
@@ -31,14 +36,13 @@ $(() => {
             $.post(location.href, {message:input.val()},(data) => {
                 data = JSON.parse(data);
                 if(data.ok) 
-                    info.text('发送成功:'+ data.message);
+                    tips('发送成功:'+ data.message);
                 else
-                    info.text(data.reason);
-                info.fadeIn().fadeOut(3000);
+                    tips(data.reason);
             })
             reset();
         }else{
-            info.text('发送内容不能为空');
+            tips('发送内容不能为空');
             reset();
         }
     })
@@ -53,6 +57,7 @@ $(() => {
     });
 
     $('.emojPanel li').click(function() {
+        hiden = true;
         emoj.hide();
         const msg = input.val();
         if(typeof msg === 'string') {
@@ -63,6 +68,7 @@ $(() => {
             let olds = msg.split('');
             olds.splice(begin, end - begin,tag);
             input.val(olds.join(''));
+            input.trigger('input');
         }
     })
 })

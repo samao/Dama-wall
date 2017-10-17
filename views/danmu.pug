@@ -6,18 +6,22 @@ html
         link(rel="stylesheet", href="/static/chat.css")
     body
         .box
+            .logo
+                //- img(src='/static/images/danmu_logo.png')
+                p DAMA.CN
             .talk
-                .emotion
-                    a.face-toggle(href='javascript:void(0)')
-                    .emojPanel
-                        ul
-                            each emo in emojMap
-                                li(data-tag=emo.tag)
-                                    img(src=emo.url)
-                .speak
-                    cite 30
-                    input(type="text" name="message" placeholder="输入内容发送" maxlength='30')
-                #sendBtn 发送
+                div
+                    .emotion
+                        a.face-toggle(href='javascript:void(0)')
+                        .emojPanel
+                            ul
+                                each emo in emojMap
+                                    li(data-tag=emo.tag)
+                                        img(src=emo.url)
+                    .speak
+                        cite 30
+                        input(type="text" name="message" placeholder="输入内容发送" maxlength='30')
+                    #sendBtn 发送
             p#info
         script(src='/js/send.js')
             
