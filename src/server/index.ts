@@ -51,6 +51,10 @@ app.use(pageRouter);
 //接口api
 app.use('/api', Api);
 
+app.use((req, res, next) => {
+    res.render('404',{error:'未找到页面'});
+})
+
 const server = app.listen(ports.web,() => {
     const {address,port} = server.address();
     log(`http服务器启动: http://${address}:${port}`);

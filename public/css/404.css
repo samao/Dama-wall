@@ -1,0 +1,33 @@
+* {
+    margin:0;
+    padding:0;
+}
+html,body {
+    height:100%;
+    width:100%;
+}
+.topTip {
+    width:100%;
+    position:relative;
+    height:360px;
+    line-height:1px;
+    text-align:center;
+}
+.box {
+    width:950px;
+    margin:0 auto;
+    position:relative;
+}
+.back {
+    width:80px;
+    height:30px;
+    line-height:30px;
+    text-align:center;
+    font-weight:bold;
+    font-size:12px;
+    text-decoration:none;
+    border-radius:5px;
+    position:absolute;
+    right:100px;
+    bottom:30px;
+}
