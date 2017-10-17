@@ -57,7 +57,7 @@ app.use(pageRouter);
 app.use('/api', Api);
 
 app.use((req, res, next) => {
-    res.render('404',{error:'未找到页面'});
+    res.render('404',{navlist: res.locals.pages,error:'水逆飞船爆炸了(1/1)'});
 })
 
 app.disable('x-powered-by');

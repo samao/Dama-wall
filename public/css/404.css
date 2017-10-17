@@ -11,13 +11,12 @@ html,body {
     background: #f1f1f1;
     font-family: 微软雅黑,arial,宋体;
 }
-.main {
+.error-main {
     margin-bottom:50px;
     position: relative;
     z-index: 1;
 }
 .error-page {
-    min-height: 583px;
     width:880px;
     margin: 0 auto;
     padding: 100px 0;
@@ -44,6 +43,7 @@ html,body {
 .error-box .reason {
     margin: 40px 0 0 48px;
     float: left;
+    text-align: left;
 }
 
 .error-box h3 {

@@ -1,16 +1,16 @@
-doctype html
-html
-    head
-        title 出错啦！！！
-        link(rel="stylesheet", href="/static/css/404.css") 
-    body
-        .main
-            .error-page
-                .error-box.clearfix
-                    .errimg.fl
-                    .reason.fl
-                        h3 水逆飞船爆炸了(1/1)
-                        p.p1 可能原因：
-                        p.p2 1、链接过期
-                        p.p2 2、服务器接口错误
-                        p.p2 3、站长大保健被抓了
+extends index
+append title
+    | | 出错啦！！！
+append css
+    link(rel="stylesheet", href="/static/css/404.css")
+block main
+    .error-main
+        .error-page
+            .error-box.clearfix
+                .errimg.fl
+                .reason.fl
+                    h3 #{error}
+                    p.p1 可能原因：
+                    p.p2 1、程序员吃了过期食品
+                    p.p2 2、机房水表炸了
+                    p.p2 3、站长大保健被抓了
