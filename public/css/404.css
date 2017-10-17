@@ -5,29 +5,60 @@
 html,body {
     height:100%;
     width:100%;
+    vertical-align: baseline;
+    line-height: 1;
+    font-size: 12px;
+    background: #f1f1f1;
+    font-family: 微软雅黑,arial,宋体;
 }
-.topTip {
-    width:100%;
-    position:relative;
-    height:360px;
-    line-height:1px;
-    text-align:center;
+.main {
+    margin-bottom:50px;
+    position: relative;
+    z-index: 1;
 }
-.box {
-    width:950px;
+.error-page {
+    min-height: 583px;
+    width:880px;
+    margin: 0 auto;
+    padding: 100px 0;
+    box-sizing: border-box;
+}
+
+.error-box {
+    width:486px;
     margin:0 auto;
-    position:relative;
 }
-.back {
-    width:80px;
-    height:30px;
-    line-height:30px;
-    text-align:center;
-    font-weight:bold;
-    font-size:12px;
-    text-decoration:none;
-    border-radius:5px;
-    position:absolute;
-    right:100px;
-    bottom:30px;
+
+.error-box .errimg {
+    width:171px;
+    height:225px;
+    background:url(http://cdn.aixifan.com/acfun-pc/2.0.84/img/404.png);
+}
+
+.clearfix {
+    zoom: ;;
+}
+.fl {
+    float: left;
+}
+.error-box .reason {
+    margin: 40px 0 0 48px;
+    float: left;
+}
+
+.error-box h3 {
+    font-size: 20px;
+    color:#333;
+    font-weight: 600;
+    margin-bottom:30px;
+}
+.error-box .p1 {
+    font-size: 16px;
+    color: #999;
+}
+
+.error-box .p2 {
+    font-size: 14px;
+    color:#999;
+    margin-top: 15px;
 }
