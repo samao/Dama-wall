@@ -1,5 +1,5 @@
 import * as express from "express";
-import * as qr from "qr-image";
+import * as QRCode from "qrcode";
 
 import { checkout, restore } from "../db/pool";
 import { Collection } from "../db/collection";
@@ -179,9 +179,10 @@ router.route('/setting').get((req, res, next) => {
 
 //弹幕二维码生成路由
 router.get('/qr', (req, res, next) => {
-    var code = qr.image('http://dama.cn/danmu/9999', { type: 'png' });
     res.setHeader('Content-type', 'image/png');  //sent qr image to client side
-    code.pipe(res);
+    QRCode.toFileStream(res, 'okokok', (err) => {
+        res.end(err);
+    })
 });
 
 function merge(res: IRespond, data?: any): any {
