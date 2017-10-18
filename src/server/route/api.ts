@@ -3,10 +3,11 @@ import * as QRCode from "qrcode";
 import * as path from 'path';
 import { createWriteStream } from "fs";
 
-import { checkout, restore } from "../db/pool";
-import { Collection } from "../db/collection";
-import { log, error } from "../../utils/log";
+import { checkout, restore } from "../db/Pool";
+import { Collection } from "../db/Collection";
+import { log, error } from "../../utils/Log";
 import { HOST } from "../config/conf";
+import { success, failure } from "../../utils/Feedback";
 
 const router = express.Router();
 
@@ -14,9 +15,6 @@ const router = express.Router();
 router.route('/activity/:rid').all((req, res,next) => {
     //分权限
     next();
-}).get((req, res, next) => {
-    //获取用户创建的活动
-    getAct(req, res);
 }).post((req, res, next) => {
     //新建活动
     createAct(req, res);
@@ -27,24 +25,6 @@ router.route('/activity/:rid').all((req, res,next) => {
     //更新活动
     res.end('更新活动信息');
 })
-
-function getAct(req:IRequest, res:IRespond): void {
-    checkout(db => {
-        db.collection(Collection.ACTIVITY).findOne({rid:req.params.rid}).then(data => {
-            if(data) {
-                res.sendFile(path.resolve('public', 'images', 'qr', `${req.params.rid}.png`))
-            }else {
-                res.json({ok:false, reason:'不存在的活动'})
-            }
-        }, reason => {
-            error(reason)
-            res.json({ok:false, reason:'查询数据库活动错误'})
-        })
-    }, reason => {
-        error(reason)
-        res.json({ok:false, reason:'无法连接数据库'})
-    })
-}
 
 /**
  * 生成活动二维码
@@ -60,18 +40,16 @@ function createAct(req:IRequest, res:IRespond): void {
             const QRStream = createWriteStream(path.resolve('public','images','qr',`${req.params.rid}.png`));
             QRCode.toFileStream(QRStream,`${HOST}/danmu/${req.params.rid}`, err => {
                 if(err) {
-                    error(`生成二维码失败 ${err}`);
-                    res.json({ok:false,reason:err});
+                    failure(res, `生成二维码失败 ${err}`)
                 }else{
-                    res.json({ok:true});
+                    success(res);
                 }
             })
         },({errmsg:reason}) => {
-            error(`写入数据库失败${reason}`);
-            res.json({ok:false, reason:'活动名称已经存在'})
+            failure(res, `活动名称已经存在 ${req.params.rid}`)
         });
     }, reason => {
-        res.json({ok:false, reason});
+        failure(res, `无法连接数据库 ${req.params.rid}`)
     })
 }
 
@@ -80,27 +58,17 @@ function deleteAct(req:IRequest, res:IRespond): void {
     checkout(db => {
         db.collection(Collection.ACTIVITY).deleteOne({rid: req.params.rid}).then(() => {
             //活动删除成功
-            res.json({ok:true});
+            success(res);
         }, reason => {
-            error(`删除活动失败 ${reason}`)
+            failure(res, `删除活动失败 ${reason}`)
         })
     }, reason => {
-        error('无法连接数据库');
-        res.json({ok:false,reason});
+        failure(res, `无法连接数据库 ${req.params.rid}`)
     })
 }
 
 function patchAct(): void {
     //1.更新活动数据库
-}
-
-/**
- * api响应封装
- * @param res 请求响应
- * @param data 发送的json数据
- */
-function response(res: IRespond, data: any): void {
-    res.json(data);
 }
 
 export default router;

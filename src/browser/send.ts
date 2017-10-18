@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import { log, error } from "../utils/log";
+import { log, error } from "../utils/Log";
 
 $(() => {
     //最多输入字个数
@@ -36,7 +36,7 @@ $(() => {
             $.post(location.href, {message:input.val()},(data) => {
                 data = JSON.parse(data);
                 if(data.ok) 
-                    tips('发送成功:'+ data.message);
+                    tips('发送成功:'+ data.data);
                 else
                     tips(data.reason);
             })

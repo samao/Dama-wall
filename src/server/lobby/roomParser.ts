@@ -1,8 +1,8 @@
 import * as url from 'url';
 
-import { checkout, restore } from "../db/pool";
-import { log, error } from "../../utils/log";
-import { Collection } from "../db/collection";
+import { checkout, restore } from "../db/Pool";
+import { log, error } from "../../utils/Log";
+import { Collection } from "../db/Collection";
 /**
 * 返回 ts Promise<any>
 * @param path 用户连接的ws路径

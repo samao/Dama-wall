@@ -1,7 +1,7 @@
 import { MongoClient as mongo, Db } from "mongodb";
-import { log, error } from '../../utils/log';
+import { log, error } from '../../utils/Log';
 import { ports } from '../config/conf';
-import { call, remove } from "../../utils/ticker";
+import { call, remove } from "../../utils/Ticker";
 
 import { promisify } from "util";
 

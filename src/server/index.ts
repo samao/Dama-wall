@@ -5,12 +5,12 @@ import * as bodyParser from "body-parser";
 import * as cluster from 'cluster';
 import * as path from 'path';
 
-import {log} from '../utils/log';
+import {log} from '../utils/Log';
 import {secret,ports} from './config/conf'
-import {WorkerEvent} from './worker/events';
-import danmuRouter from './route/danmu';
-import pageRouter from "./route/page";
-import Api from "./route/api";
+import {WorkerEvent} from './worker/Events';
+import danmuRouter from './route/Danmu';
+import pageRouter from "./route/Page";
+import Api from "./route/Api";
 
 //import * as multer from "multer";
 
@@ -81,10 +81,10 @@ if(cluster.isMaster){
             {default: sensitive}
         ] = await Promise.all([
             import('./worker/syncTransfer'),
-            import('./worker/actions'),
-            import('./net/online'),
+            import('./worker/Actions'),
+            import('./net/Online'),
             import('os'),
-            import('./db/sensitive')
+            import('./db/DanmuCertify')
         ])
 
         //全局敏感词初始化
@@ -99,7 +99,7 @@ if(cluster.isMaster){
         log(`主线程 PID: ${process.pid}, CPU: ${cpuNum} 个`);
 
         cluster.setupMaster({
-            exec: path.resolve(__dirname,'worker','dmworker.js'),
+            exec: path.resolve(__dirname,'worker','DanmuWorker.js'),
             args:[ports.ws.toString()],
         });
         let workerSet: Set<cluster.Worker> = new Set();

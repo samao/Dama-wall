@@ -1,8 +1,10 @@
-import { checkout, restore } from './pool';
-import { log, error } from "../../utils/log";
-import { Collection } from "./collection";
+import { checkout, restore } from './Pool';
+import { log, error } from "../../utils/Log";
+import { Collection } from "./Collection";
 
-export class Sensitive {
+export const MAX_MESSAGE_LENGTH = 30;
+
+export class DanmuCertify {
 
     /**
      * 用户自定义的敏感词
@@ -67,6 +69,10 @@ export class Sensitive {
             return '*'.repeat(data.length);
         })
     }
+
+    toolong(msg: string): boolean {
+        return msg.length > MAX_MESSAGE_LENGTH;
+    }
 }
 
-export default new Sensitive();
+export default new DanmuCertify();

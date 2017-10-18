@@ -1,11 +1,13 @@
 import * as express from "express";
 import * as QRCode from "qrcode";
+import * as path from 'path';
 
-import { checkout, restore } from "../db/pool";
-import { Collection } from "../db/collection";
-import { log, error } from "../../utils/log";
-import { call } from "../../utils/ticker";
-import { cache, get } from "../../utils/caches";
+import { checkout, restore } from "../db/Pool";
+import { Collection } from "../db/Collection";
+import { log, error } from "../../utils/Log";
+import { call } from "../../utils/Ticker";
+import { cache, get } from "../../utils/Caches";
+import { failure, success } from "../../utils/Feedback";
 
 const router = express.Router();
 
@@ -42,12 +44,6 @@ const SESSION_LIVE = 2 * 60 * 60 * 1000;
  */
 let syPages: Symbol;
 
-//获取导航数据失败
-function getNavigatorFailure(res: IRespond, reason: string): void {
-    error(reason);
-    res.json({ ok: false, reason });
-}
-
 /**
  * 包装页面导航信息
  * @param ref 
@@ -75,15 +71,15 @@ router.use((req, res, next) => {
                     //log(`页面导航数据：${JSON.stringify(syPages)}`);
                     setupNavigatorInfo(req.url, res, next);
                 } else {
-                    getNavigatorFailure(res, '没有导航数据');
+                    failure(res, '没有导航数据');
                 }
             }, reason => {
-                getNavigatorFailure(res, reason);
+                failure(res, reason);
             }).then(() => {
                 restore(db);
             })
         }, reason => {
-            getNavigatorFailure(res, reason);
+            failure(res, reason);
         })
     } else {
         setupNavigatorInfo(req.url, res, next);
@@ -127,19 +123,19 @@ router.route('/login').get((req, res, next) =>{
         db.collection(Collection.USER).findOne({name:username,pwd}).then(data => {
             if(data) {
                 sessions().set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: data.name});
-                res.json({ok:true});
+                success(res);
             }else{
-                res.json({ok:false,reason:'用户名或者密码错误'})
+                failure(res, '用户名或者密码错误')
             }
         })
     }, reason => {
-        error('登录失败', reason);
+        failure(res, reason);
     })
 })
 
 router.route('/logout').post((req, res, next) => {
     sessions().delete(<string>req.sessionID);
-    res.json({ok:true})
+    success(res);
 })
 
 router.route('/register').get((req, res, next) => {
@@ -149,22 +145,20 @@ router.route('/register').get((req, res, next) => {
         let userTable = db.collection(Collection.USER);
         userTable.findOne({ name: req.body.username }).then(data => {
             if (data) {
-                error('已存在用户名，请更换其他昵称');
-                res.json({ ok: false, reason: '已存在用户名，请更换其他昵称' });
+                failure(res, '已存在用户名，请更换其他昵称')
             } else {
                 userTable.insert({ name: req.body.username, pwd: req.body.pwd }).then(() => {
-                    res.json({ ok: true, result: '注册成功' });
+                    sessions().set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: req.body.username});
+                    success(res, '注册成功')
                 })
             }
         }, reason => {
-            error(reason)
-            res.json({ ok: false, reason });
+            failure(res, reason)
         }).then(() => {
             restore(db);
         })
     }, reason => {
-        error(reason)
-        res.json({ ok: false, reason });
+        failure(res, reason)
     })
 })
 
@@ -178,10 +172,19 @@ router.route('/setting').get((req, res, next) => {
 })
 
 //弹幕二维码生成路由
-router.get('/qr', (req, res, next) => {
-    res.setHeader('Content-type', 'image/png');  //sent qr image to client side
-    QRCode.toFileStream(res, 'okokok', (err) => {
-        res.end(err);
+router.get('/qr/:rid', (req, res, next) => {
+    checkout(db => {
+        db.collection(Collection.ACTIVITY).findOne({rid:req.params.rid}).then(data => {
+            if(data) {
+                res.sendFile(path.resolve('public', 'images', 'qr', `${req.params.rid}.png`))
+            }else {
+                failure(res, '不存在的活动')
+            }
+        }, reason => {
+            failure(res, '查询数据库活动错误')
+        })
+    }, reason => {
+        failure(res, '无法连接数据库')
     })
 });
 

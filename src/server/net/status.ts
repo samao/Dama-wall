@@ -20,6 +20,10 @@ export enum WebSocketStatus {
      */
     FORBID = 403,
     /**
+     * 发送消息太长
+     */
+    TOOLONG = 408,
+    /**
      * 服务器内部错误
      */
     ERROR = 500,

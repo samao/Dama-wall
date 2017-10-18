@@ -3,16 +3,17 @@ import * as url from 'url';
 import * as cluster from 'cluster';
 import * as WebSocket from 'ws';
 
-import {log, error} from '../../utils/log';
-import { WebSocketEvent } from './events';
-import { WebSocketStatus } from "./status";
-import { WorkerEvent } from '../worker/events';
-import { Actions } from "../worker/actions";
-import { lobby } from "../lobby/lobby";
-import { checkout, restore } from "../db/pool";
-import { default as sensitive } from "../db/sensitive";
-import { Collection } from "../db/collection";
-import { roomParser } from "../lobby/roomParser";
+import DanmuCertify, {MAX_MESSAGE_LENGTH} from "../db/DanmuCertify";
+
+import {log, error} from '../../utils/Log';
+import { WebSocketEvent } from './Events';
+import { WebSocketStatus } from "./Status";
+import { WorkerEvent } from '../worker/Events';
+import { Actions } from "../worker/Actions";
+import { lobby } from "../lobby/Lobby";
+import { checkout, restore } from "../db/Pool";
+import { Collection } from "../db/Collection";
+import { roomParser } from "../lobby/RoomParser";
 
 class DanmuServer {
     /**
@@ -73,7 +74,7 @@ class DanmuServer {
 
         //初始化线程通用敏感词
         const sensitives = (<any>cluster.worker.process).env.sensitives;
-        sensitive.setupFromMaster(sensitives)
+        DanmuCertify.setupFromMaster(sensitives)
         //心跳轮询检查
         setInterval(() => {
             lobby.allDeactives().forEach((websocket) => {
@@ -158,8 +159,12 @@ class DanmuServer {
             let msg: {action: string, data:any} = JSON.parse(data.toString());
             switch(msg.action){
                 case Actions.POST:
+                    if(DanmuCertify.toolong(msg.data)) {
+                        response(ws, {status: WebSocketStatus.TOOLONG, data:`发送弹幕太长，不能超过 ${MAX_MESSAGE_LENGTH}`});
+                        return;
+                    }
                     //加工敏感词
-                    msg.data = sensitive.filter(msg.data);
+                    msg.data = DanmuCertify.filter(msg.data);
                     //1.回复用户自己
                     response(ws, {status: WebSocketStatus.POST, data: msg.data});
                     //2.分发本线程房间
