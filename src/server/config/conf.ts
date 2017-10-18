@@ -4,3 +4,4 @@ export const ports:{web:number,ws:number,db:number} = {
     ws: 8080,
     db: 27017
 }
+export const HOST = 'http://dama.cn';
