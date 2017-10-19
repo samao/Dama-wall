@@ -5,12 +5,12 @@ import * as bodyParser from "body-parser";
 import * as cluster from 'cluster';
 import * as path from 'path';
 
-import {log} from '../utils/Log';
+import {log} from '../utils/log';
 import {secret,ports} from './config/conf'
-import {WorkerEvent} from './worker/Events';
-import danmuRouter from './route/Danmu';
-import pageRouter from "./route/Page";
-import Api from "./route/Api";
+import {WorkerEvent} from './worker/events';
+import danmuRouter from './route/danmu';
+import pageRouter from "./route/page";
+import Api from "./route/api";
 
 //import * as multer from "multer";
 
@@ -81,8 +81,8 @@ if(cluster.isMaster){
             {default: sensitive}
         ] = await Promise.all([
             import('./worker/syncTransfer'),
-            import('./worker/Actions'),
-            import('./net/Online'),
+            import('./worker/actions'),
+            import('./net/online'),
             import('os'),
             import('./db/danmuCertify')
         ])

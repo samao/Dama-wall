@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 
-import { IRoom ,Room } from "./Room";
+import { IRoom ,Room } from "./room";
 
 class Lobby {
 

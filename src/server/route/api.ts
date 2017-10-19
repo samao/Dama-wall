@@ -3,11 +3,11 @@ import * as QRCode from "qrcode";
 import * as path from 'path';
 import { createWriteStream } from "fs";
 
-import { checkout, restore } from "../db/Pool";
-import { Collection } from "../db/Collection";
-import { log, error } from "../../utils/Log";
+import { checkout, restore } from "../db/pool";
+import { Collection } from "../db/collection";
+import { log, error } from "../../utils/log";
 import { HOST } from "../config/conf";
-import { success, failure } from "../../utils/Feedback";
+import { success, failure } from "../../utils/feedback";
 
 const router = express.Router();
 

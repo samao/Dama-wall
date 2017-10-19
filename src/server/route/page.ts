@@ -2,12 +2,12 @@ import * as express from "express";
 import * as QRCode from "qrcode";
 import * as path from 'path';
 
-import { checkout, restore } from "../db/Pool";
-import { Collection } from "../db/Collection";
-import { log, error } from "../../utils/Log";
-import { call } from "../../utils/Ticker";
-import { cache, get } from "../../utils/Caches";
-import { failure, success } from "../../utils/Feedback";
+import { checkout, restore } from "../db/pool";
+import { Collection } from "../db/collection";
+import { log, error } from "../../utils/log";
+import { call } from "../../utils/ticker";
+import { cache, get } from "../../utils/caches";
+import { failure, success } from "../../utils/feedback";
 
 const router = express.Router();
 

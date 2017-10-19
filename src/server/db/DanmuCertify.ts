@@ -1,6 +1,6 @@
-import { checkout, restore } from './Pool';
-import { log, error } from "../../utils/Log";
-import { Collection } from "./Collection";
+import { checkout, restore } from './pool';
+import { log, error } from "../../utils/log";
+import { Collection } from "./collection";
 
 export const MAX_MESSAGE_LENGTH = 30;
 

@@ -1,7 +1,7 @@
 import * as http from 'http';
 import * as cluster from 'cluster';
 
-import {log,error} from '../../utils/Log';
+import {log,error} from '../../utils/log';
 
 async function go() {
     const port = +process.argv.slice(2);
