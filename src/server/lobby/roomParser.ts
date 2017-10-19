@@ -19,7 +19,6 @@ export function roomParser(path: string|undefined): Promise<string>{
                 //检查路径
                 checkout(db => {
                     db.collection(Collection.ACTIVITY).findOne({ rid:roomid }).then(data => {
-                        //log(JSON.stringify(data));
                         if(data) {
                             log('有房间号',roomid)
                             setImmediate(res,roomid)

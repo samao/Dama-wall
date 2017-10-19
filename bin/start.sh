@@ -1,2 +1,2 @@
 #!/bin/bash
-node dist/server/index.js
+NODE_ENV=production node dist/server/index.js

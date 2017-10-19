@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import { log, error } from "../utils/Log";
+import { log, error } from "../utils/log";
 
 $('.logout').click(function(){
     log('用户登出');

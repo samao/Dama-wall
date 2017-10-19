@@ -1,6 +1,7 @@
 import * as $ from 'jquery';
-import { log, error } from "../utils/Log";
+import { log, error } from "../utils/log";
 import { parse } from 'querystring';
+import { SuccessType, FailType, isSuccessType } from "../utils/feedback";
 
 $(() => {
     $('#registerBtn').click(function(){
@@ -9,21 +10,13 @@ $(() => {
 
         if(typeof username !== 'string' || typeof pwd !== 'string') return;
 
-        if(username.trim().length < 4) {
-            error('用户名不能少于4个字符')
-            return;
-        }
-        if(pwd.trim().length < 5) {
-            error('密码太简单了')
-            return;
-        }
-
         $.post('/login',{
             username,
             pwd
-        }, data => {
+        }, (data: SuccessType|FailType) => {
             let responseTxt = $('.register-warp .reg-box .info');
-            if(data.ok) {
+            log(JSON.stringify(data));
+            if(isSuccessType(data)) {
                 $('.group').fadeOut();
                 responseTxt.html('登录成功, 3秒后跳转');
                 const {'?return':returnUrl = '/'} = parse(location.search);
@@ -31,7 +24,6 @@ $(() => {
                     location.href = returnUrl;
                 }, 3000)
             }else{
-                console.log(data.reason)
                 responseTxt.html(data.reason);
             }
         })

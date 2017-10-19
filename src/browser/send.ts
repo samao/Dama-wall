@@ -1,5 +1,6 @@
 import * as $ from 'jquery';
-import { log, error } from "../utils/Log";
+import { log, error } from "../utils/log";
+import { SuccessType, FailType, isSuccessType } from "../utils/feedback";
 
 $(() => {
     //最多输入字个数
@@ -18,6 +19,7 @@ $(() => {
     }
 
     function tips(msg: string): void {
+        log(msg)
         info.text(msg);
         info.fadeIn().fadeOut(2000);
     }
@@ -33,9 +35,11 @@ $(() => {
     $('#sendBtn').click(() => {
         let putStr = input.val();
         if(typeof putStr === 'string' && putStr.trim().length !== 0) {
-            $.post(location.href, {message:input.val()},(data) => {
-                data = JSON.parse(data);
-                if(data.ok) 
+            $.post(location.href, {
+                message:input.val()
+            },(data: SuccessType|FailType) => {
+                log(JSON.stringify(data));
+                if(isSuccessType(data)) 
                     tips('发送成功:'+ data.data);
                 else
                     tips(data.reason);
