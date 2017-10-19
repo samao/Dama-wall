@@ -1,5 +1,4 @@
 import * as express from "express";
-import * as QRCode from "qrcode";
 import * as path from 'path';
 
 import { checkout, restore } from "../db/pool";

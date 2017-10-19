@@ -24,12 +24,12 @@ export class DanmuCertify {
     /**
      * 主线程获取敏感词
      */
-    async setup() {
-        return await new Promise((res,rej) => {
+    setup(): Promise<string[]> {
+        return new Promise((res,rej) => {
             checkout(db => {
                 db.collection(Collection.SENSITIVE).find().toArray().then((all) => {
                     this._cMap.push(...all.map(data => data.words))
-                    res()
+                    res(this.words)
                 },reason => {
                     error(reason)
                 }).then(() => {

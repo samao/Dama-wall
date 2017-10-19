@@ -20,7 +20,6 @@ function isSuccessType(data: SuccessType | FailType): data is SuccessType {
  */
 function failure(res:IRespond, reason: string): void {
     error(reason);
-    res.setHeader('Content-Type','text/json;charset=utf-8');
     res.json({ok:false, reason});
 }
 /**
@@ -29,7 +28,6 @@ function failure(res:IRespond, reason: string): void {
  * @param data 成功返回数据
  */
 function success(res:IRespond, data?:any): void {
-    res.setHeader('Content-Type','text/json;charset=utf-8');
     res.json({ok:true, data});
 }
 
