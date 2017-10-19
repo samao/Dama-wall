@@ -84,7 +84,7 @@ if(cluster.isMaster){
             import('./worker/Actions'),
             import('./net/Online'),
             import('os'),
-            import('./db/DanmuCertify')
+            import('./db/danmuCertify')
         ])
 
         //全局敏感词初始化

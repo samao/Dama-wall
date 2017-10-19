@@ -5,7 +5,7 @@ import {log,error} from '../../utils/Log';
 
 async function go() {
     const port = +process.argv.slice(2);
-    let mod = await import('../net/DanmuServer');
+    let mod = await import('../net/danmuServer');
     let {DanmuServer} = mod;
     log(`线程 ${cluster.worker.id} 业务模块载入 PID ${process.pid}`);
     const wss = new DanmuServer({

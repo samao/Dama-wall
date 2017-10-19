@@ -3,7 +3,7 @@ import * as url from 'url';
 import * as cluster from 'cluster';
 import * as WebSocket from 'ws';
 
-import DanmuCertify, {MAX_MESSAGE_LENGTH} from "../db/DanmuCertify";
+import danmuCertify, {MAX_MESSAGE_LENGTH} from "../db/danmuCertify";
 
 import {log, error} from '../../utils/Log';
 import { WebSocketEvent } from './Events';
@@ -74,7 +74,7 @@ class DanmuServer {
 
         //初始化线程通用敏感词
         const sensitives = (<any>cluster.worker.process).env.sensitives;
-        DanmuCertify.setupFromMaster(sensitives)
+        danmuCertify.setupFromMaster(sensitives)
         //心跳轮询检查
         setInterval(() => {
             lobby.allDeactives().forEach((websocket) => {
@@ -159,12 +159,12 @@ class DanmuServer {
             let msg: {action: string, data:any} = JSON.parse(data.toString());
             switch(msg.action){
                 case Actions.POST:
-                    if(DanmuCertify.toolong(msg.data)) {
+                    if(danmuCertify.toolong(msg.data)) {
                         response(ws, {status: WebSocketStatus.TOOLONG, data:`发送弹幕太长，不能超过 ${MAX_MESSAGE_LENGTH}`});
                         return;
                     }
                     //加工敏感词
-                    msg.data = DanmuCertify.filter(msg.data);
+                    msg.data = danmuCertify.filter(msg.data);
                     //1.回复用户自己
                     response(ws, {status: WebSocketStatus.POST, data: msg.data});
                     //2.分发本线程房间

@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as cluster from "cluster";
 
-import DanmuCertify, { MAX_MESSAGE_LENGTH } from "../db/DanmuCertify";
+import danmuCertify, { MAX_MESSAGE_LENGTH } from "../db/danmuCertify";
 
 import { syncTransfer } from '../worker/SyncTransfer';
 import { Actions } from '../worker/Actions';
@@ -67,12 +67,12 @@ router.route('/:rid').all((req, res, next) => {
 }).post((req, res, next) => {
     //弹幕数据处理
     roomParser(req.url).then(pathname => {
-        if(DanmuCertify.toolong(req.body.message)) {
+        if(danmuCertify.toolong(req.body.message)) {
             failure(res, `发送弹幕内容过长,不能超过${MAX_MESSAGE_LENGTH}`);
             return;
         }
         //加工敏感词
-        req.body.message = DanmuCertify.filter(req.body.message);
+        req.body.message = danmuCertify.filter(req.body.message);
         //回复用户
         success(res, req.body.message)
         //同步线程消息
