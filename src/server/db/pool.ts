@@ -2,6 +2,7 @@ import { MongoClient as mongo, Db } from "mongodb";
 import { log, error } from '../../utils/log';
 import { ports } from '../config/conf';
 import { call, remove } from "../../utils/ticker";
+import { Collection } from "./collection";
 
 import { promisify } from "util";
 
@@ -44,6 +45,30 @@ function checkout(resolve: (db: Db) => any, reject?: (reason: any) => any): void
     }
     log('新建db连接');
     connect().then(resolve,reject)
+}
+
+/**
+ * 建立mongodb 索引
+ */
+export async function setupUnique() {
+    let db = await connect();
+    //用户集合索引
+    let userIndexPromise = db.collection(Collection.USER).createIndex({name: 1}, {unique: true});
+    //活动集合索引
+    let activityIndexPromise = db.collection(Collection.ACTIVITY).createIndex({rid: 1}, {unique: true});
+    //表情集合索引
+    let emotionIndexPromise = db.collection(Collection.EMOTION).createIndex({tag: 1, url: 1}, {unique: true});
+    //敏感词库索引
+    let filterIndexPromise = db.collection(Collection.SENSITIVE).createIndex({words: 1}, {unique: true});
+
+    return await Promise.all([
+        userIndexPromise,
+        activityIndexPromise,
+        emotionIndexPromise,
+        filterIndexPromise]).then(indexes => {
+            restore(db);
+            return indexes;
+        })
 }
 
 /**

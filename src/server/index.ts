@@ -75,9 +75,7 @@ const server = app.listen(ports.web,() => {
 
 //线程管理
 if(cluster.isMaster){
-    /**
-     * 异步模块调用
-     */
+    // 异步模块调用
     async function workerGo() {
         const [
             { syncTransfer },
@@ -93,12 +91,18 @@ if(cluster.isMaster){
             import('./db/danmuCertify')
         ])
 
+        let { setupUnique } = await import('./db/pool');
+        log('创建MongoDB索引');
+        let indexes = await setupUnique();
+        log(`共创建 ${indexes.length} 个索引`);
+
         //全局敏感词初始化
         log('加载全局通用敏感词')
         await sensitive.setup();
 
         return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length, sensitives: sensitive.words};
     }
+
     
     workerGo().then(({syncTransfer, cpuNum, actions, increaseOne, reduceOne, reduceAll, sensitives}) => {
         //启动弹幕线程
