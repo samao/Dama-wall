@@ -4,6 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from "body-parser";
 import * as cluster from 'cluster';
 import * as path from 'path';
+import * as connectMongo from "connect-mongo";
 
 import {log} from '../utils/log';
 import {secret,ports} from './config/conf'
@@ -15,6 +16,10 @@ import Api from "./route/api";
 //import * as multer from "multer";
 
 const app = express();
+const MongoStore = connectMongo(expressSession);
+
+app.disable('x-powered-by');
+log('服务器运行环境：' + app.get('env'));
 
 //json 化数据 application/json
 app.use(bodyParser.json());
@@ -24,10 +29,15 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser(secret));
 //multipart/form-data
 //app.use(multer());
+
+//线上环境使用mongodb 存储session 默认自动删除过期session
 app.use(expressSession({
     resave:false,
     saveUninitialized:true,
     secret,
+    store:new MongoStore({
+        url:`mongodb://localhost:${ports.db}/sessions`,
+    }),
     genid:(req) => {
         let time = Date.now() + `_${secret}_` + Math.floor(Math.random() * 1000);
         return Buffer.from(time).toString('base64');
@@ -47,8 +57,6 @@ app.use('/js',express.static('dist/browser'));
 app.set('views','./views');
 app.set('view engine','pug');
 
-log('服务器运行环境：' + app.get('env'));
-
 //http 接受聊天信息路由
 app.use('/danmu',danmuRouter);
 //页面导航
@@ -59,8 +67,6 @@ app.use('/api', Api);
 app.use((req, res, next) => {
     res.render('404',{navlist: res.locals.pages,error:'水逆飞船爆炸了(1/1)'});
 })
-
-app.disable('x-powered-by');
 
 const server = app.listen(ports.web,() => {
     const {address,port} = server.address();
