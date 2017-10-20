@@ -1,6 +1,9 @@
+import * as WebSocket from 'ws';
+
 import { checkout, restore } from './pool';
 import { log, error } from "../../utils/log";
 import { Collection } from "./collection";
+import { call, remove } from "../../utils/ticker";
 
 export const MAX_MESSAGE_LENGTH = 30;
 
@@ -70,8 +73,53 @@ export class DanmuCertify {
         })
     }
 
+    /**
+     * 弹幕内容过长
+     * @param msg 弹幕内容
+     */
     toolong(msg: string): boolean {
         return msg.length > MAX_MESSAGE_LENGTH;
+    }
+    /**
+     * 发送弹幕来源是否在cd中
+     * @param user 弹幕来源
+     */
+    inCD(user: string|WebSocket): boolean {
+        if(danmuUsers.has(user)) return true;
+        danmuUsers.set(user, {left: COOL_DOWN, last: Date.now()})
+        runCooldownTicker();
+        return false;
+    }
+}
+
+//发送弹幕冷却时间
+export const COOL_DOWN = 3000;
+//冷却中的用户
+const danmuUsers: Map<string|WebSocket, {left: number, last: number}> = new Map();
+//计时器是否在运行
+let running = false;
+//计时器id
+let checkid:Symbol;
+
+function runCooldownTicker():void {
+    if(!running) {
+        running = true;
+        checkid = call(() => {
+            const now = Date.now();
+            for(let [key, {left, last}] of danmuUsers) {
+                const duration = now - last;
+                const remain = left - duration;
+                if(remain <= 0) {
+                    danmuUsers.delete(key);
+                }else{
+                    danmuUsers.set(key, {left: remain, last:now})
+                }
+            }
+            if(danmuUsers.size == 0) {
+                remove(checkid);
+                running = false;
+            }
+        }, COOL_DOWN)
     }
 }
 

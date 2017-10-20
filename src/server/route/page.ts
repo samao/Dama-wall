@@ -146,9 +146,15 @@ router.route('/register').get((req, res, next) => {
             if (data) {
                 failure(res, '已存在用户名，请更换其他昵称')
             } else {
-                userTable.insert({ name: req.body.username, pwd: req.body.pwd }).then(() => {
+                //用户注册数据
+                userTable.insert({ 
+                    name: req.body.username, 
+                    pwd: req.body.pwd }
+                ).then(() => {
                     sessions().set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: req.body.username});
                     success(res, '注册成功')
+                },reason => {
+                    failure(res, '注册用户写入数据库失败');
                 })
             }
         }, reason => {

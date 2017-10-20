@@ -22,7 +22,11 @@ export enum WebSocketStatus {
     /**
      * 发送消息太长
      */
-    TOOLONG = 408,
+    LONG = 408,
+    /**
+     * 发送弹幕太频繁了
+     */
+    FREQUENT,
     /**
      * 服务器内部错误
      */

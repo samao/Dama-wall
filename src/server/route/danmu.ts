@@ -19,6 +19,8 @@ interface IEmoj {
     tag: string;
     /** 表情连接*/
     url: string;
+    /** 表情排序标识 */
+    id: number;
 }
 /** 缓存数据的标识 */
 let syEmoj: Symbol;
@@ -46,7 +48,7 @@ router.route('/:rid').all((req, res, next) => {
     //渲染发送页面
     if(!syEmoj) {
         checkout(db => {
-            db.collection(Collection.EMOTION).find({active:true}).sort({key:1}).toArray().then(data => {
+            db.collection(Collection.EMOTION).find({active:true}).sort({id:1}).toArray().then(data => {
                 if(data){
                     syEmoj = cache(data)
                     res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap: get<IEmoj[]>(syEmoj)});
@@ -67,6 +69,10 @@ router.route('/:rid').all((req, res, next) => {
     roomParser(req.url).then(pathname => {
         if(danmuCertify.toolong(req.body.message)) {
             failure(res, `发送弹幕内容过长,不能超过${MAX_MESSAGE_LENGTH}`);
+            return;
+        }
+        if(req.sessionID && danmuCertify.inCD(req.sessionID)) {
+            failure(res, `不要频繁发送弹幕`)
             return;
         }
         //加工敏感词

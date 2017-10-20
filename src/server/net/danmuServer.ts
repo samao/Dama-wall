@@ -3,7 +3,7 @@ import * as url from 'url';
 import * as cluster from 'cluster';
 import * as WebSocket from 'ws';
 
-import danmuCertify, {MAX_MESSAGE_LENGTH} from "../db/danmuCertify";
+import danmuCertify, {MAX_MESSAGE_LENGTH, COOL_DOWN} from "../db/danmuCertify";
 
 import {log, error} from '../../utils/log';
 import { WebSocketEvent } from './events';
@@ -160,7 +160,11 @@ class DanmuServer {
             switch(msg.action){
                 case Actions.POST:
                     if(danmuCertify.toolong(msg.data)) {
-                        response(ws, {status: WebSocketStatus.TOOLONG, data:`发送弹幕太长，不能超过 ${MAX_MESSAGE_LENGTH}`});
+                        response(ws, {status: WebSocketStatus.LONG, data:`发送弹幕太长，不能超过 ${MAX_MESSAGE_LENGTH}`});
+                        return;
+                    }
+                    if(danmuCertify.inCD(ws)) {
+                        response(ws, {status: WebSocketStatus.FREQUENT,data: `发送弹幕太频繁了 限制：${COOL_DOWN/1000}s`})
                         return;
                     }
                     //加工敏感词

@@ -3,7 +3,7 @@
  * 计时器内部存储结构
  */
 interface Ihandle {
-    id: number;
+    id: Symbol;
     delay: number;
     fn: Function;
     arg?: any[]|undefined;
@@ -15,12 +15,12 @@ let running: boolean = false;
 let pause: boolean = false;
 let id: NodeJS.Timer;
 
-const handleMap: Ihandle[] = [];
+const handleMap: Map<Symbol,Ihandle> = new Map();
 
 const call = (fn: Function, delay: number, arg?: any[]|undefined, times?: number) => {
-    let id = handleMap.length;
-    let handle = {id,fn,delay,arg,times, time: Date.now()};
-    handleMap.push(handle);
+    let id = Symbol();
+    let handle = {id, fn, delay, arg, times, time: Date.now()};
+    handleMap.set(id, handle);
     runTicker();
     return id;
 }
@@ -29,18 +29,18 @@ const call = (fn: Function, delay: number, arg?: any[]|undefined, times?: number
  * 移除回调计时器
  * @param idOrfn 回调或者回调id 传入id时删除单个，传入函数时删除全部函数
  */
-const remove = (idOrfn:Function|number) => {
-    if(typeof idOrfn === 'number') {
-        handleMap.splice(idOrfn, 1);
+const remove = (idOrfn:Function|Symbol) => {
+    if(typeof idOrfn === 'symbol') {
+        handleMap.delete(idOrfn);
     }else{
         let entries = handleMap.entries();
-        for(let [, handle] of entries) {
+        for(let [id, handle] of entries) {
             if(handle.fn === idOrfn) {
-                handleMap.splice(handleMap.indexOf(handle), 1);
+                handleMap.delete(id);
             }
         }
     }
-    running && clearInterval(id);
+    running && handleMap.size === 0 && clearInterval(id);
 }
 
 const runTicker = () => {
@@ -57,9 +57,9 @@ const update = () => {
     if(pause) return;
 
     let now = Date.now();
-    let clearMap: Ihandle[] = [];
+    let clearMap: Symbol[] = [];
 
-    for(const handle of handleMap) {
+    for(const [id,handle] of handleMap) {
         if(now >= (handle.time + handle.delay)) {
             try{
                 handle.fn.apply(null,handle.arg);
@@ -68,14 +68,14 @@ const update = () => {
             if(handle.times) {
                 handle.times -= 1;
                 if(handle.times <= 0) {
-                    clearMap.push(handle);
+                    clearMap.push(id);
                 }
             }
         }
     }
     //清除执行完毕的任务
-    for(let handle of clearMap) {
-        handleMap.splice(handleMap.indexOf(handle), 1);
+    for(let id of clearMap) {
+        handleMap.delete(id);
     }
 }
 

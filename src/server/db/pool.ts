@@ -62,10 +62,11 @@ export async function setupUnique() {
     let filterIndexPromise = db.collection(Collection.SENSITIVE).createIndex({words: 1}, {unique: true});
 
     return await Promise.all([
-        userIndexPromise,
-        activityIndexPromise,
-        emotionIndexPromise,
-        filterIndexPromise]).then(indexes => {
+            userIndexPromise,
+            activityIndexPromise,
+            emotionIndexPromise,
+            filterIndexPromise
+        ]).then(indexes => {
             restore(db);
             return indexes;
         })
