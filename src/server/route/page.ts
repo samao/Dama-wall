@@ -126,7 +126,7 @@ router.route('/login').get((req, res, next) =>{
             }else{
                 failure(res, '用户名或者密码错误')
             }
-        })
+        }).then(() => restore(db));
     }, reason => {
         failure(res, reason);
     })
@@ -187,7 +187,7 @@ router.get('/qr/:rid', (req, res, next) => {
             }
         }, reason => {
             failure(res, '查询数据库活动错误')
-        })
+        }).then(() => restore(db));
     }, reason => {
         failure(res, '无法连接数据库')
     })

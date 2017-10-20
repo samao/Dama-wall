@@ -52,6 +52,8 @@ function createAct(req:IRequest, res:IRespond): void {
             });
         },({errmsg:reason}) => {
             failure(res, `活动名称已经存在 ${req.params.rid}`)
+        }).then(() => {
+            restore(db);
         });
     }, reason => {
         failure(res, `无法连接数据库 ${req.params.rid}`)
@@ -66,7 +68,7 @@ function deleteAct(req:IRequest, res:IRespond): void {
             success(res);
         }, reason => {
             failure(res, `删除活动失败 ${reason}`)
-        })
+        }).then(() => restore(db));
     }, reason => {
         failure(res, `无法连接数据库 ${req.params.rid}`)
     })

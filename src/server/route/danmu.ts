@@ -57,7 +57,7 @@ router.route('/:rid').all((req, res, next) => {
                 }
             }, reason => {
                 failure(res, reason);
-            })
+            }).then(() => restore(db));
         }, reason => {
             failure(res, reason);
         })
