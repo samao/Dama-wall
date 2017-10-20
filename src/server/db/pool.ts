@@ -15,10 +15,14 @@ interface IdleConnector {
     db: Db;
     delay: number;
 }
-
+//用户集合映射
 export interface IUserDB {
     name: string;
     pwd: string;
+}
+//活动集合映射
+export interface IActivityDB {
+    rid: string;
 }
 //集合接口
 interface ICollection {

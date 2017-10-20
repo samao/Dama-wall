@@ -2,7 +2,7 @@ import * as express from "express";
 import * as QRCode from "qrcode";
 import * as path from 'path';
 
-import { checkout, restore } from "../db/pool";
+import { checkout, restore, insert, IActivityDB } from "../db/pool";
 import { Collection } from "../db/collection";
 import { log, error } from "../../utils/log";
 import { HOST, ports } from "../config/conf";
@@ -34,7 +34,8 @@ router.route('/activity/:rid').all((req, res,next) => {
 function createAct(req:IRequest, res:IRespond): void {
     //1.活动写入数据库
     checkout(db => {
-        db.collection(Collection.ACTIVITY).insert({rid:req.params.rid}).then(result => {
+        const actTable = db.collection(Collection.ACTIVITY)
+        insert<IActivityDB>(actTable,{rid:req.params.rid}).then(() => {
             log('活动信息成功写入数据库')
             //2.生成二维码文件
             const QRPath = path.resolve('public','images','qr',`${req.params.rid}.png`);
