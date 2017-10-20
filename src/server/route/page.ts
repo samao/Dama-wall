@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as path from 'path';
 
-import { checkout, restore } from "../db/pool";
+import { checkout, restore, insert, IUserDB } from "../db/pool";
 import { Collection } from "../db/collection";
 import { log, error } from "../../utils/log";
 import { call } from "../../utils/ticker";
@@ -147,10 +147,10 @@ router.route('/register').get((req, res, next) => {
                 failure(res, '已存在用户名，请更换其他昵称')
             } else {
                 //用户注册数据
-                userTable.insert({ 
-                    name: req.body.username, 
-                    pwd: req.body.pwd }
-                ).then(() => {
+                insert<IUserDB>(userTable,{
+                    name: req.body.username,
+                    pwd:req.body.pwd
+                }).then(() => {
                     sessions().set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: req.body.username});
                     success(res, '注册成功')
                 },reason => {

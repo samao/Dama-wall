@@ -6,14 +6,7 @@ import { Collection } from "./collection";
 
 import { promisify } from "util";
 
-const DB_NAME = 'dama'
-const dburl = `mongodb://localhost:${ports.db}/${DB_NAME}`;
-/**
- * db 空闲连接 关闭延迟
- */
-const DELAY = 30000;
-
-const CHECK = 5000;
+//=======类型定义========
 
 /**
  * 空闲连接结构
@@ -23,7 +16,44 @@ interface IdleConnector {
     delay: number;
 }
 
+export interface IUserDB {
+    name: string;
+    pwd: string;
+}
+//集合接口
+interface ICollection {
+    insert(data:any): Promise<any>
+}
+//原始数据类型别名
+type DataType<T> = {
+    [key in keyof T]: T[key]
+}
+//任意扩展类型别名
+type AnyType = {
+    [index:string]: any;
+}
+
+//=======功能代码========
+
+const DB_NAME = 'dama'
+const dburl = `mongodb://localhost:${ports.db}/${DB_NAME}`;
+/**
+ * db 空闲连接 关闭延迟
+ */
+const DELAY = 30000;
+
+const CHECK = 5000;
+
 const idleMap: IdleConnector[] = [];
+
+/**
+ * 强制数据匹配数据库模板
+ * @param collection 集合
+ * @param data 保存数据
+ */
+export function insert<T>(collection:ICollection, data: DataType<T> & AnyType): Promise<any> {
+    return collection.insert(data);
+}
 
 async function connect() {
     return await promisify(mongo.connect)(dburl, {});
