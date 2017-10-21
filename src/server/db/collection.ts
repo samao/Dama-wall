@@ -25,5 +25,9 @@ export enum Collection {
     /**
      * 弹幕表情配置
      */
-    EMOTION = 'emotion'
+    EMOTION = 'emotion',
+    /**
+     * 管理员表
+     */
+    ADMIN = 'admin'
 }

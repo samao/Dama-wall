@@ -37,6 +37,8 @@ let sySession: Symbol;
  * session 有效期 2 min
  */
 const SESSION_LIVE = 2 * 60 * 60 * 1000;
+//session 检测间隔
+const SESSION_CHECK = 5 * 60 * 1000;
 
 /**
  * 缓存页面导航数据
@@ -214,6 +216,6 @@ call(() => {
             return;
         }
     }
-}, SESSION_LIVE);
+}, SESSION_CHECK);
 
 export default router

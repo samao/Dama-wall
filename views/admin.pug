@@ -1,0 +1,11 @@
+doctype html
+html
+    head
+        title 大妈弹幕管理页面
+        script(src="/static/jquery.min.js")
+    body
+        .warp
+            if !user
+                | 请登录
+            else
+                | 欢迎 #{user.username} 等级 #{user.level}
