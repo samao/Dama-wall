@@ -30,13 +30,13 @@ router.route('/').all((req, res, next) => {
         return;
     }
     if(sessions().has(req.sessionID))
-        res.locals.user = sessions().get(req.sessionID)
+        res.locals.adminUser = sessions().get(req.sessionID)
     else
-        res.locals.user = null;
+        res.locals.adminUser = null;
     
     next();
 }).get((req, res, next) => {
-    res.render('admin',res.locals.user);
+    res.render('admin',res.locals.adminUser);
 }).post((req, res, next) => {
     //登录接口
     checkout(db => {

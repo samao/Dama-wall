@@ -5,7 +5,7 @@ html
         script(src="/static/jquery.min.js")
     body
         .warp
-            if !user
+            if !adminUser
                 | 请登录
             else
-                | 欢迎 #{user.username} 等级 #{user.level}
+                | 欢迎 #{adminUser.username} 等级 #{adminUser.level}
