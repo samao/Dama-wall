@@ -7,7 +7,7 @@
         else
             a(href='javascript:void(0)') 您好 #[strong #{loginUser.user}]
             span #[strong  |] 
-            if loginUser.admin
+            if loginUser.isAdmin
                 a(href='/admin' target='_blank') 后台管理
             else
                 a(href='/setting' target='_blank') 设置

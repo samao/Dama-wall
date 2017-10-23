@@ -5,7 +5,9 @@ html
         script(src="/static/jquery.min.js")
     body
         .warp
-            if !adminUser
-                | 请登录
+            if !loginUser
+                | 请先 #[a(href='/login') 登录]
+            else if !loginUser.isAdmin
+                | 您没有权限访问管理页面
             else
-                | 欢迎 #{adminUser.username} 等级 #{adminUser.level}
+                | 欢迎 #{loginUser.user} 等级 #{loginUser.level}

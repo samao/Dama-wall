@@ -16,15 +16,11 @@ enum Level {
     REPORTER
 }
 
-interface IAdmin {
-    username: string;
-    level: Level;
-}
-
 interface ISessionData {
     expires: number;
     user: string;
-    admin?: IAdmin;
+    isAdmin?: boolean;
+    level?: Level;
 }
 
 /** 页面导航数据接口 */
@@ -135,11 +131,10 @@ router.route('/login').get((req, res, next) =>{
     checkout(db => {
         db.collection(Collection.USER).findOne({name:username,pwd}).then(data => {
             if(data) {
-                const {name:user,isAdmin} = data;
+                const {name:user,isAdmin = false} = data;
                 let session:ISessionData = {expires: Date.now() + SESSION_LIVE , user}
                 if(isAdmin) {
-                    const admin:IAdmin = {username: user, level:Level.REPORTER}
-                    session.admin = admin;
+                    Object.assign(session, {isAdmin, level: Level.REPORTER});
                 }
                 sessions().set(<string>req.sessionID, session);
                 success(res);

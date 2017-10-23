@@ -102,7 +102,7 @@ if(cluster.isMaster){
         //全局敏感词初始化
         log('加载全局通用敏感词')
         let sensitives = await sensitive.setup();
-        log('敏感词：',JSON.stringify(sensitives))
+        //log('敏感词：',JSON.stringify(sensitives))
 
         return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length, sensitives};
     }
