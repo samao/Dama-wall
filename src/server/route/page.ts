@@ -10,9 +10,21 @@ import { failure, success } from "../../utils/feedback";
 
 const router = express.Router();
 
+enum Level {
+    OWNER,
+    MASTER,
+    REPORTER
+}
+
+interface IAdmin {
+    username: string;
+    level: Level;
+}
+
 interface ISessionData {
     expires: number;
     user: string;
+    admin?: IAdmin;
 }
 
 /** 页面导航数据接口 */
@@ -123,7 +135,13 @@ router.route('/login').get((req, res, next) =>{
     checkout(db => {
         db.collection(Collection.USER).findOne({name:username,pwd}).then(data => {
             if(data) {
-                sessions().set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: data.name});
+                const {name:user,isAdmin} = data;
+                let session:ISessionData = {expires: Date.now() + SESSION_LIVE , user}
+                if(isAdmin) {
+                    const admin:IAdmin = {username: user, level:Level.REPORTER}
+                    session.admin = admin;
+                }
+                sessions().set(<string>req.sessionID, session);
                 success(res);
             }else{
                 failure(res, '用户名或者密码错误')

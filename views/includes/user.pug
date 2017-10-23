@@ -7,7 +7,10 @@
         else
             a(href='javascript:void(0)') 您好 #[strong #{loginUser.user}]
             span #[strong  |] 
-            a(href='/setting' target='_blank') 设置
+            if loginUser.admin
+                a(href='/admin' target='_blank') 后台管理
+            else
+                a(href='/setting' target='_blank') 设置
             span #[strong  |] 
             a.logout(href='javascript:void(0)') 退出
             script(src="/js/logout.js")

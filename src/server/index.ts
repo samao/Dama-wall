@@ -12,7 +12,7 @@ import {WorkerEvent} from './worker/events';
 import danmuRouter from './route/danmu';
 import pageRouter from './route/page';
 import apiRouter from './route/api';
-import adminRouter from './route/admin'
+import adminApp from './route/admin'
 
 //import * as multer from "multer";
 
@@ -58,14 +58,14 @@ app.use('/js',express.static('dist/browser'));
 app.set('views','./views');
 app.set('view engine','pug');
 
-//http 接受聊天信息路由
-app.use('/danmu',danmuRouter);
 //页面导航
 app.use(pageRouter);
+//http 接受聊天信息路由
+app.use('/danmu',danmuRouter);
 //接口api
 app.use('/api', apiRouter);
 //管理员路由
-app.use('/admin', adminRouter);
+app.use('/admin', adminApp);
 
 app.use((req, res, next) => {
     res.render('404',{navlist: res.locals.pages,error:'水逆飞船爆炸了(1/1)'});
