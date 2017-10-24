@@ -5,6 +5,7 @@
     width: @block;
     min-height: @block;
 }
+
 .header {
     background: url(http://static.youku.com/ddshow/img/laifeng/header/header-min-left.jpg) #fff no-repeat left center;
     height: 70px;
@@ -22,7 +23,7 @@
             position: relative;
         }
         .logo {
-            float: left;
+            .flt;
             width: 130px;
             height: 50px;
             margin-top: 12px;
@@ -33,13 +34,13 @@
             }
         }
         .nav {
-            float: left;
+            .flt;
             position: relative;
             width:441px;
             overflow: hidden;
             li {
                 position: relative;
-                float: left;
+                .flt;
                 a {
                     display: block;
                     height: 70px;
@@ -147,14 +148,14 @@
             line-height: 25px;
             padding:15px;
             label {
+                .flt;
                 height: @block;
-                float: left;
                 font-size: 14px;
             }
             input {
+                .flt(right);
                 height:@block;
                 width:180px;
-                float: right;
                 padding-left: 6px;
             }
         }
