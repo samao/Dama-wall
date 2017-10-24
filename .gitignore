@@ -1,5 +1,6 @@
 client/bin-debug
 public/images/qr
+public/less
 data/db/
 data/db_back/
 dist/

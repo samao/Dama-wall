@@ -1,0 +1,172 @@
+@import 'base';
+
+.wrapper {
+    min-width: 1000px;
+    width: 100%;
+    min-height: 100%;
+}
+.header {
+    background: url(http://static.youku.com/ddshow/img/laifeng/header/header-min-left.jpg) #fff no-repeat left center;
+    height: 70px;
+    border-bottom: 1px solid #f3de86;
+    -webkit-box-shadow: 0 4px 5px rgba(0,0,0,0.05);
+    -moz-box-shadow: 0 4px 5px rgba(0,0,0,0.05);
+    -ms-box-shadow: 0 4px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 5px rgba(0,0,0,0.05);
+    .header-box {
+        background:url(http://static.youku.com/ddshow/img/laifeng/header/header-min-right.jpg) no-repeat right center;
+        .lf-box {
+            margin: 0 auto;
+            width: 1000px;
+            height: 70px;
+            position: relative;
+        }
+        .logo {
+            float: left;
+            width: 130px;
+            height: 50px;
+            margin-top: 12px;
+            margin-left: 22px;
+            margin-right: 20px;
+            a{
+                display: block;
+            }
+        }
+        .nav {
+            float: left;
+            position: relative;
+            width:441px;
+            overflow: hidden;
+            li {
+                position: relative;
+                float: left;
+                a {
+                    display: block;
+                    height: 70px;
+                    padding: 0 18px;
+                    line-height: 70px;
+                    color:#000;
+                    font-size: 16px;
+                    font-weight: bold;
+                    &:hover {
+                        background:#eee;
+                    }
+                }
+                .current {
+                    position: absolute;
+                    display: block;
+                    height: 3px;
+                    width:100%;
+                    bottom:0;
+                    background: #f3de86;
+                    -webkit-transition: 300ms all ease;
+                    -moz-transition: 300ms all ease;
+                    -ms-transition: 300ms all ease;
+                    transition: 300ms all ease;
+                }
+            }
+        }
+        .user {
+            height: 70ppx;
+            position: absolute;
+            right: 20px;
+            .no-login {
+                line-height: 70px;
+                color: #000;
+                text-align: center;
+                font-size: 14px;
+                cite {
+                    padding: 0 10px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width:1550px) {
+    .header {
+        background: url(http://static.youku.com/ddshow/img/laifeng/header/header_bg_v2.jpg) #ffd728 no-repeat center center;
+        .header-box {
+            background: none;
+        }
+    }
+}
+
+.main {
+    height:100%;
+    padding-bottom: 100px;
+    > p {
+        text-align: center;
+    }
+}
+.content {
+    text-align: center;
+    width:1000px;
+    margin: 0 auto;
+}
+.footer {
+    clear: both;
+    width: 100%;
+    min-width: 1000px;
+    height: 100px;
+    margin-top: -100px;
+    background: #000;
+    color:#999;
+    .footer-box {
+        padding: 30px 0;
+        font-size: 14px;
+        line-height: 24px;
+        text-align: center;
+        margin: 0 auto;
+        height:0px;
+        width:100%;
+        .light {
+            color:#eee;
+            margin-top: 10px;
+            span {
+                &::before {
+                    content: "|";
+                    padding: 0 12px;
+                    color:#eee;
+                }
+            }
+        }
+    }
+}
+
+.register-warp{
+    width:100%;
+    position: relative;
+    .reg-box{
+        width: 280px;
+        position: absolute;
+        right: 100px;
+        top:100px;
+        .group {
+            height: 25px;
+            line-height: 25px;
+            padding:15px;
+            label {
+                height: 100%;
+                float: left;
+                font-size: 14px;
+            }
+            input {
+                height:100%;
+                width:180px;
+                float: right;
+                padding-left: 6px;
+            }
+        }
+        .info {
+            color:red;
+        }
+    }
+}
+
+#registerBtn {
+    background:#ffd727;
+    width:80px;
+    border-radius: 5px;
+    cursor: pointer;
+}

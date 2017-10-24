@@ -14,9 +14,8 @@ import pageRouter from './route/page';
 import apiRouter from './route/api';
 import adminApp from './route/admin'
 
-//import * as multer from "multer";
-
-const lessMiddleware = require('less-middleware');
+//less文件中间件
+import less = require('less-middleware');
 
 const app = express();
 const MongoStore = connectMongo(expressSession);
@@ -53,9 +52,9 @@ app.use((req, res, next) => {
 })
 
 //less 文件编译,服务器重启后并且有请求会生成一次
-app.use('/less',lessMiddleware(path.resolve('src','browser','less'),{
+app.use('/less',less(path.resolve('src','browser','less'),{
     dest:path.resolve('public','less'),
-    once:true
+    once:false
 }), express.static(path.resolve('public','less')));
 
 //静态资源

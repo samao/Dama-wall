@@ -1,0 +1,59 @@
+@background: #f1f1f1;
+@font-size: 12px;
+@font: 微软雅黑,arial,宋体;
+@holder: #d1cece;
+@block: 100%;
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+html,body {
+    width: @block;
+    height: @block;
+    line-height: 1;
+    font-size: @font-size;
+    background: @background;
+    font-family: @font;
+}
+li,ol,ul {
+    list-style: none;
+}
+a {
+    background-color: transparent;
+    -webkit-text-decoration-skip: object;
+    text-decoration: none;
+
+    &:active, &:hover {
+        outline-width: 0;
+    }
+}
+
+input,textarea {
+    &::-webkit-input-placeholder {
+        color: @holder;
+    }
+}
+
+&::-webkit-input-placeholder {
+    color: inherit;
+    opacity: .54
+}
+
+input,select,textarea {
+    resize: none;
+    border:none;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-border-radius: 0;
+    border-radius: 0
+}
+
+img {
+    border-style: none;
+}
+textarea{
+    overflow: auto;
+}
