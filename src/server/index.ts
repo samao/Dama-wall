@@ -4,7 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from "body-parser";
 import * as cluster from 'cluster';
 import * as path from 'path';
-import * as connectMongo from "connect-mongo";
+import * as connectMongo from 'connect-mongo';
 
 import {log} from '../utils/log';
 import {secret,ports} from './config/conf'
@@ -15,6 +15,8 @@ import apiRouter from './route/api';
 import adminApp from './route/admin'
 
 //import * as multer from "multer";
+
+const lessMiddleware = require('less-middleware');
 
 const app = express();
 const MongoStore = connectMongo(expressSession);
@@ -50,9 +52,15 @@ app.use((req, res, next) => {
     next();
 })
 
+//less 文件编译,服务器重启后并且有请求会生成一次
+app.use('/less',lessMiddleware(path.resolve('src','browser','less'),{
+    dest:path.resolve('public','less'),
+    once:true
+}), express.static(path.resolve('public','less')));
+
 //静态资源
 app.use('/static',express.static('public'));
-app.use('/js',express.static('dist/browser'));
+app.use('/js',express.static(path.resolve('dist','browser')));
 
 //模板路径
 app.set('views','./views');
@@ -68,6 +76,7 @@ app.use('/api', apiRouter);
 app.use('/admin', adminApp);
 
 app.use((req, res, next) => {
+    res.status(404);
     res.render('404',{navlist: res.locals.pages,error:'水逆飞船爆炸了(1/1)'});
 })
 
