@@ -123,7 +123,7 @@ class DanmuServer {
                         })
                     }else
                         ws.close(undefined, `需要发送登录action "${Actions.ENTRY}"`);
-                }catch(e){
+                }catch{
                     ws.close(undefined, '用户认证消息参数错误');
                     return;
                 }
