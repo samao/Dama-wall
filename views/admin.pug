@@ -3,11 +3,11 @@ html
     head
         title 大妈弹幕管理页面
         script(src="/static/jquery.min.js")
+        link(rel="stylesheet", href="/less/admin.css")
     body
-        .warp
-            if !loginUser
-                | 请先 #[a(href='/login') 登录]
-            else if !loginUser.isAdmin
-                | 您没有权限访问管理页面
-            else
-                | 欢迎 #{loginUser.user} 等级 #{loginUser.level}
+        if !loginUser
+            | 请先 #[a(href='/login') 登录]
+        else if !loginUser.isAdmin
+            | 您没有权限访问管理页面
+        else
+            include admin/index

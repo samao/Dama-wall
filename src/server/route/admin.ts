@@ -12,7 +12,7 @@ adminApp.route('/').all((req, res, next) => {
     //这里能干点什么
     next();
 }).get((req, res, next) => {
-    res.render('admin',res.locals.loginUser);
+    res.render('admin',{cache:false,loginUser:res.locals.loginUser});
 })
 
 export default adminApp;

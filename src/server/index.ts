@@ -39,6 +39,8 @@ app.use(expressSession({
     secret,
     store:new MongoStore({
         url:`mongodb://localhost:${ports.db}/sessions`,
+        //session一天有效期
+        ttl: 24 * 60 * 60,
     }),
     genid:(req) => {
         let time = Date.now() + `_${secret}_` + Math.floor(Math.random() * 1000);
