@@ -10,6 +10,70 @@
     float: @dir;
 }
 
+.after-arrow {
+    display:inline-block;
+    vertical-align:middle;
+    content:' ';
+    margin: 0 5px;
+    font-size: 0;  
+    line-height: 0;  
+    border-width: 5px;  
+    border-color: #666;  
+    border-style: dashed;  
+}
+
+.mixin-arrow (@dir) when (@dir = down) {
+    &::after {
+        .after-arrow;
+        border-top-style: solid;  
+        border-bottom-width: 0;
+        border-left-color: transparent;  
+        border-right-color: transparent; 
+    } 
+ }
+ .mixin-arrow (@dir) when (@dir = top) {
+    &::after {
+        .after-arrow;
+        border-bottom-style: solid;  
+        border-top-width: 0; 
+        border-left-color: transparent;  
+        border-right-color: transparent; 
+    }
+ }
+ .mixin-arrow (@dir) when (@dir = left) {
+    &::after {
+        .after-arrow;
+        border-right-style: solid; 
+        border-left-width: 0;
+        border-top-color: transparent;  
+        border-bottom-color: transparent; 
+    }
+ }
+ .mixin-arrow (@dir) when (@dir = right) {
+    &::after {
+        .after-arrow;
+        border-left-style: solid;  
+        border-right-width: 0; 
+        border-top-color: transparent;  
+        border-bottom-color: transparent; 
+    }
+ }
+
+.arrow-down {
+    .mixin-arrow(down);
+}
+.arrow-top {
+    .mixin-arrow(top);
+}
+
+.arrow-left {
+    .mixin-arrow(left);
+}
+
+.arrow-right {
+    .mixin-arrow(right);
+}
+
 * {
     margin: 0px;
     padding: 0px;

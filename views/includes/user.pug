@@ -5,7 +5,7 @@
             span #[strong  |] 
             a(href='/register') 注册
         else
-            a(href='javascript:void(0)') 您好 #[strong #{loginUser.user}]
+            a(href='javascript:void(0)').arrow-left 您好 #[strong #{loginUser.user}]
             span #[strong  |] 
             if loginUser.isAdmin
                 a(href='/admin' target='_blank') 后台管理
