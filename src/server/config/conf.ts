@@ -1,12 +1,12 @@
+export const HOST = 'http://dama.cn';
+
 export const secret = "idzeir$";
 export const ports:{web:number,ws:number,db:number} = {
     web: 3000,
     ws: 8080,
     db: 27017
 }
-export const HOST = 'http://dama.cn';
-
-export const ADMIN_LIST = [
+export const adminPage = [
     {title: '欢迎', template: 'welcome'},
     {title: '导航配置', template: 'nav-manager'},
     {title: '活动管理', template: 'acti-manager'},
