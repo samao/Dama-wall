@@ -4,7 +4,7 @@
         p 欢迎 #{loginUser.user} 等级 #{loginUser.level}
     .left-nav
         ul.nav
-            - list = ['欢迎','导航配置','活动管理','弹幕表情','用户管理','敏感词']
             each item in list
-                li.nav-item #[strong #{item}]
+                li.nav-item(data=item.template) #[strong #{item.title}]
     .content
+script(src="/js/admin.js")

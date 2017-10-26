@@ -5,3 +5,12 @@ export const ports:{web:number,ws:number,db:number} = {
     db: 27017
 }
 export const HOST = 'http://dama.cn';
+
+export const ADMIN_LIST = [
+    {title: '欢迎', template: 'welcome'},
+    {title: '导航配置', template: 'nav-manager'},
+    {title: '活动管理', template: 'acti-manager'},
+    {title: '弹幕表情', template: 'emotion-manager'},
+    {title: '用户管理', template: 'user-manager'},
+    {title: '敏感词', template: 'filter-manager'}
+];

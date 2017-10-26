@@ -5,7 +5,8 @@ const allMap = {
     send:'./src/browser/send.ts',
     register:'./src/browser/register.ts',
     login:'./src/browser/login.ts',
-    logout:'./src/browser/logout.ts'
+    logout:'./src/browser/logout.ts',
+    admin:'./src/browser/admin.ts'
 }
 
 /**
