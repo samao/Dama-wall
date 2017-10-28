@@ -1,4 +1,4 @@
-export const HOST = 'htBoard://dama.cn';
+export const HOST = 'http://dama.cn';
 
 export const secret = "idzeir$";
 export const ports:{web:number,ws:number,db:number} = {
