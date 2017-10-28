@@ -1,17 +1,15 @@
 import { log, error } from '../utils/log';
-import * as dot from 'dot';
 
-renderTemplete('welcome',{message:'欢迎登陆后台管理'})
+getRemoteTemplate('welcome',{message:'欢迎登陆后台管理'})
 
 $('.nav-item').click(function(){
-    const template = $(this).attr('data');
-    template && renderTemplete(template, {message:`远程模板: ${template}`})
+    const tempName = $(this).attr('data');
+    tempName && getRemoteTemplate(tempName, {message:`远程模板: ${tempName}`})
 })
 
-function renderTemplete(url: string, data?: any): void {
+function getRemoteTemplate(url: string, data?: any): void {
     const template = `/template/${url}`;
-    $.get(template).done((text) => {
-        const warpper = dot.compile(text)(data);
-        $('.content').html(warpper);
+    $.get(template).done(text => {
+        $('.content').html(text);
     })
 }

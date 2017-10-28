@@ -13,7 +13,6 @@ import danmuRouter from './route/danmu';
 import pageRouter from './route/page';
 import apiRouter from './route/api';
 import adminApp from './route/admin'
-import templateRouter from './route/template';
 
 //less文件中间件
 import less = require('less-middleware');
@@ -54,9 +53,6 @@ app.use((req, res, next) => {
     next();
 })
 
-//客户端渲染，模板，直接发到客户端 数据dot 方式客户端添加
-app.use('/template', templateRouter);
-
 //less 文件编译,服务器重启后并且有请求会生成一次
 app.use('/less',less(path.resolve('src','browser','less'),{
     dest:path.resolve('public','less'),
@@ -78,7 +74,7 @@ app.use('/danmu',danmuRouter);
 //接口api
 app.use('/api', apiRouter);
 //管理员路由
-app.use('/admin', adminApp);
+app.use(adminApp);
 
 app.use((req, res, next) => {
     res.status(404);
