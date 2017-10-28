@@ -24,9 +24,11 @@ adminApp.route('/template/:board').get((req, res, next) => {
     const pugPath = path.join('template',req.params.board + '.pug');
     log('请求模板', pugPath);
     obtain(req.params.board).then(data => {
-        res.render(pugPath, data, (error, html) => {
-            if(error) {
-                res.sendStatus(404);
+        //log(JSON.stringify(data));
+        res.render(pugPath, data, (err, html) => {
+            if(err) {
+                error('渲染模板失败',err);
+                res.sendStatus(500);
                 res.end(`渲染模板失败 ${pugPath}`);
             }else {
                 res.setHeader('Content-Type','text/plain; charset=utf-8');

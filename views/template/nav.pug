@@ -1,4 +1,8 @@
 .content-box
-    h1 #{title}
-    each item in list
-        div #{item}
+     ul
+        each page in pages
+            li 
+                .emotion-item 
+                    span.em-id #{page.id} 
+                    span.em-tag #{page.label}
+                    span.em-url #{page.ref}

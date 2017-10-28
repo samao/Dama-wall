@@ -1,4 +1,9 @@
 .content-box
-    h1 #{title}
-    each item in list
-        div #{item}
+    ul
+        each item in list
+            li 
+                .emotion-item 
+                    span.em-id #{item.id} 
+                    span.em-tag #{item.tag}
+                    span.em-url #{item.url}
+                    input(type='checkbox' checked=item.active)

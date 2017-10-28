@@ -10,8 +10,8 @@ append title
 block main
     .register-warp
         .reg-box
-            +input('用户名', 'text', 'username')(placeholder='输入用户名')
-            +input('密码', 'password', 'pwd')(placeholder='输入密码')
+            +input('用户名', 'text', 'username')(placeholder='输入用户名' value = 'admin')
+            +input('密码', 'password', 'pwd')(placeholder='输入密码' value = 'admin')
             +input('','button','')(value='登录')#registerBtn
             p.info
 block script
