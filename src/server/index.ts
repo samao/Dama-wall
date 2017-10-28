@@ -5,6 +5,7 @@ import * as bodyParser from "body-parser";
 import * as cluster from 'cluster';
 import * as path from 'path';
 import * as connectMongo from 'connect-mongo';
+import * as compression from 'compression';
 
 import {log} from '../utils/log';
 import {secret,ports} from './config/conf'
@@ -22,6 +23,9 @@ const MongoStore = connectMongo(expressSession);
 
 app.disable('x-powered-by');
 log('服务器运行环境：' + app.get('env'));
+
+//所有请求压缩
+app.use(compression());
 
 //json 化数据 application/json
 app.use(bodyParser.json());
@@ -66,6 +70,7 @@ app.use('/js',express.static(path.resolve('dist','browser')));
 //模板路径
 app.set('views','./views');
 app.set('view engine','pug');
+app.set('view cache', false);
 
 //页面导航
 app.use(pageRouter);

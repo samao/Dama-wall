@@ -45,7 +45,6 @@
 //http 发送弹幕
 (function(){
     $.post('http://localhost:3000/danmu/9999',{message:'又说那话'}, data => {
-        data = JSON.parse(data);
         if(data.ok) 
             console.log('发送成功:'+ data.data)
         else
