@@ -1,8 +1,14 @@
-.content-box
-     ul
-        each item in users
-            li 
-                .emotion-item 
-                    //-span.em-id #{item._id} 
-                    span.em-tag #{item.name}
-                    input(type='checkbox' checked=item.isAdmin)
+.content-box.container
+    table.table.table-striped.table-condensed.table-hover
+        thead
+            tr
+                td 编号
+                td 昵称
+                td 管理员
+        tbody
+            each item in users
+                tr
+                    th.text-center #{item._id}
+                    td #{item.name}
+                    td
+                        input(type='checkbox' checked=item.isAdmin)

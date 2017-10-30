@@ -69,7 +69,7 @@ function obtainEmotions(): Promise<any> {
     return new Promise((resolve, reject) => {
         checkout(db => {
             const emotions = db.collection(Collection.EMOTION);
-            emotions.find().toArray().then(data => {
+            emotions.find().limit(15).toArray().then(data => {
                 resolve({list: data})
             }).catch(reject);
         }, reason => reject(reason))

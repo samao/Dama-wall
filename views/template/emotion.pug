@@ -1,9 +1,16 @@
-.content-box
-    ul
-        each item in list
-            li 
-                .emotion-item 
-                    span.em-id #{item.id} 
-                    span.em-tag #{item.tag}
-                    span.em-url #{item.url}
-                    input(type='checkbox' checked=item.active)
+.content-box.container
+    table.table.table-striped.table-condensed.table-hover
+        thead
+            tr
+                td 编号
+                td 标识
+                td 地址
+                td 启用
+        tbody
+            each item in list
+                tr
+                    th.text-center #{item.id}
+                    td #{item.tag}
+                    td #{item.url}
+                    td
+                        input(type='checkbox' checked=item.active)

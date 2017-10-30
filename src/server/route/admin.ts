@@ -17,7 +17,7 @@ adminApp.route('/admin').all((req, res, next) => {
     //这里能干点什么
     next();
 }).get((req, res, next) => {
-    res.render('admin',{loginUser:res.locals.loginUser, list: adminPage});
+    res.render('admin',{'cache':false,loginUser:res.locals.loginUser, list: adminPage});
 })
 
 adminApp.route('/template/:board').get((req, res, next) => {
