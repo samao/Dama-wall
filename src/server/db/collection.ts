@@ -29,5 +29,9 @@ export enum Collection {
     /**
      * 管理员表
      */
-    ADMIN = 'admin'
+    ADMIN = 'admin',
+    /**
+     * 系统级自动增长id表
+     */
+    INDEXES = 'indexes'
 }

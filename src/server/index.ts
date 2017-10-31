@@ -119,11 +119,26 @@ if(cluster.isMaster){
         let sensitives = await sensitive.setup();
         //log('敏感词：',JSON.stringify(sensitives))
 
-        return {syncTransfer, actions, increaseOne, reduceOne, reduceAll, cpuNum: cpus().length, sensitives};
+        return {
+            syncTransfer, 
+            actions, 
+            increaseOne, 
+            reduceOne, 
+            reduceAll, 
+            cpuNum: cpus().length, 
+            sensitives
+        };
     }
 
     
-    workerGo().then(({syncTransfer, cpuNum, actions, increaseOne, reduceOne, reduceAll, sensitives}) => {
+    workerGo().then(({
+        syncTransfer, 
+        cpuNum, 
+        actions, 
+        increaseOne, 
+        reduceOne, 
+        reduceAll, 
+        sensitives}) => {
         //启动弹幕线程
         log(`主线程 PID: ${process.pid}, CPU: ${cpuNum} 个`);
 

@@ -1,19 +1,20 @@
-import * as express from "express";
+import * as express from 'express';
 import * as path from 'path';
+import * as md5 from 'md5';
 
-import { checkout, restore, insert, IUserDB } from "../db/pool";
-import { Collection } from "../db/collection";
-import { log, error } from "../../utils/log";
-import { call } from "../../utils/ticker";
-import { cache, get } from "../../utils/caches";
-import { failure, success } from "../../utils/feedback";
+import { checkout, restore, insert, IUserDB, getAutoKey } from '../db/pool';
+import { Collection } from '../db/collection';
+import { log, error } from '../../utils/log';
+import { call } from '../../utils/ticker';
+import { cache, get } from '../../utils/caches';
+import { failure, success } from '../../utils/feedback';
 
 const router = express.Router();
 
 enum Level {
-    OWNER,
-    MASTER,
-    REPORTER
+    REPORTER = 0,
+    MASTER = 99,
+    OWNER = 999
 }
 
 interface ISessionData {
@@ -129,12 +130,12 @@ router.route('/login').get((req, res, next) =>{
 }).post((req, res, next) => {
     let {username,pwd} = req.body;
     checkout(db => {
-        db.collection(Collection.USER).findOne({name:username,pwd}).then(data => {
+        db.collection(Collection.USER).findOne({name:username,pwd: md5(pwd)}).then(data => {
             if(data) {
-                const {name:user,isAdmin = false} = data;
+                const {name:user,isAdmin = false, level} = data;
                 let session:ISessionData = {expires: Date.now() + SESSION_LIVE , user}
                 if(isAdmin) {
-                    Object.assign(session, {isAdmin, level: Level.REPORTER});
+                    Object.assign(session, {isAdmin, level});
                 }
                 sessions().set(<string>req.sessionID, session);
                 success(res);
@@ -161,16 +162,25 @@ router.route('/register').get((req, res, next) => {
             if (data) {
                 failure(res, '已存在用户名，请更换其他昵称')
             } else {
-                //用户注册数据
-                insert<IUserDB>(userTable,{
-                    name: req.body.username,
-                    pwd:req.body.pwd
-                }).then(() => {
-                    sessions().set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: req.body.username});
-                    success(res, '注册成功')
-                },reason => {
-                    failure(res, '注册用户写入数据库失败');
-                })
+                getAutoKey(Collection.USER).then(_id => {
+                    log('注册用户密码: ', md5(req.body.pwd));
+                    //用户注册数据
+                    insert<IUserDB>(userTable,{
+                        _id, 
+                        name: req.body.username,
+                        pwd: md5(req.body.pwd),
+                        tel: req.body.tel,
+                        mail: req.body.mail,
+                        isAdmin: false,
+                        level: Level.REPORTER
+                    }).then(() => {
+                        sessions().set(<string>req.sessionID, { expires: Date.now() + SESSION_LIVE , user: req.body.username});
+                        success(res, '注册成功')
+                    },reason => {
+                        log(reason);
+                        failure(res, '注册用户写入数据库失败');
+                    })
+                },reason => failure(res, `获取自动增长id失败 ${Collection.USER}`))
             }
         }, reason => {
             failure(res, reason)

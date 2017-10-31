@@ -25,7 +25,7 @@ adminApp.route('/template/:board').get((req, res, next) => {
     log('请求模板', pugPath);
     obtain(req.params.board).then(data => {
         //log(JSON.stringify(data));
-        res.render(pugPath, data, (err, html) => {
+        res.render(pugPath, Object.assign(data,{cache:false}), (err, html) => {
             if(err) {
                 error('渲染模板失败',err);
                 res.sendStatus(500);

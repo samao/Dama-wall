@@ -59,6 +59,31 @@ export function insert<T>(collection:ICollection, data: DataType<T> & AnyType): 
     return collection.insert(data);
 }
 
+export async function getAutoKey(product: Collection): Promise<number> {
+    
+    let db = await connect();
+    
+    let coll = db.collection(Collection.INDEXES);
+    
+    return await new Promise<number>((resolve, reject) => {
+            coll.findOne({_id: product}).then(data => {
+                if(data) {
+                    coll.findOneAndUpdate({_id: product}, {$inc:{index:1}}, (error, {value:{index}}) => {
+                        if(error) {
+                            reject(`无法更新key ${product}`)
+                            return;
+                        }
+                        resolve(++index);
+                    })
+                }else {
+                    coll.save({_id: product, index: 10000});
+                    resolve(10000);
+                }
+            })
+        }
+    )
+}
+
 async function connect() {
     return await promisify(mongo.connect)(dburl, {});
 }

@@ -4,11 +4,25 @@
             tr
                 td 编号
                 td 昵称
+                td 邮箱
+                td 手机
                 td 管理员
+                td 操作
         tbody
             each item in users
                 tr
-                    th.text-center #{item._id}
+                    th.text-center.uid #{item._id}
                     td #{item.name}
+                    td #{item.mail}
+                    td 
+                        //- 只有超级管理才能看到手机号
+                        if loginUser.level < 999
+                            | #{String(item.tel).replace(/(\d{3})(\d{4})(\d{4})/,'$1****$2')}
+                        else 
+                            | #{item.tel}
                     td
-                        input(type='checkbox' checked=item.isAdmin)
+                        input(type='checkbox' checked=item.isAdmin).isAdmin
+                    td
+                        button.btn.btn-primary.btn-xs.modify-btn 修改
+
+    script(src="/js/boards/user.js")

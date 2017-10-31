@@ -7,6 +7,8 @@ $(() => {
         let username = $('input[name="username"]').val();
         let pwd = $('input[name="pwd"]').val();
         let confirm = $('input[name="confirmPwd"]').val();
+        let mail = $('input[name="mail"]').val();
+        let tel = $('input[name="tel"]').val();
 
         const infoTxt = $('.info');
 
@@ -27,7 +29,9 @@ $(() => {
 
         $.post('/register',{
             username,
-            pwd
+            pwd,
+            tel,
+            mail
         }, (data: SuccessType | FailType) => {
             log(JSON.stringify(data));
             if(isSuccessType(data)) {

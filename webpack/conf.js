@@ -6,7 +6,10 @@ const allMap = {
     register:'./src/browser/register.ts',
     login:'./src/browser/login.ts',
     logout:'./src/browser/logout.ts',
-    admin:'./src/browser/admin.ts'
+    admin:'./src/browser/admin.ts',
+    boards:{
+        user:'./src/browser/boards/user.ts'
+    }
 }
 
 /**
