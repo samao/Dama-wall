@@ -52,7 +52,7 @@ function createAct(req:IRequest, res:IRespond): void {
                 log('活动信息成功写入数据库')
                 //2.生成二维码文件
                 const QRPath = path.resolve('public','images','qr',`${req.params.rid}.png`);
-                const QRData = `${HOST}/danmu/${req.params.rid}`;
+                const QRData = `${HOST}:${ports.web}/danmu/${req.params.rid}`;
                 
                 log('二维码存储地址',QRPath);
                 log('二维码内容',QRData);
