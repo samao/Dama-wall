@@ -30,7 +30,7 @@ export class DanmuCertify {
     setup(): Promise<string[]> {
         return new Promise((res,rej) => {
             checkout(db => {
-                db.collection(Collection.SENSITIVE).find().toArray().then((all) => {
+                db.collection(Collection.SENSITIVE).find({},{_id:0}).toArray().then((all) => {
                     this._cMap.push(...all.map(data => data.words))
                     res(this.words)
                 },reason => {

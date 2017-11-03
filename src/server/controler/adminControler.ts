@@ -55,7 +55,7 @@ function obtainPages(): Promise<any> {
     return new Promise((resolve, reject) => {
         checkout(db => {
             const pages = db.collection(Collection.PAGES);
-            pages.find().toArray().then(data => {
+            pages.find({},{_id:0}).toArray().then(data => {
                 resolve({pages:data})
             }).catch(reject)
         }, reason => reject(reason));
@@ -69,7 +69,7 @@ function obtainEmotions(): Promise<any> {
     return new Promise((resolve, reject) => {
         checkout(db => {
             const emotions = db.collection(Collection.EMOTION);
-            emotions.find().limit(15).toArray().then(data => {
+            emotions.find({},{_id:0}).limit(15).toArray().then(data => {
                 resolve({list: data})
             }).catch(reject);
         }, reason => reject(reason))
@@ -82,7 +82,8 @@ function obtainActivity({pageNo = 1, size = 50} = {}): Promise<any> {
     return new Promise((resolve, reject) => {
         checkout(db => {
             const actiCollection = db.collection(Collection.ACTIVITY);
-            actiCollection.find().limit(size).toArray().then(data => {
+            actiCollection.find({},{created:0}).limit(size).toArray().then(data => {
+                log('活动数据',JSON.stringify(data))
                 resolve({list:data})
             }).catch(reject)
         },reason => reject(reason))

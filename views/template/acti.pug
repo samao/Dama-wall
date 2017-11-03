@@ -1,3 +1,17 @@
-.content-box
-    each item in list
-        div #{item._id} : #{item.rid}
+.content-box.container
+    table.table.table-striped.table-condensed.table-hover
+        thead
+            tr
+                td 编号
+                td 房间名
+                td 标题
+                td 创建人
+                td 描述
+        tbody
+            each item in list
+                tr
+                    th.text-center #{item._id}
+                    td #{item.rid}
+                    td #{item.title}
+                    td #{item.master}
+                    td #{item.description}

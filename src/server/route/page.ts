@@ -75,7 +75,7 @@ router.use((req, res, next) => {
     if (!syPages) {
         checkout(db => {
             //查询按id排序1,2,...
-            db.collection(Collection.PAGES).find().sort({id:1}).toArray().then(data => {
+            db.collection(Collection.PAGES).find({},{_id:0}).sort({id:1}).toArray().then(data => {
                 if (data) {
                     syPages = cache(data)
                     //log(`页面导航数据：${JSON.stringify(syPages)}`);

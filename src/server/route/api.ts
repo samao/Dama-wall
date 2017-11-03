@@ -48,7 +48,16 @@ function createAct(req:IRequest, res:IRespond): void {
     checkout(db => {
         const actTable = db.collection(Collection.ACTIVITY)
         getAutoKey(Collection.ACTIVITY).then(_id => {
-            insert<IActivityDB>(actTable,{_id, rid: req.params.rid}).then(() => {
+            const master = res.locals.loginUser.user;
+            const {title = '未指定', description = '未指定'} = req.body;
+            insert<IActivityDB>(actTable,{
+                _id, 
+                rid: req.params.rid, 
+                title, 
+                description,
+                master,
+                created:new Date()
+            }).then(() => {
                 log('活动信息成功写入数据库')
                 //2.生成二维码文件
                 const QRPath = path.resolve('public','images','qr',`${req.params.rid}.png`);

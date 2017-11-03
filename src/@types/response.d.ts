@@ -8,4 +8,5 @@ declare interface IRespond {
 
 declare interface IRequest {
     params:any;
+    body:any;
 }

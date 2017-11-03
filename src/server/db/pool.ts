@@ -23,6 +23,8 @@ export interface IUserDB {
 //活动集合映射
 export interface IActivityDB {
     rid: string;
+    title: string;
+    description: string;
 }
 //集合接口
 interface ICollection {
