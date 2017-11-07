@@ -83,7 +83,7 @@ function obtainActivity({pageNo = 1, size = 50} = {}): Promise<any> {
         checkout(db => {
             const actiCollection = db.collection(Collection.ACTIVITY);
             actiCollection.find({},{created:0}).limit(size).toArray().then(data => {
-                log('活动数据',JSON.stringify(data))
+                //log('活动数据',JSON.stringify(data))
                 resolve({list:data})
             }).catch(reject)
         },reason => reject(reason))

@@ -20,6 +20,13 @@ router.route('/user/:uid').post((req, res, next) => {
         })
         success(res, '更新用户信息成功')
     }, reason => failure(res, `user 接口无法连接数据库`))
+}).delete((req, res, next) => {
+    checkout(db => {
+        const users = db.collection(Collection.USER);
+        users.remove({_id: +req.params.uid}).then(data => {
+            success(res, '删除成功')
+        }).catch(reason => failure(res, `无法删除用户 ${reason}`))
+    }, reason => failure(res, `数据库连接失败无法删除用户`))
 })
 
 //提供哦前端数据接口
