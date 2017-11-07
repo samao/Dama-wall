@@ -1,21 +1,27 @@
 extends index
-mixin input(label, type, name)
-    .group
-        if label != ''
-            label(for=name) #{label}
-        input(type=type name=name id=name)&attributes(attributes)
+
+append css
+    link(rel="stylesheet" href="/static/bootstrap.min.css")
+block script
+    script(src="/js/register.js")
+
+mixin createGroup(id, holder, label)
+    .form-group
+        label(for=id).col-sm-3.control-label #{label}
+        .col-sm-9
+            input(type=id placeholder=holder id=id).form-control
     
 append title 
     | | 注册会员
 block main
-    .register-warp
-        .reg-box
-            +input('用户名', 'text', 'username')(placeholder='输入用户名')
-            +input('密码', 'password', 'pwd')(placeholder='输入密码')
-            +input('密码确认', 'password', 'confirmPwd')(placeholder='确认密码')
-            +input('邮箱','text','mail')(placeholder='输入邮箱')
-            +input('手机号','text','tel')(placeholder='输入手机号')
-            +input('','button','')(value='注册')#registerBtn
-            p.info
-block script
-    script(src="/js/register.js")
+    .register-body
+        form.form-horizontal
+            +createGroup('username', '输入用户名', '用户名')
+            +createGroup('pwd', '输入密码', '密码')
+            +createGroup('confirmPwd', '确认密码', '确认密码')
+            +createGroup('mail', '输入邮箱', '邮箱')
+            +createGroup('tel', '输入手机号', '手机号')
+            .form-group
+                a.btn.btn-default#loginBtn(href='/login') 登录
+                button.btn.btn-default#registerBtn 注册
+        p.info

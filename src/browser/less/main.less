@@ -101,6 +101,7 @@
     }
 }
 .content {
+    position: relative;
     text-align: center;
     width:@min-warp;
     margin: 0 auto;
@@ -135,44 +136,19 @@
     }
 }
 
-.register-warp{
-    width:100%;
-    position: relative;
-    .reg-box{
-        padding: 30px;
-        background: darken(@background, 5%);
-        border-radius: 5px;
-        width: 280px;
-        position: absolute;
-        right: 100px;
-        top:50px;
-        .group {
-            height: 25px;
-            line-height: 25px;
-            padding:15px;
-            label {
-                .flt;
-                height: @block;
-                font-size: 14px;
-                font-weight: bold;
-            }
-            input {
-                .flt(right);
-                border-radius: 3px;
-                height:@block;
-                width:180px;
-                padding-left: 6px;
-            }
-        }
-        .info {
-            color:red;
-        }
+.register-body {
+    position: absolute;
+    width:380px;
+    padding: 15px;
+    border-radius: 8px;
+    //background: darken(@background, 15%);
+    margin-left: 50%;
+    top:100px;
+    transform: translateX(-50%);
+    #loginBtn {
+        margin-right:40px;
     }
-}
-
-#registerBtn {
-    background:#ffd727;
-    width:80px;
-    border-radius: 5px;
-    cursor: pointer;
+    .info {
+        color:red;
+    }
 }

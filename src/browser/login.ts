@@ -4,9 +4,11 @@ import { parse } from 'querystring';
 import { SuccessType, FailType, isSuccessType } from "../utils/feedback";
 
 $(() => {
-    $('#registerBtn').click(function(){
-        let username = $('input[name="username"]').val();
-        let pwd = $('input[name="pwd"]').val();
+    $('#loginBtn').click(function(e){
+        e.preventDefault();
+
+        let username = $('#username').val();
+        let pwd = $('#pwd').val();
 
         if(typeof username !== 'string' || typeof pwd !== 'string') return;
 
@@ -14,10 +16,10 @@ $(() => {
             username,
             pwd
         }, (data: SuccessType|FailType) => {
-            let responseTxt = $('.register-warp .reg-box .info');
+            let responseTxt = $('.info');
             log(JSON.stringify(data));
             if(isSuccessType(data)) {
-                $('.group').fadeOut();
+                $('.register-body form').fadeOut();
                 responseTxt.html('登录成功, 3秒后跳转');
                 const {'?return':returnUrl = '/'} = parse(location.search);
                 setTimeout(function(){

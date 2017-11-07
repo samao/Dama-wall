@@ -3,13 +3,15 @@ import { log, error } from "../utils/log";
 import { SuccessType, FailType, isSuccessType } from "../utils/feedback";
 
 $(() => {
-    $('#registerBtn').click(function(){
-        let username = $('input[name="username"]').val();
-        let pwd = $('input[name="pwd"]').val();
-        let confirm = $('input[name="confirmPwd"]').val();
-        let mail = $('input[name="mail"]').val();
-        let tel = $('input[name="tel"]').val();
+    $('#registerBtn').click(function(e){
+        e.preventDefault();
 
+        let username = $('#username').val();
+        let pwd = $('#pwd').val();
+        let confirm = $('#confirmPwd').val();
+        let mail = $('#mail').val();
+        let tel = $('#tel').val();
+        log(username,pwd,confirm,mail,tel);
         const infoTxt = $('.info');
 
         if(typeof username !== 'string' || typeof pwd !== 'string' || typeof confirm !== 'string') return;
@@ -35,7 +37,7 @@ $(() => {
         }, (data: SuccessType | FailType) => {
             log(JSON.stringify(data));
             if(isSuccessType(data)) {
-                $('.group').hide();
+                $('.register-body form').hide();
                 infoTxt.text('注册成功, 3秒后跳转');
                 setTimeout(function(){
                     location.href = '/'
