@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:29:42 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-08 15:08:42
+ * @Last Modified time: 2017-11-08 18:07:37
  */
 
 import * as express from "express";
@@ -24,7 +24,7 @@ adminApp.route('/admin').all((req, res, next) => {
     //这里能干点什么
     next();
 }).get((req, res, next) => {
-    res.render('admin',{'cache':false,loginUser:res.locals.loginUser, list: adminPage});
+    res.render(path.join('admin','index'),{'cache':false,loginUser:res.locals.loginUser, list: adminPage});
 })
 
 adminApp.route('/template/:board').get((req, res, next) => {

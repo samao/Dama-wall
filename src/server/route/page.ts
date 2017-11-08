@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:30:02 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-08 17:45:31
+ * @Last Modified time: 2017-11-08 18:07:18
  */
 
 import * as express from 'express';
@@ -209,7 +209,7 @@ router.route('/download').get((req, res, next) => {
 
 router.route('/setting').get((req, res, next) => {
     log(`用户个人设置 ${req.sessionID}`);
-    res.render('setting',{user:res.locals.loginUser})
+    res.render(path.join('setting','index'),{user:res.locals.loginUser})
 })
 
 router.route('/error').get((req, res) => {
