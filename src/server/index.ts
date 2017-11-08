@@ -13,6 +13,7 @@ import * as cluster from 'cluster';
 import * as path from 'path';
 import * as connectMongo from 'connect-mongo';
 import * as compression from 'compression';
+import * as md5 from 'md5';
 
 import {log} from '../utils/log';
 import {secret,ports} from './config/conf'
@@ -54,8 +55,9 @@ app.use(expressSession({
         ttl: 24 * 60 * 60,
     }),
     genid:(req) => {
-        let time = Date.now() + `_${secret}_` + Math.floor(Math.random() * 1000);
-        return Buffer.from(time).toString('base64');
+        let time = Date.now().toString(36) + `_${secret}_` + Math.floor(Math.random() * 1000);
+        const user = `${req.connection.remoteAddress}:${req.connection.remotePort}`;
+        return Buffer.from(md5(`${time}_${user}`)).toString('base64');
     }
 }));
 
