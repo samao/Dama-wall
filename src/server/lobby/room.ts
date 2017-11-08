@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:28:59 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:28:59 
+ */
+
 import * as WebSocket from 'ws';
 
 export interface IRoom {

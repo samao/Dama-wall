@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:27:48 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:27:48 
+ */
+
 export const HOST = 'http://dama.cn';
 
 export const secret = "idzeir$";

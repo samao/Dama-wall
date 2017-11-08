@@ -1,3 +1,9 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:31:12 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:31:12 
+ */
 
 /**
  * 计时器内部存储结构

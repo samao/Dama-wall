@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:31:05 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:31:05 
+ */
+
 import { log as utilLog} from "util";
 
 const log = (...rest: any[]) => {

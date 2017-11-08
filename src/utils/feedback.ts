@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:30:59 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:30:59 
+ */
+
 import { log, error } from "./log";
 
 //请求成功类型别名

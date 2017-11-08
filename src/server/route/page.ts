@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:30:02 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:30:02 
+ */
+
 import * as express from 'express';
 import * as path from 'path';
 import * as md5 from 'md5';

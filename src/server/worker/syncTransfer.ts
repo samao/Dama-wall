@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:30:31 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:30:31 
+ */
+
 import * as cluster from "cluster";
 
 /**

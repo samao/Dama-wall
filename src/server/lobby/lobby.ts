@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:28:51 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:28:51 
+ */
+
 import * as WebSocket from 'ws';
 
 import { IRoom ,Room } from "./room";

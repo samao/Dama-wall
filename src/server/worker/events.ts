@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:30:24 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:30:24 
+ */
+
 export enum WorkerEvent {
     /**
      * 工作进程ipc管道断开，检测进程是否被卡住

@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:29:21 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:29:21 
+ */
+
 /**
  * 弹幕连接事件
  */

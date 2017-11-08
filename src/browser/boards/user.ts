@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:26:02 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:26:02 
+ */
+
 import * as $ from 'jquery';
 import { log, error } from "../../utils/log";
 import { SuccessType, FailType, isSuccessType } from "../../utils/feedback";

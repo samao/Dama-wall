@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:30:41 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:30:41 
+ */
+
 import * as expressSession from 'express-session';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';

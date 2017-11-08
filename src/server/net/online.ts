@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:29:27 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:29:27 
+ */
+
 import * as cluster from 'cluster';
 
 //每个workers上用户连接按线程，路径分组

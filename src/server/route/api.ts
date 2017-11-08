@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-11-08 10:25:29 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-11-08 10:25:29 
+ */
+
 import * as express from "express";
 import * as QRCode from "qrcode";
 import * as path from 'path';
