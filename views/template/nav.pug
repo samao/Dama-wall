@@ -1,8 +1,17 @@
-.content-box
-     ul
-        each page in pages
-            li 
-                .emotion-item 
-                    span.em-id #{page.id} 
-                    span.em-tag #{page.label}
-                    span.em-url #{page.ref}
+.content-box.container
+    table.table.table-striped.table-condensed.table-hover
+        thead
+            tr
+                td 编号
+                td 标签
+                td 连接
+                td 启用
+        tbody
+            each page in pages
+                tr
+                    th.text-center #{page.id}
+                    td #{page.label}
+                    td #{page.ref}
+                    td
+                        input(type='checkbox' checked=page.active data=page.id).activeBtn
+    script(src="/js/boards/nav.js")

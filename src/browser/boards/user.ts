@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:26:02 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:26:02 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-11-08 16:16:06
  */
 
 import * as $ from 'jquery';
@@ -10,8 +10,8 @@ import { log, error } from "../../utils/log";
 import { SuccessType, FailType, isSuccessType } from "../../utils/feedback";
 
 
-function getUid(node: any): string {
-    return getParent(node).siblings('.uid').text()
+function getUid(node: HTMLElement): string {
+    return $(node).attr('data')||'';
 }
 
 function getParent(node: any): any {
@@ -22,7 +22,6 @@ $('.modify-btn').click(function(){
     const pNode = $(this).parent();
     const checked =  pNode.siblings('td').find('.isAdmin').prop('checked');
     const uid = getUid(this);
-    log(uid)
     $.post(`/api/user/${uid}`,{
         checked
     }).done((data: SuccessType | FailType) => {

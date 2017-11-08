@@ -8,7 +8,8 @@ const allMap = {
     logout:'./src/browser/logout.ts',
     admin:'./src/browser/admin.ts',
     boards:{
-        user:'./src/browser/boards/user.ts'
+        user:'./src/browser/boards/user.ts',
+        nav:'./src/browser/boards/nav.ts'
     }
 }
 

@@ -1,13 +1,14 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:30:02 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:30:02 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-11-08 17:45:31
  */
 
 import * as express from 'express';
 import * as path from 'path';
 import * as md5 from 'md5';
+import * as url from 'url';
 
 import { checkout, restore, insert, IUserDB, getAutoKey } from '../db/pool';
 import { Collection } from '../db/collection';
@@ -67,41 +68,15 @@ let syPages: Symbol;
  * @param res 
  * @param next
  */
-function setupNavigatorInfo(ref: string, res: IRespond, next: Function): void {
-    const pages = get<IPageConf[]>(syPages);
+function setupNavigatorInfo(pages: IPageConf[], ref: string, res: IRespond, next: Function): void {
     res.locals.pages = pages;
-    let currentPage = pages.filter(e => e.ref === ref)
+    let currentPage = pages.filter(e => e.ref === ref);
     if (currentPage.length !== 0) {
         res.locals.currentPage = currentPage[0];
     }
     next();
 }
 
-//获取导航栏配置
-router.use((req, res, next) => {
-    if (!syPages) {
-        checkout(db => {
-            //查询按id排序1,2,...
-            db.collection(Collection.PAGES).find({},{_id:0}).sort({id:1}).toArray().then(data => {
-                if (data) {
-                    syPages = cache(data)
-                    //log(`页面导航数据：${JSON.stringify(syPages)}`);
-                    setupNavigatorInfo(req.url, res, next);
-                } else {
-                    failure(res, '没有导航数据');
-                }
-            }, reason => {
-                failure(res, reason);
-            }).then(() => {
-                restore(db);
-            })
-        }, reason => {
-            failure(res, reason);
-        })
-    } else {
-        setupNavigatorInfo(req.url, res, next);
-    }
-})
 //生成session
 router.use((req, res, next) => {
     const sMap = sessions();
@@ -113,6 +88,35 @@ router.use((req, res, next) => {
         res.locals.loginUser = sMap.get(<string>req.sessionID);
     }
     next();
+})
+
+// 包含导航数据路由
+router.route([
+    '/',
+    '/concat',
+    '/intro',
+    '/download',
+    '/login',
+    '/register',
+    '/error'
+]).get((req, res, next) => {
+    checkout(db => {
+        //查询按id排序1,2,...
+        db.collection(Collection.PAGES).find({active:true},{_id:0}).sort({id:1}).toArray().then(data => {
+            const pathName = url.parse(req.url).pathname || '';
+            if (data.length > 0) {
+                setupNavigatorInfo(data, `/${path.parse(pathName).base}`, res, next);
+            } else {
+                failure(res, '没有导航数据');
+            }
+        }, reason => {
+            failure(res, reason);
+        }).then(() => {
+            restore(db);
+        })
+    }, reason => {
+        failure(res, reason);
+    })
 })
 
 router.route('/').all((req, res, next) => {
@@ -206,6 +210,11 @@ router.route('/download').get((req, res, next) => {
 router.route('/setting').get((req, res, next) => {
     log(`用户个人设置 ${req.sessionID}`);
     res.render('setting',{user:res.locals.loginUser})
+})
+
+router.route('/error').get((req, res) => {
+    res.status(404);
+    res.render('404',{navlist: res.locals.pages,error:'水逆飞船爆炸了(1/1)'});
 })
 
 //弹幕二维码生成路由

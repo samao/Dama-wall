@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:25:29 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-08 14:51:41
+ * @Last Modified time: 2017-11-08 16:31:31
  */
 
 import * as express from "express";
@@ -23,16 +23,18 @@ router.route('/user/:uid').post((req, res, next) => {
         users.findOneAndUpdate({_id: +req.params.uid}, {$set: { isAdmin: req.body.checked === 'true' }}, (err, result) => {
             if(err) {
                 error('写入更新失败',err)
+            }else{
+                success(res, '更新用户信息成功')
             }
+            restore(db);
         })
-        success(res, '更新用户信息成功')
     }, reason => failure(res, `user 接口无法连接数据库`))
 }).delete((req, res, next) => {
     checkout(db => {
         const users = db.collection(Collection.USER);
         users.remove({_id: +req.params.uid}).then(data => {
             success(res, '删除成功')
-        }).catch(reason => failure(res, `无法删除用户 ${reason}`))
+        }).catch(reason => failure(res, `无法删除用户 ${reason}`)).then(() => restore(db));
     }, reason => failure(res, `数据库连接失败无法删除用户`))
 })
 
@@ -52,13 +54,24 @@ router.route('/activity/:rid').all((req, res,next) => {
     res.end('更新活动信息');
 })
 
+router.route('/nav').patch((req, res, next) => {
+    const id = +req.body.id;
+    const checked = req.body.checked === 'true';
+    checkout(db => {
+        const pages = db.collection(Collection.PAGES);
+        pages.findOneAndUpdate({id},{$set: {active: checked}}).then(() => {
+            success(res, '调用成功')
+        }).catch(reason => failure(res, `更新导航数据失败 ${reason}`)).then(() => restore(db))
+    }, reason => failure(res, `无法连接数据库 ${reason}`))
+})
+
 router.route('/words').post((req, res, next) => {
     log('调用敏感词接口')
     checkout(db => {
         const words = db.collection(Collection.SENSITIVE);
         words.insertMany(req.body.words).then(() => {
             log('写入敏感词成功');
-        }).catch(reason => failure(res, `插入数据库失败 ${reason}`));
+        }).catch(reason => failure(res, `插入数据库失败 ${reason}`)).then(() => restore(db));
     },reason => failure(res, `无法连接数据库 ${reason}`))
 })
 

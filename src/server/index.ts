@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:30:41 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-08 14:57:34
+ * @Last Modified time: 2017-11-08 16:57:01
  */
 
 import * as expressSession from 'express-session';
@@ -89,8 +89,8 @@ app.use('/api', apiRouter);
 app.use(adminApp);
 
 app.use((req, res, next) => {
-    res.status(404);
-    res.render('404',{navlist: res.locals.pages,error:'水逆飞船爆炸了(1/1)'});
+    log('访问未知页面',req.url);
+    res.redirect(`/error/?url=${req.url}`);
 })
 
 const server = app.listen(ports.web,() => {
