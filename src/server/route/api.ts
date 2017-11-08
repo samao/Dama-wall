@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:25:29 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:25:29 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-11-08 14:51:41
  */
 
 import * as express from "express";
@@ -50,6 +50,16 @@ router.route('/activity/:rid').all((req, res,next) => {
 }).patch((req, res, next) => {
     //更新活动
     res.end('更新活动信息');
+})
+
+router.route('/words').post((req, res, next) => {
+    log('调用敏感词接口')
+    checkout(db => {
+        const words = db.collection(Collection.SENSITIVE);
+        words.insertMany(req.body.words).then(() => {
+            log('写入敏感词成功');
+        }).catch(reason => failure(res, `插入数据库失败 ${reason}`));
+    },reason => failure(res, `无法连接数据库 ${reason}`))
 })
 
 /**

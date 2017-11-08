@@ -1,6 +1,9 @@
 .content-box
      ul
-        each item in words
+        - 
+            var skipNo = skip ? skip : 0;
+            var limitNo = limit ? limit : 20;
+        each item in words.slice(skipNo, limitNo)
             li 
                 .emotion-item 
                     span.em-tag #{item}

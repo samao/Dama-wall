@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:28:11 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:28:11 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-11-08 14:58:07
  */
 
 import { Board } from '../config/conf';
