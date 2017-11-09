@@ -10,6 +10,7 @@ import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from "body-parser";
 import * as cluster from 'cluster';
+import * as favicon from 'serve-favicon';
 import * as path from 'path';
 import * as connectMongo from 'connect-mongo';
 import * as compression from 'compression';
@@ -74,6 +75,7 @@ app.use('/less',less(path.resolve('src','browser','less'),{
 
 //静态资源
 app.use('/static',express.static('public'));
+app.use(favicon(path.resolve('public','favicon.ico')));
 app.use('/js',express.static(path.resolve('dist','browser')));
 
 //模板路径
