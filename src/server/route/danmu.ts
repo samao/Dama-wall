@@ -45,6 +45,7 @@ router.route('/:rid').all((req, res, next) => {
     //房间验证
     roomParser(req.url).then(pathname => {
         log(`Http 房间地址 ${pathname}`);
+        //res.locals.owner = XXX;
         next();
     },reason => {
         failure(res, reason)
@@ -73,26 +74,20 @@ router.route('/:rid').all((req, res, next) => {
     }   
 }).post((req, res, next) => {
     //弹幕数据处理
-    roomParser(req.url).then(pathname => {
-        if(danmuCertify.toolong(req.body.message)) {
-            failure(res, `发送弹幕内容过长,不能超过${MAX_MESSAGE_LENGTH}`);
-            return;
-        }
-        if(req.sessionID && danmuCertify.inCD(req.sessionID)) {
-            failure(res, `不要频繁发送弹幕`)
-            return;
-        }
-        //加工敏感词
-        req.body.message = danmuCertify.filter(req.body.message);
-        //回复用户
-        success(res, req.body.message)
-        //同步线程消息
-        syncTransfer({action: Actions.POST,data: req.body.message, pathname:`${req.params.rid}`});
-    },reason => {
-        failure(res, reason)
-    }).catch(reason => {
-        failure(res, reason)
-    });
+    if(danmuCertify.toolong(req.body.message)) {
+        failure(res, `发送弹幕内容过长,不能超过${MAX_MESSAGE_LENGTH}`);
+        return;
+    }
+    if(req.sessionID && danmuCertify.inCD(req.sessionID)) {
+        failure(res, `不要频繁发送弹幕`)
+        return;
+    }
+    //加工敏感词
+    req.body.message = danmuCertify.filter(req.body.message);
+    //回复用户
+    success(res, req.body.message)
+    //同步线程消息
+    syncTransfer({action: Actions.POST,data: req.body.message, pathname:`${req.params.rid}`});
 })
 
 export default router;
