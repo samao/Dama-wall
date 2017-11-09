@@ -32,6 +32,13 @@ export class DanmuCertify {
 
     constructor() {}
 
+    getBansByUser(owner: string): string[] {
+        const userBans = this._rMap.get(owner)||[];
+        if(!this._rMap.has(owner))
+            this._rMap.set(owner, userBans);
+        return userBans;
+    }
+
     /**
      * 主线程获取敏感词
      */
@@ -39,7 +46,7 @@ export class DanmuCertify {
         return new Promise((res,rej) => {
             checkout(db => {
                 db.collection(Collection.SENSITIVE).find({},{_id:0}).toArray().then((all) => {
-                    this._cMap.push(...all)
+                    this.groupBans(all);
                     res(this.words)
                 },reason => {
                     error(reason)
@@ -52,13 +59,21 @@ export class DanmuCertify {
         })
     }
 
+    groupBans(words:IBanedWord[]):void {
+        this._cMap.length = 0;
+        this._cMap.push(...words);
+        this._rMap.clear();
+        this._cMap.forEach(({word, owner}) => {
+            this.getBansByUser(owner).push(word)
+        })
+    }
+
     /**
      * 从主线程获取敏感词
      * @param words 子线程环境变量中传入的敏感词
      */
     setupFromMaster(words: IBanedWord[]): void {
-        this._cMap.length = 0;
-        this._cMap.push(...words);
+        this.groupBans(words);
     }
 
     addBan(word: string, optUser: string): void {
@@ -78,18 +93,24 @@ export class DanmuCertify {
         return this._cMap;
     }
 
+    getAllBansOfUser(owner: string): string[] {
+        const bans = this.getBansByUser('admin').concat();
+        return bans.concat(this.getBansByUser(owner));
+    }
+
     /**
      * 敏感词替换为*号输出
      * @param msg 源字符串
      */
     filter(msg: string, roomMaster: string = ''): string {
         //用户设定敏感词和通用敏感词匹配
-        const _cReg = new RegExp(this._cMap.filter(e => {
-            return  e.owner === roomMaster || e.owner === 'admin';
-        }).map(({word}) => word).join('|'),'ig');
+        const _cReg = new RegExp(this.getAllBansOfUser(roomMaster).join('|'),'ig');
+        console.log(_cReg)
+        return msg.replace(_cReg, '*');
+        /*
         return msg.replace(_cReg,(data) => {
             return '*'.repeat(data.length);
-        })
+        })*/
     }
 
     /**

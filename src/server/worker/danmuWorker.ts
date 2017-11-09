@@ -20,6 +20,6 @@ async function go() {
     });
 }
 
-go().catch(() => {
-    error('弹幕线程启动异常,请检查端口是否被占用。')
+go().catch((reason) => {
+    error('弹幕线程启动异常,请检查端口是否被占用。' + reason)
 });
