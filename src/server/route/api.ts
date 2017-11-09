@@ -68,9 +68,11 @@ router.route('/nav').patch((req, res, next) => {
 router.route('/words').post((req, res, next) => {
     log('调用敏感词接口')
     checkout(db => {
-        const words = db.collection(Collection.SENSITIVE);
-        words.insertMany(req.body.words).then(() => {
-            log('写入敏感词成功');
+        const owner = res.locals.loginUser.user
+        const words = req.body.words;
+        const wordsCol = db.collection(Collection.SENSITIVE);
+        wordsCol.insert({words, owner}).then(() => {
+            success(res, '写入敏感词成功');
         }).catch(reason => failure(res, `插入数据库失败 ${reason}`)).then(() => restore(db));
     },reason => failure(res, `无法连接数据库 ${reason}`))
 })

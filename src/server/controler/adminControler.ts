@@ -35,10 +35,10 @@ export async function obtain(board: string): Promise<any> {
 }
 
 /**
- * 获取敏感词
+ * 获取系统敏感词
  */
-function obtainFilters(): Promise<any> {
-    return Promise.resolve({words: danmuCertify.words});
+function obtainFilters() {
+    return Promise.resolve({words: danmuCertify.systemWords});
 }
 
 /**

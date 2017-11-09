@@ -12,6 +12,11 @@ import { log, error } from "../../utils/log";
 import { Collection } from "./collection";
 import { call, remove } from "../../utils/ticker";
 
+interface IBanedWord {
+    word: string;
+    owner: string;
+}
+
 export const MAX_MESSAGE_LENGTH = 30;
 
 export class DanmuCertify {
@@ -23,22 +28,18 @@ export class DanmuCertify {
     /**
      * 全局通用的敏感词
      */
-    private _cMap: string[] = [];
-    /**
-     * 全局敏感词正则
-     */
-    private _cReg: RegExp;
+    private _cMap: IBanedWord[] = [];
 
     constructor() {}
 
     /**
      * 主线程获取敏感词
      */
-    setup(): Promise<string[]> {
+    setup(): Promise<IBanedWord[]> {
         return new Promise((res,rej) => {
             checkout(db => {
                 db.collection(Collection.SENSITIVE).find({},{_id:0}).toArray().then((all) => {
-                    this._cMap.push(...all.map(data => data.words))
+                    this._cMap.push(...all)
                     res(this.words)
                 },reason => {
                     error(reason)
@@ -55,15 +56,25 @@ export class DanmuCertify {
      * 从主线程获取敏感词
      * @param words 子线程环境变量中传入的敏感词
      */
-    setupFromMaster(words: string): void {
+    setupFromMaster(words: IBanedWord[]): void {
         this._cMap.length = 0;
-        this._cMap.push(...words.split(','));
+        this._cMap.push(...words);
+    }
+
+    addBan(word: string, optUser: string): void {
+        this._cMap.push({word, owner: optUser})
+    }
+    /**
+     * admin 管理员设置的系统敏感词
+     */
+    get systemWords(): IBanedWord[] {
+        return this._cMap.filter(e => e.owner === 'admin')
     }
 
     /**
      * 弹幕敏感词
      */
-    get words(): string[] {
+    get words(): IBanedWord[] {
         return this._cMap;
     }
 
@@ -71,11 +82,12 @@ export class DanmuCertify {
      * 敏感词替换为*号输出
      * @param msg 源字符串
      */
-    filter(msg: string): string {
-        if(!this._cReg) {
-            this._cReg = new RegExp(this._cMap.join('|'),'ig');
-        }
-        return msg.replace(this._cReg,(data) => {
+    filter(msg: string, roomMaster: string = ''): string {
+        //用户设定敏感词和通用敏感词匹配
+        const _cReg = new RegExp(this._cMap.filter(e => {
+            return  e.owner === roomMaster || e.owner === 'admin';
+        }).map(({word}) => word).join('|'),'ig');
+        return msg.replace(_cReg,(data) => {
             return '*'.repeat(data.length);
         })
     }

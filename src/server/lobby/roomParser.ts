@@ -14,7 +14,7 @@ import { Collection } from "../db/collection";
 * 返回 ts Promise<any>
 * @param path 用户连接的ws路径
 */
-export function roomParser(path: string|undefined): Promise<string>{
+export function roomParser(path: string|undefined): Promise<{roomid: string, owner: string}>{
         return new Promise((res,rej) => {
             if(typeof path === 'undefined' || path === '/undefined'|| typeof path === 'string' && path.replace(/\//,'') === '') {
                 setImmediate(rej,'please check your path');
@@ -27,8 +27,7 @@ export function roomParser(path: string|undefined): Promise<string>{
                 checkout(db => {
                     db.collection(Collection.ACTIVITY).findOne({ rid:roomid }).then(data => {
                         if(data) {
-                            log('有房间号',roomid)
-                            setImmediate(res,roomid)
+                            setImmediate(res, {roomid: data.rid, owner: data.master})
                         }else{
                             rej(`不存在的活动id: ${roomid}`);
                         }

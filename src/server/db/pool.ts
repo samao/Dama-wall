@@ -127,7 +127,7 @@ export async function setupUnique() {
     //表情集合索引
     let emotionIndexPromise = db.collection(Collection.EMOTION).createIndex({tag: 1, url: 1}, {unique: true});
     //敏感词库索引
-    let filterIndexPromise = db.collection(Collection.SENSITIVE).createIndex({words: 1}, {unique: true});
+    let filterIndexPromise = db.collection(Collection.SENSITIVE).createIndex({word: 1}, {unique: true});
 
     return await Promise.all([
             userIndexPromise,

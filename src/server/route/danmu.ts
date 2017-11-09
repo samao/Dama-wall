@@ -12,7 +12,7 @@ import danmuCertify, { MAX_MESSAGE_LENGTH } from "../db/danmuCertify";
 
 import { syncTransfer } from '../worker/syncTransfer';
 import { Actions } from '../worker/actions';
-import { roomParser } from "../lobby/roomParser";
+import { roomParser, parserId } from "../lobby/roomParser";
 import { log, error } from "../../utils/log";
 import { checkout, restore } from "../db/pool";
 import { Collection } from "../db/collection";
@@ -43,9 +43,9 @@ router.route('/').all((req, res, next) => {
 
 router.route('/:rid').all((req, res, next) => {
     //房间验证
-    roomParser(req.url).then(pathname => {
+    roomParser(req.url).then(({roomid:pathname,owner}) => {
         log(`Http 房间地址 ${pathname}`);
-        //res.locals.owner = XXX;
+        res.locals.owner = owner;
         next();
     },reason => {
         failure(res, reason)
@@ -83,7 +83,7 @@ router.route('/:rid').all((req, res, next) => {
         return;
     }
     //加工敏感词
-    req.body.message = danmuCertify.filter(req.body.message);
+    req.body.message = danmuCertify.filter(req.body.message,res.locals.owner);
     //回复用户
     success(res, req.body.message)
     //同步线程消息
