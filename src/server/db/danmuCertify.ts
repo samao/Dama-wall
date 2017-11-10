@@ -11,6 +11,7 @@ import { checkout, restore } from './pool';
 import { log, error } from "../../utils/log";
 import { Collection } from "./collection";
 import { call, remove } from "../../utils/ticker";
+import { sensitiveMap, buildDFA, DFA_TAG } from './DFA';
 
 interface IBanedWord {
     word: string;
@@ -66,6 +67,7 @@ export class DanmuCertify {
         this._cMap.forEach(({word, owner}) => {
             this.getBansByUser(owner).push(word)
         })
+        buildDFA(this.getBansByUser('admin'));
     }
 
     /**
