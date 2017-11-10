@@ -159,7 +159,7 @@ if(cluster.isMaster){
         });
         let workerSet: Set<cluster.Worker> = new Set();
         for(let i = 0; i < cpuNum; ++i) {
-            workerSet.add(cluster.fork({sensitives}));
+            workerSet.add(cluster.fork());
         }
         cluster.on(WorkerEvent.EXIT,(worker,code,signal) => {
             log(`工作线程意外关闭 code: ${code}, signal: ${signal}`);
@@ -167,7 +167,7 @@ if(cluster.isMaster){
             //重启线程
             if(!worker.exitedAfterDisconnect) {
                 log('主线程重启工作线程');
-                process.nextTick(() => cluster.fork({sensitives}));
+                process.nextTick(() => cluster.fork());
             }
         }).on(WorkerEvent.MESSAGE, (worker,message) => {
             let {action,pathname} = message;
@@ -178,6 +178,7 @@ if(cluster.isMaster){
             }
             syncTransfer(message, worker);
         }).on(WorkerEvent.FORK,(worker) => {
+            worker.send({action:actions.BANS, data:sensitives})
             workerSet.delete(worker);
             if(workerSet.size === 0) {
                 cluster.removeAllListeners(WorkerEvent.FORK);

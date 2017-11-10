@@ -11,7 +11,7 @@ import { checkout, restore } from './pool';
 import { log, error } from "../../utils/log";
 import { Collection } from "./collection";
 import { call, remove } from "../../utils/ticker";
-import { sensitiveMap, buildDFA, DFA_TAG } from './DFA';
+import { dfa, DFA_TAG } from './DFA';
 
 interface IBanedWord {
     word: string;
@@ -21,34 +21,22 @@ interface IBanedWord {
 export const MAX_MESSAGE_LENGTH = 30;
 
 export class DanmuCertify {
-
     /**
-     * 用户自定义的敏感词
+     * 敏感词
      */
-    private _rMap: Map<string, string[]> = new Map();
-    /**
-     * 全局通用的敏感词
-     */
-    private _cMap: IBanedWord[] = [];
+    private _cMap: Map<string, string[]> = new Map();
 
     constructor() {}
-
-    getBansByUser(owner: string): string[] {
-        const userBans = this._rMap.get(owner)||[];
-        if(!this._rMap.has(owner))
-            this._rMap.set(owner, userBans);
-        return userBans;
-    }
 
     /**
      * 主线程获取敏感词
      */
-    setup(): Promise<IBanedWord[]> {
+    setup(): Promise<{word: string, owner: string}[]> {
         return new Promise((res,rej) => {
             checkout(db => {
                 db.collection(Collection.SENSITIVE).find({},{_id:0}).toArray().then((all) => {
                     this.groupBans(all);
-                    res(this.words)
+                    res(all)
                 },reason => {
                     error(reason)
                 }).then(() => {
@@ -60,44 +48,22 @@ export class DanmuCertify {
         })
     }
 
-    groupBans(words:IBanedWord[]):void {
-        this._cMap.length = 0;
-        this._cMap.push(...words);
-        this._rMap.clear();
-        this._cMap.forEach(({word, owner}) => {
-            this.getBansByUser(owner).push(word)
-        })
-        buildDFA(this.getBansByUser('admin'));
+    groupBans(words:{word: string, owner: string}[]):void {
+        this._cMap.clear();
+        for(const {word, owner} of words) {
+            const userBans = this._cMap.get(owner) || [];
+            userBans.push(word);
+            this._cMap.set(owner, userBans);
+        }
+        dfa.buildBanTree(this._cMap);
     }
 
     /**
      * 从主线程获取敏感词
      * @param words 子线程环境变量中传入的敏感词
      */
-    setupFromMaster(words: IBanedWord[]): void {
+    setupFromMaster(words: {word: string, owner: string}[]): void {
         this.groupBans(words);
-    }
-
-    addBan(word: string, optUser: string): void {
-        this._cMap.push({word, owner: optUser})
-    }
-    /**
-     * admin 管理员设置的系统敏感词
-     */
-    get systemWords(): IBanedWord[] {
-        return this._cMap.filter(e => e.owner === 'admin')
-    }
-
-    /**
-     * 弹幕敏感词
-     */
-    get words(): IBanedWord[] {
-        return this._cMap;
-    }
-
-    getAllBansOfUser(owner: string): string[] {
-        const bans = this.getBansByUser('admin').concat();
-        return bans.concat(this.getBansByUser(owner));
     }
 
     /**
@@ -106,13 +72,7 @@ export class DanmuCertify {
      */
     filter(msg: string, roomMaster: string = ''): string {
         //用户设定敏感词和通用敏感词匹配
-        const _cReg = new RegExp(this.getAllBansOfUser(roomMaster).join('|'),'ig');
-        console.log(_cReg)
-        return msg.replace(_cReg, '*');
-        /*
-        return msg.replace(_cReg,(data) => {
-            return '*'.repeat(data.length);
-        })*/
+        return msg
     }
 
     /**

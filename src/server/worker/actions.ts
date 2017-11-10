@@ -33,5 +33,10 @@ export enum Actions {
     /**
      * 工作线程退出销毁
      */
-    DESTROY = 'destroy'
+    DESTROY = 'destroy',
+
+    /**
+     * 线程之间同步敏感词
+     */
+    BANS = 'bans'
 }

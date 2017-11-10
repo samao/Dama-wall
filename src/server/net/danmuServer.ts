@@ -76,12 +76,15 @@ class DanmuServer {
                 case Actions.DESTROY:
                     this.workerDestroy(data);
                 break;
+                case Actions.BANS:
+                    danmuCertify.setupFromMaster(data);
+                    break;
             }
         });
 
         //初始化线程通用敏感词
-        const sensitives = (<any>cluster.worker.process).env.sensitives;
-        danmuCertify.setupFromMaster(sensitives)
+        //const sensitives = (<any>cluster.worker.process).env.sensitives;
+        //danmuCertify.setupFromMaster(JSON.parse(sensitives))
         //心跳轮询检查
         setInterval(() => {
             lobby.allDeactives().forEach((websocket) => {
