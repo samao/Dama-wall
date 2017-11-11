@@ -58,6 +58,10 @@ export class DanmuCertify {
         dfa.buildBanTree(this._cMap);
     }
 
+    systemWords(): string[] {
+        return this._cMap.get('admin')||[]
+    }
+
     /**
      * 从主线程获取敏感词
      * @param words 子线程环境变量中传入的敏感词

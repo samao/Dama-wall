@@ -78,7 +78,7 @@ class DanmuServer {
                 break;
                 case Actions.BANS:
                     danmuCertify.setupFromMaster(data);
-                    break;
+                break;
             }
         });
 
@@ -105,7 +105,7 @@ class DanmuServer {
     }
 
     private entry(ws: WebSocket, req: http.IncomingMessage): void {
-        roomParser(req.url).then((pathname) => {
+        roomParser(req.url).then(({roomid:pathname,owner}) => {
             //要求求客户端发送登录
             response(ws, {status: WebSocketStatus.REQUIRE_AUTH,data:{}});
             //监听下个用户登录包
@@ -117,7 +117,7 @@ class DanmuServer {
                         checkout((db) => {
                             db.collection(Collection.USER).findOne({name:info.data.id}).then(data => {
                                 if(data) {
-                                    this.setAuthUser(info.data.id, ws, pathname);
+                                    this.setAuthUser(info.data.id, ws, pathname, owner);
                                     log(`用户 ${info.action} ${info.data.id} 登录成功,当前线程 PID: ${process.pid}`);
                                 }else{
                                     ws.close(undefined,`不存在用户 ${info.data.id} 无法建立连接`);
@@ -163,8 +163,9 @@ class DanmuServer {
      * @param id 用户id
      * @param ws 连接ws
      * @param pathname 连接路径
+     * @param owner 房主昵称
      */
-    private setAuthUser(id: string,ws: WebSocket,pathname: string): void {
+    private setAuthUser(id: string,ws: WebSocket,pathname: string, owner: string): void {
         ws.on(WebSocketEvent.MESSAGE, data => {
             let msg: {action: string, data:any} = JSON.parse(data.toString());
             switch(msg.action){
@@ -178,7 +179,7 @@ class DanmuServer {
                         return;
                     }
                     //加工敏感词
-                    msg.data = danmuCertify.filter(msg.data);
+                    msg.data = danmuCertify.filter(msg.data, owner);
                     //1.回复用户自己
                     response(ws, {status: WebSocketStatus.POST, data: msg.data});
                     //2.分发本线程房间

@@ -87,7 +87,10 @@ class DFA {
     replace(msg: string, owner: string): string {
         const bans = [...this.getBans(msg, owner)];
         return msg.replace(new RegExp(bans.join('|'),'ig'), (banword) => {
-            return '*'.repeat(banword.length);
+            const replaceChars = '~!@#$%^&*=;?<>';
+            return new Array(banword.length).fill(0).map(() => {
+                return replaceChars.charAt(Math.random() * replaceChars.length);
+            }).join('') 
         })
     }
 }

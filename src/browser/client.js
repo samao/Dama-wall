@@ -1,7 +1,7 @@
 // websocket 长连接
 (function(){
     let heartId,onlineId;
-    let ws = new WebSocket('ws://localhost:8080/9999');
+    let ws = new WebSocket('ws://localhost:8080/jiafeiyan');
     ws.onopen = function(){
     }
     ws.onclose = function(code,err){
@@ -29,7 +29,7 @@
                     heartId = setInterval(() => {
                         ws.send(JSON.stringify({action:'heart',data:{}}))
                     },5000)
-                    ws.send(JSON.stringify({action:'post',data:'发送了一条聊天信息'}))
+                    ws.send(JSON.stringify({action:'post',data:'发送猴王了操你妈一条acfun聊政治风波fen信息'}))
                 break;
                 case 202:
                     console.log('当前房间用户数',data.data)
