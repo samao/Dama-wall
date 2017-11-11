@@ -72,7 +72,7 @@ export class DanmuCertify {
      */
     filter(msg: string, roomMaster: string = ''): string {
         //用户设定敏感词和通用敏感词匹配
-        return msg
+        return dfa.replace(msg, roomMaster);
     }
 
     /**
