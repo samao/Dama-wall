@@ -1,6 +1,11 @@
 import { checkout, restore } from './pool';
 import {log, error} from '../../utils/log';
 
+interface IWord {
+    isEnd:boolean;
+    [index: string]: boolean|IWord;
+}
+
 class DFA {
 
     private _sensitiveMap = new Map<string, Map<string, any>>()
@@ -47,47 +52,49 @@ class DFA {
     }
 
     checkoutBan(msg: string, begin: number, owner: string): number {
-        let flag = false;
-        let matchLen = 0;
+        let adminflag = false;
+        let adminMatch = 0;
         //查找通用敏感词
-        let rootMap = this._sensitiveMap.get('admin');
-        if(rootMap) {
-            for(let i = begin; i< msg.length; ++i) {
-                const char = msg.charAt(i);
-                rootMap = <Map<string, any>>rootMap.get(char);
-                if(rootMap) {
-                    ++matchLen;
-                    if(rootMap.get('isEnd') === DFA_TAG.END) flag = true;
-                }else {
-                    break;
-                }
-            }
-        }
-        if(matchLen < 1 || !flag) matchLen = 0;
-        
-        //查找房主自定义敏感词
-        rootMap = this._sensitiveMap.get(owner);
-        if(rootMap) {
-            for(let i = begin; i< msg.length; ++i) {
-                const char = msg.charAt(i);
-                rootMap = <Map<string, any>>rootMap.get(char);
-                if(rootMap) {
-                    ++matchLen;
-                    if(rootMap.get('isEnd') === DFA_TAG.END) flag = true;
-                }else {
-                    break;
-                }
-            }
-        }
-        if(matchLen < 1 || !flag) matchLen = 0;
+        let rootAdminMap = this._sensitiveMap.get('admin')||new Map<string, any>();
 
-        return matchLen;
+        let masterflag = false;
+        let masterMatch = 0;
+        let rootMasterMap = this._sensitiveMap.get(owner)||new Map<string, any>();
+
+        const firstChar = msg.charAt(begin);
+
+        if(!rootAdminMap.has(firstChar)&&!rootMasterMap.has(firstChar)) return 0;
+
+        let adminMap:Map<string, any> = rootAdminMap;
+        let masterMap:Map<string, any> = rootMasterMap;
+        
+        for(let i = begin; i< msg.length; ++i) {
+            const char = msg.charAt(i); 
+            if(rootAdminMap.has(firstChar) && !adminflag && adminMap) {
+                adminMap = <Map<string, any>>adminMap.get(char);
+                if(adminMap) {
+                    ++adminMatch
+                    if(adminMap.get(DFA_TAG.TAG) === DFA_TAG.END) adminflag = true;
+                }
+            }
+            if(rootMasterMap.has(firstChar) && !masterflag && masterMap) {
+                masterMap = <Map<string, any>>masterMap.get(char);
+                if(masterMap) {
+                    ++masterMatch;
+                    if(masterMap.get(DFA_TAG.TAG) === DFA_TAG.END) masterflag = true;
+                }
+            }
+        }
+        if(!adminflag) adminMatch = 0;
+        if(!masterflag) masterMatch = 0;
+
+        return Math.max(adminMatch, masterMatch);
     }
 
     replace(msg: string, owner: string): string {
         const bans = [...this.getBans(msg, owner)];
         return msg.replace(new RegExp(bans.join('|'),'ig'), (banword) => {
-            const replaceChars = '~!@#$%^&*=;?<>';
+            const replaceChars = '@#$%&';
             return new Array(banword.length).fill(0).map(() => {
                 return replaceChars.charAt(Math.random() * replaceChars.length);
             }).join('') 

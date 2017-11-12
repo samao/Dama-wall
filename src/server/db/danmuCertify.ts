@@ -56,9 +56,16 @@ export class DanmuCertify {
             this._cMap.set(owner, userBans);
         }
         dfa.buildBanTree(this._cMap);
+
+        //全部通用敏感词过滤测试
+        
+        const content = JSON.stringify(this._cMap.get('admin'));
+        console.time(`${process.pid}-敏感词-${content.length}`)
+        this.filter(content);
+        console.timeEnd(`${process.pid}-敏感词-${content.length}`)
     }
 
-    systemWords(): string[] {
+    get systemWords(): string[] {
         return this._cMap.get('admin')||[]
     }
 
