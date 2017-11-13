@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:30:41 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-08 16:57:01
+ * @Last Modified time: 2017-11-13 12:14:47
  */
 
 import * as expressSession from 'express-session';
@@ -179,10 +179,11 @@ if(cluster.isMaster){
             syncTransfer(message, worker);
         }).on(WorkerEvent.FORK,(worker) => {
             worker.send({action:actions.BANS, data:sensitives})
-            workerSet.delete(worker);
-            if(workerSet.size === 0) {
-                cluster.removeAllListeners(WorkerEvent.FORK);
-                log('=== 所有服务启动完毕 ===');
+            if(workerSet.size > 0) {
+                workerSet.delete(worker);
+                workerSet.size === 0 && log('工作线程启动完成');
+            }else{
+                log('工作线程重启成功')
             }
         })
     })

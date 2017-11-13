@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:29:13 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:29:13 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-11-13 12:31:42
  */
 
 import * as http from 'http';
@@ -82,9 +82,6 @@ class DanmuServer {
             }
         });
 
-        //初始化线程通用敏感词
-        //const sensitives = (<any>cluster.worker.process).env.sensitives;
-        //danmuCertify.setupFromMaster(JSON.parse(sensitives))
         //心跳轮询检查
         setInterval(() => {
             lobby.allDeactives().forEach((websocket) => {

@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:28:35 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:28:35 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-11-13 14:16:45
  */
 
 import * as WebSocket from 'ws';
@@ -11,7 +11,7 @@ import { checkout, restore } from './pool';
 import { log, error } from "../../utils/log";
 import { Collection } from "./collection";
 import { call, remove } from "../../utils/ticker";
-import { dfa, DFA_TAG } from './DFA';
+import { dfa, DFA_TAG } from '../../utils/DFA';
 
 interface IBanedWord {
     word: string;
@@ -58,11 +58,11 @@ export class DanmuCertify {
         dfa.buildBanTree(this._cMap);
 
         //全部通用敏感词过滤测试
-        
+        /*
         const content = JSON.stringify(this._cMap.get('admin'));
         console.time(`${process.pid}-敏感词-${content.length}`)
         this.filter(content);
-        console.timeEnd(`${process.pid}-敏感词-${content.length}`)
+        console.timeEnd(`${process.pid}-敏感词-${content.length}`)*/
     }
 
     get systemWords(): string[] {
@@ -84,6 +84,21 @@ export class DanmuCertify {
     filter(msg: string, roomMaster: string = ''): string {
         //用户设定敏感词和通用敏感词匹配
         return dfa.replace(msg, roomMaster);
+    }
+
+    addBan(word: string, owner: string): void {
+        const userBans = this._cMap.get(owner) || [];
+        userBans.push(word);
+        this._cMap.set(owner, userBans);
+        dfa.addBanWord(word, owner);
+    }
+
+    removeBan(word: string, owner: string): void {
+        const userBans = this._cMap.get(owner) || [];
+        if(userBans.includes(word)){
+            userBans.splice(userBans.indexOf(word), 1)
+            dfa.removeBanWord(word, owner);
+        }
     }
 
     /**
