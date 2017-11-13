@@ -89,13 +89,10 @@ class DFA {
         if(node) {
             //查找敏感词节点
             for(const char of word) {
-                if(node.has(char)){
-                    const parent = node;
-                    node = <Map<string, any>>(node.get(char));
-                    nodes.push({parent, child: char});
-                }else{
-                    break;
-                }
+                if(!node.has(char)) return;
+                const parent = node;
+                node = <Map<string, any>>(node.get(char));
+                nodes.push({parent, child: char});
 			}
 			//重置删除敏感词结束标识
             node.set(DFA_TAG.TAG, DFA_TAG.DEFAULT);
@@ -103,7 +100,9 @@ class DFA {
             nodes.reverse();
             //逆向删除敏感词节点数据
 			for (const { parent, child } of nodes) {
-                if(parent.get(child).size === 1)
+                const childNode = parent.get(child);
+                if(childNode.get(DFA_TAG.TAG) === DFA_TAG.END) break;
+                if(childNode.size === 1)
                     parent && parent.delete(child)
             }
         }
