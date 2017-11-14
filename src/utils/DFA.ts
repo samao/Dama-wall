@@ -141,24 +141,24 @@ class DFA {
         const ownerHasFirstChar = owner !== '' && ownerNode.has(msg.charAt(begin).toLocaleLowerCase());
 
         for(let i = begin; i < msg.length; ++i) {
-            //当前循环的字符
             const char = msg.charAt(i).toLocaleLowerCase();
-            let nodeHasChar = node && node.has(char) && !match.end
-            if(hasFirstChar && (nodeHasChar || char === ' ')) {
+            if(hasFirstChar && !match.end) {
                 ++match.size;
-                if(char !== ' ') {
+                if(char !== ' ' && node && node.has(char)) {
                     node = node.get(char)
                     if(node.get(DFA_TAG.TAG) === DFA_TAG.END) match.end = true;
                 }
             }
-            nodeHasChar = ownerNode && ownerNode.has(char) && !ownerMatch.end;
-            if(ownerHasFirstChar && (nodeHasChar || char === ' ')) {
+            if(hasFirstChar && !ownerHasFirstChar && match.end) { break }
+            if(ownerHasFirstChar && !ownerMatch.end) {
                 ++ownerMatch.size;
-                if(char !== ' ') {
+                if(char !== ' ' && ownerNode && ownerNode.has(char)) {
                     ownerNode = ownerNode.get(char);
                     if(ownerNode.get(DFA_TAG.TAG) === DFA_TAG.END) ownerMatch.end = true;
                 }
             }
+            if(!hasFirstChar && ownerHasFirstChar && ownerMatch.end) { break }
+            if(match.end && ownerMatch.end) { break }
         }
         if(!match.end) match.size = 0;
         if(!ownerMatch.end) ownerMatch.size = 0;
