@@ -38,7 +38,7 @@
     "@types/serve-favicon": "^2.2.29",
     "@types/ws": "^3.0.2",
     "ts-loader": "^2.3.7",
-    "typescript": "^2.5.3",
+    "typescript": "^2.6.1",
     "webpack": "^3.6.0"
   },
   "dependencies": {

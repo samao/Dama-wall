@@ -5,22 +5,22 @@ append css
 block script
     script(src="/js/register.js")
 
-mixin createGroup(id, holder, label)
+mixin createGroup(type, id, holder, label)
     .form-group
         label(for=id).col-sm-3.control-label #{label}
         .col-sm-9
-            input(type=id placeholder=holder id=id).form-control
+            input(type=type placeholder=holder id=id required).form-control
     
 append title 
     | | 注册会员
 block main
     .register-body
         form.form-horizontal
-            +createGroup('username', '输入用户名', '用户名')
-            +createGroup('pwd', '输入密码', '密码')
-            +createGroup('confirmPwd', '确认密码', '确认密码')
-            +createGroup('mail', '输入邮箱', '邮箱')
-            +createGroup('tel', '输入手机号', '手机号')
+            +createGroup('text', 'username', '输入用户名', '用户名')
+            +createGroup('password', 'pwd', '输入密码', '密码')
+            +createGroup('password', 'confirmPwd', '确认密码', '确认密码')
+            +createGroup('text', 'mail', '输入邮箱', '邮箱')
+            +createGroup('text', 'tel', '输入手机号', '手机号')
             .form-group
                 a.btn.btn-default#loginBtn(href='/login') 登录
                 button.btn.btn-default#registerBtn 注册
