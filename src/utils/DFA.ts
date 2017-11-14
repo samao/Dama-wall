@@ -32,7 +32,7 @@ class DFA {
         for(const word of words) {
             let curMap: Map<string, any> = userWordMap;
             for(let i = 0; i < word.length; ++i) {
-                const char = word.charAt(i);
+                const char = word.charAt(i).toLocaleLowerCase();
                 let map: Map<string, any> = curMap.get(char) || new Map();
                 if(!map.has(DFA_TAG.TAG))
                     map.set(DFA_TAG.TAG, DFA_TAG.DEFAULT);
@@ -70,9 +70,9 @@ class DFA {
             if(!node.has(char)) {
                 let map: Map<string, any> = new Map();
                 map.set(DFA_TAG.TAG, DFA_TAG.DEFAULT)
-                node.set(char, map);
+                node.set(char.toLocaleLowerCase(), map);
             }
-            node = <Map<string, any>>node.get(char)
+            node = <Map<string, any>>node.get(char.toLocaleLowerCase())
         }
         node.set(DFA_TAG.TAG, DFA_TAG.END);
     }
@@ -89,10 +89,10 @@ class DFA {
         if(node) {
             //查找敏感词节点
             for(const char of word) {
-                if(!node.has(char)) return;
+                if(!node.has(char.toLocaleLowerCase())) return;
                 const parent = node;
-                node = <Map<string, any>>(node.get(char));
-                nodes.push({parent, child: char});
+                node = <Map<string, any>>(node.get(char.toLocaleLowerCase()));
+                nodes.push({parent, child: char.toLocaleLowerCase()});
 			}
 			//重置删除敏感词结束标识
             node.set(DFA_TAG.TAG, DFA_TAG.DEFAULT);
@@ -134,30 +134,35 @@ class DFA {
     private checkBanRange(msg: string, begin: number, owner: string): number {
         let match: IMatch = {size:0, end: false};
         let node: Map<string, any> = this._sensitiveMap.get('admin')|| new Map();
-        const hasFirstChar = node.has(msg.charAt(begin));
+        const hasFirstChar = node.has(msg.charAt(begin).toLocaleLowerCase());
 
         let ownerMatch: IMatch = {size:0, end: false};
         let ownerNode: Map<string, any> = this._sensitiveMap.get(owner)||new Map();
-        const ownerHasFirstChar = owner !== '' && ownerNode.has(msg.charAt(begin));
+        const ownerHasFirstChar = owner !== '' && ownerNode.has(msg.charAt(begin).toLocaleLowerCase());
 
         for(let i = begin; i < msg.length; ++i) {
             //当前循环的字符
-            const char = msg.charAt(i);
-            if(hasFirstChar && node && node.has(char) && !match.end) {
+            const char = msg.charAt(i).toLocaleLowerCase();
+            let nodeHasChar = node && node.has(char) && !match.end
+            if(hasFirstChar && (nodeHasChar || char === ' ')) {
                 ++match.size;
-                node = node.get(char)
-                if(node.get(DFA_TAG.TAG) === DFA_TAG.END) match.end = true;
+                if(char !== ' ') {
+                    node = node.get(char)
+                    if(node.get(DFA_TAG.TAG) === DFA_TAG.END) match.end = true;
+                }
             }
-
-            if(ownerHasFirstChar && ownerNode && ownerNode.has(char) && !ownerMatch.end) {
+            nodeHasChar = ownerNode && ownerNode.has(char) && !ownerMatch.end;
+            if(ownerHasFirstChar && (nodeHasChar || char === ' ')) {
                 ++ownerMatch.size;
-                ownerNode = ownerNode.get(char);
-                if(ownerNode.get(DFA_TAG.TAG) === DFA_TAG.END) ownerMatch.end = true;
+                if(char !== ' ') {
+                    ownerNode = ownerNode.get(char);
+                    if(ownerNode.get(DFA_TAG.TAG) === DFA_TAG.END) ownerMatch.end = true;
+                }
             }
         }
         if(!match.end) match.size = 0;
         if(!ownerMatch.end) ownerMatch.size = 0;
-        
+
         return Math.max(match.size, ownerMatch.size);
     }
 
