@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:29:54 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:29:54 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-11-15 18:35:25
  */
 
 import * as express from "express";
@@ -83,7 +83,7 @@ router.route('/:rid').all((req, res, next) => {
         return;
     }
     //加工敏感词
-    req.body.message = danmuCertify.filter(req.body.message,res.locals.owner);
+    req.body.message = danmuCertify.filter(req.body.message,res.locals.owner).out;
     //回复用户
     success(res, req.body.message)
     //同步线程消息

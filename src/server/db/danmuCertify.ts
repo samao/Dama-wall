@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:28:35 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-13 14:16:45
+ * @Last Modified time: 2017-11-15 18:46:15
  */
 
 import * as WebSocket from 'ws';
@@ -57,12 +57,13 @@ export class DanmuCertify {
         }
         dfa.buildBanTree(this._cMap);
 
-        //全部通用敏感词过滤测试
         /*
-        const content = JSON.stringify(this._cMap.get('admin'));
-        console.time(`${process.pid}-敏感词-${content.length}`)
-        this.filter(content);
-        console.timeEnd(`${process.pid}-敏感词-${content.length}`)*/
+        //全部通用敏感词过滤测试
+        const content = JSON.stringify(this._cMap.get('admin')).slice(0,2000);
+        const now = Date.now();
+        const result = this.filter(content);
+        log(`DFA检测 ${content.length} 字符,发现敏感词: ${result.badwords.length} 个,耗时: ${Date.now() - now}`)
+        */
     }
 
     get systemWords(): string[] {
@@ -81,7 +82,7 @@ export class DanmuCertify {
      * 敏感词替换为*号输出
      * @param msg 源字符串
      */
-    filter(msg: string, roomMaster: string = ''): string {
+    filter(msg: string, roomMaster: string = ''): {badwords: string[] ,out: string} {
         //用户设定敏感词和通用敏感词匹配
         return dfa.replace(msg, roomMaster);
     }

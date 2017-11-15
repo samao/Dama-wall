@@ -4,6 +4,7 @@ import {log, error} from './log';
 interface IMatch {
     size: number;
     end: boolean;
+    block: boolean;
 }
 //敏感词节点
 interface IDelete {
@@ -126,38 +127,68 @@ class DFA {
     }
 
     /**
+     * 判断字符是否为英文空格或者全角中文空格
+     * @param char 字符
+     */
+    private isEmptyChar(char: string): boolean {
+        return char.codePointAt(0) === 32 || char.codePointAt(0) === 12288
+    }
+
+    /**
      * 检测从当前点开始的敏感词长度
      * @param msg 检测文本
      * @param begin 开始位置
      * @param owner 房主昵称
      */
     private checkBanRange(msg: string, begin: number, owner: string): number {
-        let match: IMatch = {size:0, end: false};
-        let node: Map<string, any> = this._sensitiveMap.get('admin')|| new Map();
+        let match: IMatch = {size:0, end: false, block: false};
+        let node: Map<string, any> = this._sensitiveMap.get('admin') || new Map();
         const hasFirstChar = node.has(msg.charAt(begin).toLocaleLowerCase());
 
-        let ownerMatch: IMatch = {size:0, end: false};
-        let ownerNode: Map<string, any> = this._sensitiveMap.get(owner)||new Map();
+        let ownerMatch: IMatch = {size:0, end: false, block: false};
+        let ownerNode: Map<string, any> = this._sensitiveMap.get(owner) ||new Map();
         const ownerHasFirstChar = owner !== '' && ownerNode.has(msg.charAt(begin).toLocaleLowerCase());
 
+        if(!hasFirstChar && !ownerHasFirstChar) return 0;
+
+        //log('匹配开始',begin, hasFirstChar)
         for(let i = begin; i < msg.length; ++i) {
             const char = msg.charAt(i).toLocaleLowerCase();
-            if(hasFirstChar && !match.end) {
-                ++match.size;
-                if(char !== ' ' && node && node.has(char)) {
+            const isByteChar = i == 0 ? true : Buffer.byteLength(msg.charAt(i - 1)) === 1;
+
+            if(hasFirstChar && !match.end && !match.block) {
+                const hasChar = node && node.has(char);
+                if(hasChar) {
+                    ++match.size;
                     node = node.get(char)
                     if(node.get(DFA_TAG.TAG) === DFA_TAG.END) match.end = true;
+                }else if(this.isEmptyChar(char) && isByteChar) {
+                    match.block = true;
+                }else {
+                    ++match.size;
+                    if(!node.has(char) && !this.isEmptyChar(char)) match.block = true;
                 }
+                //log('当前字符',char,'匹配长度:',match.size, match.end, hasChar)
             }
+            //只有通用敏感词退出循环
             if(hasFirstChar && !ownerHasFirstChar && match.end) { break }
-            if(ownerHasFirstChar && !ownerMatch.end) {
-                ++ownerMatch.size;
-                if(char !== ' ' && ownerNode && ownerNode.has(char)) {
+            
+            if(ownerHasFirstChar && !ownerMatch.end && !ownerMatch.block) {
+                const hasChar = ownerNode && ownerNode.has(char);
+                if(hasChar) {
+                    ++ownerMatch.size;
                     ownerNode = ownerNode.get(char);
                     if(ownerNode.get(DFA_TAG.TAG) === DFA_TAG.END) ownerMatch.end = true;
+                }else if(this.isEmptyChar(char) && isByteChar) {
+                    ownerMatch.block = true;
+                }else {
+                    ++ownerMatch.size;
+                    if(!ownerNode.has(char) && !this.isEmptyChar(char)) ownerMatch.block = true;
                 }
             }
+            //只有自定义敏感词提前退出循环
             if(!hasFirstChar && ownerHasFirstChar && ownerMatch.end) { break }
+            //全部节点结束退出循环
             if(match.end && ownerMatch.end) { break }
         }
         if(!match.end) match.size = 0;
@@ -171,15 +202,17 @@ class DFA {
      * @param msg 原始文本数据 
      * @param owner 房主昵称，用于检测自定义敏感词
      */
-    replace(msg: string, owner: string = ''): string {
+    replace(msg: string, owner: string = ''): {badwords: string[], out: string} {
         const bans = [...this.getBans(msg, owner)];
-        //log('敏感词检测',bans);
-        return msg.replace(new RegExp(bans.join('|'),'ig'), (banword) => {
+        log(`发现敏感词个数：${bans.length}`);
+        const result = {badwords: bans, out: msg};
+        result.out = msg.replace(new RegExp(bans.join('|'),'ig'), (banword) => {
             const replaceChars = '@#$%&';
             return new Array(banword.length).fill(0).map(() => {
                 return replaceChars.charAt(Math.random() * replaceChars.length);
             }).join('') 
         })
+        return result;
     }
 }
 

@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:29:13 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-13 12:31:42
+ * @Last Modified time: 2017-11-15 18:35:08
  */
 
 import * as http from 'http';
@@ -176,7 +176,7 @@ class DanmuServer {
                         return;
                     }
                     //加工敏感词
-                    msg.data = danmuCertify.filter(msg.data, owner);
+                    msg.data = danmuCertify.filter(msg.data, owner).out;
                     //1.回复用户自己
                     response(ws, {status: WebSocketStatus.POST, data: msg.data});
                     //2.分发本线程房间
