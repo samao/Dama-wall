@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:30:41 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-13 12:14:47
+ * @Last Modified time: 2017-11-16 10:32:21
  */
 
 import * as expressSession from 'express-session';
@@ -17,7 +17,7 @@ import * as compression from 'compression';
 import * as md5 from 'md5';
 
 import {log} from '../utils/log';
-import {secret,ports} from './config/conf'
+import {secret,ports,DOMAIN} from './config/conf'
 import {WorkerEvent} from './worker/events';
 import danmuRouter from './route/danmu';
 import pageRouter from './route/page';
@@ -51,7 +51,7 @@ app.use(expressSession({
     saveUninitialized:true,
     secret,
     store:new MongoStore({
-        url:`mongodb://localhost:${ports.db}/sessions`,
+        url:`mongodb://${DOMAIN}:${ports.db}/sessions`,
         //session一天有效期
         ttl: 24 * 60 * 60,
     }),

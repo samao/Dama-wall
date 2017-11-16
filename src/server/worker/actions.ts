@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:30:12 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:30:12 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-11-16 14:45:44
  */
 
 /**
@@ -39,4 +39,9 @@ export enum Actions {
      * 线程之间同步敏感词
      */
     BANS = 'bans'
+}
+
+export enum WordActions {
+    POST = 'addBadWord',
+    DELETE = 'removeBadWord'
 }

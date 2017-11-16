@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:28:35 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-15 18:46:15
+ * @Last Modified time: 2017-11-16 14:10:14
  */
 
 import * as WebSocket from 'ws';
@@ -55,15 +55,15 @@ export class DanmuCertify {
             userBans.push(word);
             this._cMap.set(owner, userBans);
         }
-        dfa.buildBanTree(this._cMap);
+        dfa.buildBadTree(this._cMap);
 
-        /*
+
         //全部通用敏感词过滤测试
         const content = JSON.stringify(this._cMap.get('admin')).slice(0,2000);
         const now = Date.now();
         const result = this.filter(content);
         log(`DFA检测 ${content.length} 字符,发现敏感词: ${result.badwords.length} 个,耗时: ${Date.now() - now}`)
-        */
+
     }
 
     get systemWords(): string[] {
@@ -91,14 +91,14 @@ export class DanmuCertify {
         const userBans = this._cMap.get(owner) || [];
         userBans.push(word);
         this._cMap.set(owner, userBans);
-        dfa.addBanWord(word, owner);
+        dfa.addBadWord(word, owner);
     }
 
     removeBan(word: string, owner: string): void {
         const userBans = this._cMap.get(owner) || [];
         if(userBans.includes(word)){
             userBans.splice(userBans.indexOf(word), 1)
-            dfa.removeBanWord(word, owner);
+            dfa.removeBadWord(word, owner);
         }
     }
 

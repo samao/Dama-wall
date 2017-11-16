@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:29:13 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-15 18:35:08
+ * @Last Modified time: 2017-11-16 14:49:10
  */
 
 import * as http from 'http';
@@ -16,11 +16,12 @@ import {log, error} from '../../utils/log';
 import { WebSocketEvent } from './events';
 import { WebSocketStatus } from "./status";
 import { WorkerEvent } from '../worker/events';
-import { Actions } from "../worker/actions";
+import { Actions, WordActions } from "../worker/actions";
 import { lobby } from "../lobby/lobby";
 import { checkout, restore } from "../db/pool";
 import { Collection } from "../db/collection";
 import { roomParser } from "../lobby/roomParser";
+import { dfa } from '../../utils/DFA';
 
 class DanmuServer {
     /**
@@ -79,6 +80,13 @@ class DanmuServer {
                 case Actions.BANS:
                     danmuCertify.setupFromMaster(data);
                 break;
+                case WordActions.POST:
+                    dfa.addBadWord(data.word, data.owner);
+                break;
+                case WordActions.DELETE:
+                    dfa.removeBadWord(data.word, data.owner);
+                break;
+                
             }
         });
 

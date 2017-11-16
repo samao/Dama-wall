@@ -2,9 +2,9 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:25:29 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-08 16:31:31
+ * @Last Modified time: 2017-11-16 15:05:40
  */
-
+import * as cluster from 'cluster';
 import * as express from "express";
 import * as QRCode from "qrcode";
 import * as path from 'path';
@@ -14,6 +14,18 @@ import { Collection } from "../db/collection";
 import { log, error } from "../../utils/log";
 import { HOST, ports } from "../config/conf";
 import { success, failure } from "../../utils/feedback";
+import { dfa } from '../../utils/DFA';
+import { syncTransfer } from '../worker/syncTransfer';
+import { WordActions } from '../worker/actions';
+
+/**
+ * 线程敏感词消息体
+ */
+interface IWordData {
+    owner: string;
+    word: string;
+    [index: string]: any;
+}
 
 const router = express.Router();
 
@@ -65,17 +77,52 @@ router.route('/nav').patch((req, res, next) => {
     }, reason => failure(res, `无法连接数据库 ${reason}`))
 })
 
-router.route('/words').post((req, res, next) => {
-    log('调用敏感词接口')
+router.route('/word').all((req, res, next) => {
+    const word = req.body.word;
+    if(!word || word === '' || Object.is(word, undefined) || Object.is(word,null)) {
+        failure(res, `无效参数`);
+        return;
+    }
+    next();
+}).post((req, res, next) => {
     checkout(db => {
         const owner = res.locals.loginUser.user
-        const words = req.body.words;
-        const wordsCol = db.collection(Collection.SENSITIVE);
-        wordsCol.insert({words, owner}).then(() => {
+        const word = req.body.word;
+        const words = db.collection(Collection.SENSITIVE);
+        words.insert({word, owner}).then(() => {
             success(res, '写入敏感词成功');
+            wordAction(WordActions.POST, {word, owner});
         }).catch(reason => failure(res, `插入数据库失败 ${reason}`)).then(() => restore(db));
     },reason => failure(res, `无法连接数据库 ${reason}`))
+}).delete((req, res, next) => {
+    checkout(db => {
+        const owner = res.locals.loginUser.user;
+        const word = req.body.word;
+        const words = db.collection(Collection.SENSITIVE);
+        words.findOneAndDelete({word, owner}).then(() => {
+            success(res,`删除成功 ${word}`);
+            wordAction(WordActions.DELETE, {word, owner});
+        }).catch(reason => failure(res, `删除敏感词失败 ${reason}`)).then(() => restore(db));
+    }, reason => failure(res, `无法连接数据库 ${reason}`))
 })
+
+/**
+ * 线程间同步敏感词消息
+ * @param action 线程同步action
+ * @param data 线程数据
+ */
+function wordAction(action: WordActions, data: IWordData): void {
+    const {word, owner} = data;
+    switch(action) {
+        case WordActions.POST:
+            dfa.addBadWord(word, owner)
+        break;
+        case WordActions.DELETE:
+            dfa.removeBadWord(word, owner);
+        break;
+    }
+    syncTransfer({action,data}, cluster.worker);
+}
 
 /**
  * 生成活动二维码

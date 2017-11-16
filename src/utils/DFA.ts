@@ -49,7 +49,7 @@ class DFA {
      * 构建DFA数据模型
      * @param banMap 用户/敏感词组 数据
      */
-    buildBanTree(banMap: Map<string,string[]>): void {
+    buildBadTree(banMap: Map<string,string[]>): void {
         for(const [owner, words] of banMap) {
             this.buildDFA(words, owner);
         }
@@ -60,7 +60,7 @@ class DFA {
      * @param word 敏感词
      * @param owner 房主昵称
      */
-    addBanWord(word: string, owner: string): void {
+    addBadWord(word: string, owner: string): void {
         let node = this._sensitiveMap.get(owner);
         if(!node) {
             node = new Map<string, any>();
@@ -83,7 +83,7 @@ class DFA {
      * @param word 敏感词
      * @param owner 房主昵称
      */
-    removeBanWord(word: string, owner: string): void {
+    removeBadWord(word: string, owner: string): void {
         let nodes: INode[] = [];
         
         let node = this._sensitiveMap.get(owner);
@@ -114,10 +114,13 @@ class DFA {
      * @param msg 消息
      * @param owner 房主
      */
-    private getBans(msg: string, owner: string): Set<string> {
+    private getBads(msg: string, owner: string): Set<string> {
         const bans = new Set<string>();
+        let lastNoEmpty = '';
         for(let i = 0; i< msg.length; ++i) {
-            const size = this.checkBanRange(msg, i, owner);
+            const char = msg.charAt(i);
+            if(!this.isEmptyChar(char)) lastNoEmpty = char;
+            const size = this.checkBadRange(lastNoEmpty, msg, i, owner);
             if(size > 0){
                 bans.add(msg.substr(i,size))
                 i += size - 1;
@@ -136,11 +139,12 @@ class DFA {
 
     /**
      * 检测从当前点开始的敏感词长度
+     * @param lastNoEmpty begin位置前一个不为空字符串的字符
      * @param msg 检测文本
      * @param begin 开始位置
      * @param owner 房主昵称
      */
-    private checkBanRange(msg: string, begin: number, owner: string): number {
+    private checkBadRange(lastNoEmpty: string, msg: string, begin: number, owner: string): number {
         let match: IMatch = {size:0, end: false, block: false};
         let node: Map<string, any> = this._sensitiveMap.get('admin') || new Map();
         const hasFirstChar = node.has(msg.charAt(begin).toLocaleLowerCase());
@@ -154,7 +158,10 @@ class DFA {
         //log('匹配开始',begin, hasFirstChar)
         for(let i = begin; i < msg.length; ++i) {
             const char = msg.charAt(i).toLocaleLowerCase();
-            const isByteChar = i == 0 ? true : Buffer.byteLength(msg.charAt(i - 1)) === 1;
+
+            //多个空格前的字符是否为单字符
+            const isByteChar = i == 0 ? true : Buffer.byteLength(lastNoEmpty) === 1;
+            if(!this.isEmptyChar(char)) lastNoEmpty = char;
 
             if(hasFirstChar && !match.end && !match.block) {
                 const hasChar = node && node.has(char);
@@ -203,7 +210,7 @@ class DFA {
      * @param owner 房主昵称，用于检测自定义敏感词
      */
     replace(msg: string, owner: string = ''): {badwords: string[], out: string} {
-        const bans = [...this.getBans(msg, owner)];
+        const bans = [...this.getBads(msg, owner)];
         log(`发现敏感词个数：${bans.length}`);
         const result = {badwords: bans, out: msg};
         result.out = msg.replace(new RegExp(bans.join('|'),'ig'), (banword) => {
