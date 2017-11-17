@@ -14,7 +14,7 @@ import { Collection } from "../db/collection";
 import { log, error } from "../../utils/log";
 import { HOST, ports } from "../config/conf";
 import { success, failure } from "../../utils/feedback";
-import { dfa } from '../../utils/DFA';
+import { dfa } from '../../utils/dfa/DFA';
 import { syncTransfer } from '../worker/syncTransfer';
 import { WordActions } from '../worker/actions';
 

@@ -1,4 +1,5 @@
-import {log, error} from './log';
+import {log, error} from '../log';
+import whiteChars from './whiteChars';
 
 //敏感词匹配数据
 interface IMatch {
@@ -18,6 +19,22 @@ interface INode {
     child: string;
 }
 
+/** 敏感词匹配结果 */
+interface IBadResult {
+    /**
+     * 输入字符串
+     */
+    input: string;
+    /**
+     * 输出字符串
+     */
+    out: string;
+    /**
+     * 包含敏感词组
+     */
+    badwords: string[];
+}
+
 class DFA {
 
     private _sensitiveMap = new Map<string, Map<string, any>>()
@@ -34,6 +51,7 @@ class DFA {
             let curMap: Map<string, any> = userWordMap;
             for(let i = 0; i < word.length; ++i) {
                 const char = word.charAt(i).toLocaleLowerCase();
+                if(whiteChars.has(char)) continue;
                 let map: Map<string, any> = curMap.get(char) || new Map();
                 if(!map.has(DFA_TAG.TAG))
                     map.set(DFA_TAG.TAG, DFA_TAG.DEFAULT);
@@ -68,6 +86,7 @@ class DFA {
         }
 
         for(const char of word) {
+            if(whiteChars.has(char)) continue;
             if(!node.has(char)) {
                 let map: Map<string, any> = new Map();
                 map.set(DFA_TAG.TAG, DFA_TAG.DEFAULT)
@@ -90,6 +109,7 @@ class DFA {
         if(node) {
             //查找敏感词节点
             for(const char of word) {
+                if(whiteChars.has(char)) continue;
                 if(!node.has(char.toLocaleLowerCase())) return;
                 const parent = node;
                 node = <Map<string, any>>(node.get(char.toLocaleLowerCase()));
@@ -110,31 +130,42 @@ class DFA {
     }
 
     /**
+     * 创建脑残文字
+     * @param len 返回内容长度
+     */
+    private createLeetSpeak(len: number): string {
+        const chars = '@#$%&*^';
+        let result = chars;
+        if(len > chars.length)
+            result += chars.repeat(len / chars.length);
+        return result.slice(0, len);
+    }
+
+    /**
      * 从msg中解析敏感词
      * @param msg 消息
      * @param owner 房主
      */
-    private getBads(msg: string, owner: string): Set<string> {
+    private getBads(msg: string, owner: string): {bans:Set<string>, out: string} {
         const bans = new Set<string>();
         let lastNoEmpty = '';
+        let out = '';
         for(let i = 0; i< msg.length; ++i) {
             const char = msg.charAt(i);
-            if(!this.isEmptyChar(char)) lastNoEmpty = char;
             const size = this.checkBadRange(lastNoEmpty, msg, i, owner);
+            //log('游标：'+ i + '步长：' +size)
             if(size > 0){
-                bans.add(msg.substr(i,size))
+                const word = msg.substr(i, size);
+                //log('敏感词:'+word);
+                bans.add(word)
+                out += this.createLeetSpeak(word.length);
                 i += size - 1;
+            }else{
+                out += char;
             }
+            if(!whiteChars.has(char)) lastNoEmpty = char;
         }
-        return bans;
-    }
-
-    /**
-     * 判断字符是否为英文空格或者全角中文空格
-     * @param char 字符
-     */
-    private isEmptyChar(char: string): boolean {
-        return char.codePointAt(0) === 32 || char.codePointAt(0) === 12288
+        return {bans,out};
     }
 
     /**
@@ -160,8 +191,7 @@ class DFA {
             const char = msg.charAt(i).toLocaleLowerCase();
 
             //多个空格前的字符是否为单字符
-            const isByteChar = i == 0 ? true : Buffer.byteLength(lastNoEmpty) === 1;
-            if(!this.isEmptyChar(char)) lastNoEmpty = char;
+            const isByteChar = i == 0 ? true : Buffer.byteLength(lastNoEmpty) === 1 && !whiteChars.has(lastNoEmpty);
 
             if(hasFirstChar && !match.end && !match.block) {
                 const hasChar = node && node.has(char);
@@ -169,13 +199,13 @@ class DFA {
                     ++match.size;
                     node = node.get(char)
                     if(node.get(DFA_TAG.TAG) === DFA_TAG.END) match.end = true;
-                }else if(this.isEmptyChar(char) && isByteChar) {
+                }else if(whiteChars.has(char) && isByteChar) {
                     match.block = true;
                 }else {
                     ++match.size;
-                    if(!node.has(char) && !this.isEmptyChar(char)) match.block = true;
+                    if(!hasChar && !whiteChars.has(char)) match.block = true;
                 }
-                //log('当前字符',char,'匹配长度:',match.size, match.end, hasChar)
+                //log(`当前字符${lastNoEmpty}->${char} 匹配长度:[${match.size}] 节点:[${hasChar}] 是否前单节:[${isByteChar}] 结果:[${match.end}]`)
             }
             //只有通用敏感词退出循环
             if(hasFirstChar && !ownerHasFirstChar && match.end) { break }
@@ -186,17 +216,19 @@ class DFA {
                     ++ownerMatch.size;
                     ownerNode = ownerNode.get(char);
                     if(ownerNode.get(DFA_TAG.TAG) === DFA_TAG.END) ownerMatch.end = true;
-                }else if(this.isEmptyChar(char) && isByteChar) {
+                }else if(whiteChars.has(char) && isByteChar) {
                     ownerMatch.block = true;
                 }else {
                     ++ownerMatch.size;
-                    if(!ownerNode.has(char) && !this.isEmptyChar(char)) ownerMatch.block = true;
+                    if(!ownerNode.has(char) && !whiteChars.has(char)) ownerMatch.block = true;
                 }
             }
             //只有自定义敏感词提前退出循环
             if(!hasFirstChar && ownerHasFirstChar && ownerMatch.end) { break }
             //全部节点结束退出循环
             if(match.end && ownerMatch.end) { break }
+
+            if(!whiteChars.has(char)) lastNoEmpty = char;
         }
         if(!match.end) match.size = 0;
         if(!ownerMatch.end) ownerMatch.size = 0;
@@ -206,20 +238,12 @@ class DFA {
 
     /**
      * 用火星文替换敏感词
-     * @param msg 原始文本数据 
+     * @param input 原始文本数据 
      * @param owner 房主昵称，用于检测自定义敏感词
      */
-    replace(msg: string, owner: string = ''): {badwords: string[], out: string} {
-        const bans = [...this.getBads(msg, owner)];
-        log(`发现敏感词个数：${bans.length}`);
-        const result = {badwords: bans, out: msg};
-        result.out = msg.replace(new RegExp(bans.join('|'),'ig'), (banword) => {
-            const replaceChars = '@#$%&';
-            return new Array(banword.length).fill(0).map(() => {
-                return replaceChars.charAt(Math.random() * replaceChars.length);
-            }).join('') 
-        })
-        return result;
+    replace(input: string, owner: string = ''): IBadResult {
+        const { bans, out } = this.getBads(input, owner)
+        return {badwords: [...bans], out, input};
     }
 }
 

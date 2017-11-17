@@ -21,7 +21,7 @@ import { lobby } from "../lobby/lobby";
 import { checkout, restore } from "../db/pool";
 import { Collection } from "../db/collection";
 import { roomParser } from "../lobby/roomParser";
-import { dfa } from '../../utils/DFA';
+import { dfa } from '../../utils/dfa/DFA';
 
 class DanmuServer {
     /**

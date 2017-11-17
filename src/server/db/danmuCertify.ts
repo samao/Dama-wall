@@ -11,7 +11,7 @@ import { checkout, restore } from './pool';
 import { log, error } from "../../utils/log";
 import { Collection } from "./collection";
 import { call, remove } from "../../utils/ticker";
-import { dfa, DFA_TAG } from '../../utils/DFA';
+import { dfa } from '../../utils/dfa/DFA';
 
 interface IBanedWord {
     word: string;
@@ -59,11 +59,11 @@ export class DanmuCertify {
 
 
         //全部通用敏感词过滤测试
+        
         const content = JSON.stringify(this._cMap.get('admin')).slice(0,2000);
         const now = Date.now();
         const result = this.filter(content);
         log(`DFA检测 ${content.length} 字符,发现敏感词: ${result.badwords.length} 个,耗时: ${Date.now() - now}`)
-
     }
 
     get systemWords(): string[] {
