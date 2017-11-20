@@ -19,8 +19,9 @@ package com.idzeir.ui
 		
 		public static const BACKGROUND: uint = 0xF2F2F2;
 		
-		public static const HOVER: uint = 0x666666;
+		public static const HOVER: uint = 0xF5F5F5;
 		
 		public static const LINE: uint = 0x777777;
+		
 	}
 }

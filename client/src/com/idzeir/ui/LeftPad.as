@@ -46,6 +46,7 @@ package com.idzeir.ui
 			var startBtn: DButton = new DButton(function start():void {
 			
 			});
+			startBtn.raduis = 45;
 			startBtn.label = '开启投屏';
 			startBtn.setSize(225,45);
 				

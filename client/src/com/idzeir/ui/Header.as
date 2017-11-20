@@ -12,9 +12,12 @@ package com.idzeir.ui
 	import com.idzeir.components.v2.DropList;
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.Label;
+	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.data.Provider;
 	import com.idzeir.ui.components.DropRender;
+	
+	import flash.text.TextFormat;
 	
 	public class Header extends UIContainer
 	{
@@ -37,11 +40,11 @@ package com.idzeir.ui
 			actBox.gap = 10;
 			
 			//----活动
-			var actTitle: Label = new Label('线下活动名称', Color.TITLE);
+			var actTitle: Label = new Label('线下活动名称', Color.TITLE,false);
 			
 			var droplist:DropList = new DropList(DropList.DOWN, DropRender);
 			droplist.setSize(75,30);
-			droplist.dataProvider = new Provider(['jiafeiyan','goldGame','WCG-warcraft'])
+			droplist.dataProvider = new Provider(['黄金联赛','绝地求生','WCG'])
 			droplist.index = 0;
 			
 			actBox.addChild(actTitle);

@@ -10,6 +10,7 @@
 package com.idzeir.ui.components
 {
 	import com.idzeir.components.v2.Button;
+	import com.idzeir.ui.Color;
 	
 	import flash.display.Shape;
 	
@@ -23,17 +24,26 @@ package com.idzeir.ui.components
 		
 		private var _borderColor:uint = 0x999999;
 		
+		private var _overLayer: Shape;
+		
 		public function DButton(handler:Function=null)
 		{
 			super(handler);
 			
-			this.overSkin = this.selectSkin =  null;
+			this.selectSkin =  null;
 			
 			_bgLayer = new Shape();
 			_bgLayer.graphics.lineStyle(.3, _borderColor, .5);
 			_bgLayer.graphics.drawRoundRect(0, 0, 100, 30, _raduis, _raduis);
 			_bgLayer.graphics.endFill();
 			
+			_overLayer = new Shape();
+			_overLayer.graphics.lineStyle(.3, _borderColor, .5);
+			_overLayer.graphics.beginFill(Color.HOVER);
+			_overLayer.graphics.drawRoundRect(0, 0, 100, 30, _raduis, _raduis);
+			_overLayer.graphics.endFill();
+			
+			this.overSkin = _overLayer;
 			this.normalSkin = _bgLayer;
 		}
 		
@@ -66,6 +76,12 @@ package com.idzeir.ui.components
 				_bgLayer.graphics.beginFill(_bgColor);
 				_bgLayer.graphics.drawRoundRect(0, 0, _width, _height, _raduis, _raduis);
 				_bgLayer.graphics.endFill();
+				
+				_overLayer.graphics.clear();
+				_overLayer.graphics.lineStyle(.3, _borderColor, .5);
+				_overLayer.graphics.beginFill(Color.HOVER);
+				_overLayer.graphics.drawRoundRect(0, 0, _width, _height, _raduis, _raduis);
+				_overLayer.graphics.endFill();
 			}
 			_label.maxWidth = _width - 4;
 			_label.x = (_width - _label.width) *.5;

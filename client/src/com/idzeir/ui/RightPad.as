@@ -12,8 +12,10 @@ package com.idzeir.ui
 	import com.idzeir.components.v2.Label;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
+	import com.idzeir.media.impl.MediaProxyType;
+	import com.idzeir.media.video.VideoPlayer;
 	
-	import flash.media.Video;
+	import flash.geom.Rectangle;
 	
 	public class RightPad extends UIContainer
 	{
@@ -30,8 +32,10 @@ package com.idzeir.ui
 			
 			const videoTitle: Label = new Label('预览',Color.TITLE);
 			
-			const video: Video = new Video(265,165);
-			video.opaqueBackground = 0x999999;
+			const video: VideoPlayer = VideoPlayer.create();
+			video.opaqueBackground = 0x000000;
+			video.viewPort = new Rectangle(0,0,265,165);
+			video.connect(MediaProxyType.HTTP,'http://i.acfun.tv/h5/vod/ac3618875.mp4');
 			
 			warpBox.addChild(videoTitle);
 			warpBox.addChild(video);
