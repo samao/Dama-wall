@@ -23,5 +23,9 @@ package com.idzeir.ui
 		
 		public static const LINE: uint = 0x777777;
 		
+		public static const RED:uint = 0xFF0000;
+		
+		public static const Light: uint = 0xCCCCCC;
+		
 	}
 }

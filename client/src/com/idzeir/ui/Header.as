@@ -40,7 +40,8 @@ package com.idzeir.ui
 			actBox.gap = 10;
 			
 			//----活动
-			var actTitle: Label = new Label('线下活动名称', Color.TITLE,false);
+			var actTitle: Label = new Label('线下活动名称', Color.TITLE,false, 120);
+			actTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.TITLE,true);
 			
 			var droplist:DropList = new DropList(DropList.DOWN, DropRender);
 			droplist.setSize(75,30);
@@ -56,8 +57,8 @@ package com.idzeir.ui
 			statusBox.algin = HBox.MIDDLE;
 			statusBox.gap = 10;
 			
-			var statusTitle: Label = new Label('弹幕连接状态', Color.TITLE);
-			
+			var statusTitle: Label = new Label('弹幕连接状态', Color.TITLE,false, 120);
+			statusTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.TITLE,true);
 			var status: Label = new Label('已连接', Color.PRIMARY);
 			
 			statusBox.addChild(statusTitle);

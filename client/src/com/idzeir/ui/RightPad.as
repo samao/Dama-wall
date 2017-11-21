@@ -10,12 +10,14 @@
 package com.idzeir.ui
 {
 	import com.idzeir.components.v2.Label;
+	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.media.impl.MediaProxyType;
 	import com.idzeir.media.video.VideoPlayer;
 	
 	import flash.geom.Rectangle;
+	import flash.text.TextFormat;
 	
 	public class RightPad extends UIContainer
 	{
@@ -31,6 +33,7 @@ package com.idzeir.ui
 			const warpBox: VBox = new VBox();
 			
 			const videoTitle: Label = new Label('预览',Color.TITLE);
+			videoTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.TITLE,true);
 			
 			const video: VideoPlayer = VideoPlayer.create();
 			video.opaqueBackground = 0x000000;

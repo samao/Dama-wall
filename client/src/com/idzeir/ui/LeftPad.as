@@ -11,11 +11,13 @@ package com.idzeir.ui
 {
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.Label;
+	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.ui.components.DButton;
 	
 	import flash.display.DisplayObjectContainer;
+	import flash.text.TextFormat;
 	
 	public class LeftPad extends UIContainer
 	{
@@ -37,6 +39,7 @@ package com.idzeir.ui
 			titleBox.gap = 10;
 			
 			var statusTitle: Label = new Label('播放控制', Color.TITLE);
+			statusTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.TITLE,true);
 			var status: Label = new Label('投屏中', Color.PRIMARY);
 			
 			titleBox.addChild(statusTitle);
