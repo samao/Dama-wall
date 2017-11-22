@@ -21,7 +21,7 @@ package
 	
 	import flash.geom.Rectangle;
 	
-	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="30")]
+	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="60")]
 	public class DamaClient extends App
 	{
 		private var warpBox:VBox;
