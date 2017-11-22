@@ -14,6 +14,7 @@ package com.idzeir.ui.components
 	import com.idzeir.components.v2.Label;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.api.IItemRender;
+	import com.idzeir.emit.Emit;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
 	
@@ -25,7 +26,7 @@ package com.idzeir.ui.components
 		private var _data:*;
 		private var _bgLayer:Shape;
 		
-		private var _color: uint = Color.WHITE;
+		private var _color: uint = Color.White;
 
 		private var warpBox:HBox;
 
@@ -44,7 +45,7 @@ package com.idzeir.ui.components
 		private function createChildren():void
 		{
 			_bgLayer = new Shape();
-			_bgLayer.alpha = .2;
+			_bgLayer.alpha = .05;
 			
 			const ICON_GAP: uint = 15;
 			
@@ -60,18 +61,33 @@ package com.idzeir.ui.components
 			lockedBtn.normalSkin = new V3UnLocked();
 			lockedBtn.overSkin = null;
 			lockedBtn.setSize(13,13);
-			leftBox.addChild(lockedBtn);
-			
-			typeTxt = new Label('类型',Color.PRIMARY);
-			leftBox.addChild(typeTxt);
-			addChild(leftBox);
-			
 			const eyeBtn: Button = new Button(function():void {});
 			eyeBtn.overSkin  = null;
 			eyeBtn.selectSkin = new V3EyeClose();
 			eyeBtn.normalSkin = new V3Eye();
 			eyeBtn.setSize(14,12);
-			const optBtn: Button = new Button(function():void{});
+			
+			leftBox.addChild(lockedBtn);
+			leftBox.addChild(eyeBtn);
+			
+			typeTxt = new Label('类型',Color.Primary);
+			leftBox.addChild(typeTxt);
+			addChild(leftBox);
+			
+			const upBtn:Button = new Button(function():void{});
+			upBtn.selectSkin = null;
+			upBtn.normalSkin = new V3UpArrow();
+			upBtn.overSkin = new V3UpArrowHover();
+			upBtn.setSize(12,12);
+			const downBtn:Button = new Button(function():void{});
+			downBtn.selectSkin = null;
+			downBtn.normalSkin = new V3DownArrow();
+			downBtn.overSkin = new V3DownArrowHover();
+			downBtn.setSize(12,12);
+			
+			const optBtn: Button = new Button(function():void{
+				Emit.get().fire('openLayerDetail',_data)
+			});
 			optBtn.selectSkin = null;
 			optBtn.overSkin = new V3OptHover();
 			optBtn.normalSkin = new V3Opt();
@@ -82,7 +98,8 @@ package com.idzeir.ui.components
 			delBtn.normalSkin = new V3CrashBox();
 			delBtn.setSize(12,12);
 			
-			warpBox.addChild(eyeBtn);
+			warpBox.addChild(upBtn);
+			warpBox.addChild(downBtn);
 			warpBox.addChild(delBtn);
 			warpBox.addChild(optBtn);
 			addChild(warpBox);
@@ -126,7 +143,7 @@ package com.idzeir.ui.components
 		
 		public function out():void
 		{
-			_color = Color.WHITE;
+			_color = Color.White;
 			vaild();
 		}
 		

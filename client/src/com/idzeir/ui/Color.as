@@ -11,21 +11,23 @@ package com.idzeir.ui
 {
 	public class Color
 	{
-		public static const TITLE:uint = 0x666666;
+		public static const Title:uint = 0x666666;
 		
-		public static const PRIMARY: uint = 0x009ACC;
+		public static const Primary: uint = 0x009ACC;
 		
-		public static const WHITE: uint = 0xFFFFFF;
+		public static const White: uint = 0xFFFFFF;
 		
-		public static const BACKGROUND: uint = 0xF2F2F2;
+		public static const Background: uint = 0xF2F2F2;
 		
-		public static const HOVER: uint = 0xF5F5F5;
+		public static const Hover: uint = 0xF5F5F5;
 		
-		public static const LINE: uint = 0x777777;
+		public static const Line: uint = 0x777777;
 		
-		public static const RED:uint = 0xFF0000;
+		public static const Red:uint = 0xFF0000;
 		
-		public static const Light: uint = 0xCCCCCC;
+		public static const Light: uint = 0xF7F7F7;
+		
+		public static const Black:uint = 0x000000;
 		
 	}
 }

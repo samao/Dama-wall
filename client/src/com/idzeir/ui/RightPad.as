@@ -32,12 +32,13 @@ package com.idzeir.ui
 		{
 			const warpBox: VBox = new VBox();
 			
-			const videoTitle: Label = new Label('预览',Color.TITLE);
-			videoTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.TITLE,true);
+			const videoTitle: Label = new Label('预览',Color.Title);
+			videoTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true);
 			
 			const video: VideoPlayer = VideoPlayer.create();
 			video.opaqueBackground = 0x000000;
 			video.viewPort = new Rectangle(0,0,265,165);
+			video.mute = true;
 			video.connect(MediaProxyType.HTTP,'http://i.acfun.tv/h5/vod/ac3618875.mp4');
 			
 			warpBox.addChild(videoTitle);

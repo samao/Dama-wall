@@ -18,8 +18,6 @@ package com.idzeir.ui.components
 	{
 		protected var _bgLayer: Shape;
 		
-		protected var _bgColor: uint = 0xFFFFFF;
-		
 		protected var _raduis: uint = 20;
 		
 		private var _borderColor:uint = 0x999999;
@@ -30,6 +28,8 @@ package com.idzeir.ui.components
 		{
 			super(handler);
 			
+			_bgColor = 0xFFFFFF;
+			
 			this.selectSkin =  null;
 			
 			_bgLayer = new Shape();
@@ -39,7 +39,7 @@ package com.idzeir.ui.components
 			
 			_overLayer = new Shape();
 			_overLayer.graphics.lineStyle(.3, _borderColor, .5);
-			_overLayer.graphics.beginFill(Color.HOVER);
+			_overLayer.graphics.beginFill(Color.Hover);
 			_overLayer.graphics.drawRoundRect(0, 0, 100, 30, _raduis, _raduis);
 			_overLayer.graphics.endFill();
 			
@@ -59,7 +59,7 @@ package com.idzeir.ui.components
 			vaild();
 		}
 
-		public function set bgColor(value:uint):void
+		override public function set bgColor(value:int):void
 		{
 			_bgColor = value;
 			vaild();
@@ -79,7 +79,7 @@ package com.idzeir.ui.components
 				
 				_overLayer.graphics.clear();
 				_overLayer.graphics.lineStyle(.3, _borderColor, .5);
-				_overLayer.graphics.beginFill(Color.HOVER);
+				_overLayer.graphics.beginFill(Color.Hover);
 				_overLayer.graphics.drawRoundRect(0, 0, _width, _height, _raduis, _raduis);
 				_overLayer.graphics.endFill();
 			}

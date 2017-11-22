@@ -23,15 +23,23 @@ package com.idzeir.ui.components
 			alpha = .5;
 			_height = Gap.PADDING;
 			createChildren();
+			visible = false;
 		}
 		
 		private function createChildren():void
 		{
 			var line: Shape = new Shape();
-			drawRect(Color.LINE, 600 - Gap.PADDING * 2,1,line);
+			drawRect(Color.Line, 600 - Gap.PADDING * 2,1,line);
 			line.x = Gap.PADDING;
 			line.y = _height;
 			this.addChild(line);
+			vaild();
+		}
+		
+		override public function immediateUpdate():void
+		{
+			super.immediateUpdate();
+			visible = true;
 		}
 	}
 }

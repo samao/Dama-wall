@@ -38,9 +38,9 @@ package com.idzeir.ui
 			titleBox.algin = HBox.MIDDLE;
 			titleBox.gap = 10;
 			
-			var statusTitle: Label = new Label('播放控制', Color.TITLE);
-			statusTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.TITLE,true);
-			var status: Label = new Label('投屏中', Color.PRIMARY);
+			var statusTitle: Label = new Label('播放控制', Color.Title);
+			statusTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true);
+			var status: Label = new Label('投屏中', Color.Primary);
 			
 			titleBox.addChild(statusTitle);
 			titleBox.addChild(status);
@@ -67,7 +67,7 @@ package com.idzeir.ui
 			
 			addChild(warpBox);
 			
-			const tips: Label = new Label('<font size="9">关闭状态黑屏不显示弹幕，其它状态都显示弹幕</font>', Color.TITLE,true,240);
+			const tips: Label = new Label('<font size="9">关闭状态黑屏不显示弹幕，其它状态都显示弹幕</font>', Color.Title,true,240);
 			tips.move(0, 195);
 			addChild(tips);
 		}

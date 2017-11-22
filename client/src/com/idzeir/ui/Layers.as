@@ -28,7 +28,7 @@ package com.idzeir.ui
 		{
 			super();
 			
-			_height = 150;
+			_height = 120;
 			
 			createChildren();
 		}
@@ -36,11 +36,12 @@ package com.idzeir.ui
 		private function createChildren():void
 		{
 			const warpBox: VBox = new VBox();
-			const titleTxt: Label = new Label('投屏层控制',Color.TITLE);
-			titleTxt.defaultTextFormat = new TextFormat(Style.font,null,Color.TITLE,true);
+			const titleTxt: Label = new Label('投屏层控制',Color.Title);
+			titleTxt.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true);
 			
 			const layers:List = new List(LayerRender);
-			layers.sliderBglayerColor = Color.TITLE;
+			layers.bgColor = Color.Background;
+			layers.sliderBglayerColor = 0x99ffcc;
 			layers.sliderBglayerAlpha = .8;
 			layers.scaleThumb = false;
 			layers.thumbSkin = createThumb();
@@ -48,11 +49,10 @@ package com.idzeir.ui
 			const viewMask:Shape = DrawUtil.drawRectRound(layers.width, layers.height,0, 8);
 			layers.addRawChild(viewMask);
 			layers.mask = viewMask;
-			layers.dataProvider = new Provider(['视频','图片','摄像头','视频','图片','摄像头','视频','图片','摄像头'])
+			layers.dataProvider = new Provider(['视频','图像','纯色','摄像头','图像'])
 			
 			warpBox.addChild(titleTxt);
 			warpBox.addChild(layers);
-			
 			warpBox.x = Gap.PADDING;
 			addChild(warpBox);
 		}
@@ -62,7 +62,7 @@ package com.idzeir.ui
 			const thumb: Button = new Button();
 			thumb.setSize(8,30);
 			thumb.overSkin = thumb.selectSkin = null;
-			thumb.normalSkin = DrawUtil.drawRectRound(8, 30, Color.Light, 4);
+			thumb.normalSkin = DrawUtil.drawRectRound(8, 30, Color.Title, 4);
 			return thumb;
 		}
 	}
