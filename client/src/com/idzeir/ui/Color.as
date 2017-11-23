@@ -29,5 +29,7 @@ package com.idzeir.ui
 		
 		public static const Black:uint = 0x000000;
 		
+		public static const Border:uint = 0xCbCBCB;
+		
 	}
 }

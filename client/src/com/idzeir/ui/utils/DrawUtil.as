@@ -32,12 +32,13 @@ package com.idzeir.ui.utils
 			return shape;
 		}
 		
-		public static function drawRectRoundTo(width:uint, height: uint, color: uint, target:Sprite,radius:uint = 0): void
+		public static function drawRectRoundTo(width:uint, height: uint, color: uint, target:Sprite,radius:uint = 0): Sprite
 		{
 			target.graphics.clear();
 			target.graphics.beginFill(color);
 			target.graphics.drawRoundRect(0,0,width,height,radius, radius);
 			target.graphics.endFill();
+			return target;
 		}
 	}
 }

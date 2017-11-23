@@ -16,10 +16,13 @@ package com.idzeir.ui
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.data.Provider;
+	import com.idzeir.dispatch.DEvent;
+	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.components.LayerRender;
+	import com.idzeir.ui.layers.LayerType;
 	import com.idzeir.ui.utils.DrawUtil;
 	
-	import flash.display.Shape;
+	import flash.filters.DropShadowFilter;
 	import flash.text.TextFormat;
 	
 	public class Layers extends UIContainer
@@ -40,21 +43,42 @@ package com.idzeir.ui
 			titleTxt.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true);
 			
 			const layers:List = new List(LayerRender);
+			layers.filters = [new DropShadowFilter(3,45,0,.1,6,6,1)]
 			layers.bgColor = Color.Background;
 			layers.sliderBglayerColor = 0x99ffcc;
 			layers.sliderBglayerAlpha = .8;
 			layers.scaleThumb = false;
 			layers.thumbSkin = createThumb();
 			layers.setSize(600 - 2 * Gap.PADDING, 110);
-			const viewMask:Shape = DrawUtil.drawRectRound(layers.width, layers.height,0, 8);
-			layers.addRawChild(viewMask);
-			layers.mask = viewMask;
-			layers.dataProvider = new Provider(['视频','图像','纯色','摄像头','图像'])
+			const dp:Provider = new Provider();
+			
+			//测试数据
+			addLayer(LayerType.IMAGE,dp);
+			addLayer(LayerType.CAMERA,dp);
+			addLayer(LayerType.IMAGE,dp);
+			addLayer(LayerType.VIDEO,dp);
+			addLayer(LayerType.COLOR,dp)
+			layers.dataProvider = dp;
 			
 			warpBox.addChild(titleTxt);
 			warpBox.addChild(layers);
 			warpBox.x = Gap.PADDING;
 			addChild(warpBox);
+			
+			on(EventType.BRING_LAYER_UP,function(e:DEvent):void
+			{
+				const item:* = e.data[0];
+				trace(JSON.stringify(item));
+			});
+			on(EventType.BRING_LAYER_DOWN,function(e:DEvent):void
+			{
+				const item: * = e.data[0];
+			});
+		}
+		
+		private function addLayer(type:String,dp:Provider):void
+		{
+			dp.addItemAt(0, {title:'图层 ('+(dp.size+1)+') - 类型 [' + type+']', type:type});
 		}
 		
 		private function createThumb():Button
@@ -62,7 +86,7 @@ package com.idzeir.ui
 			const thumb: Button = new Button();
 			thumb.setSize(8,30);
 			thumb.overSkin = thumb.selectSkin = null;
-			thumb.normalSkin = DrawUtil.drawRectRound(8, 30, Color.Title, 4);
+			thumb.normalSkin = DrawUtil.drawRectRound(8, 30, Color.Title, 6);
 			return thumb;
 		}
 	}

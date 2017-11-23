@@ -9,122 +9,87 @@
 
 package com.idzeir.ui
 {
-	import com.idzeir.components.v2.Button;
 	import com.idzeir.components.v2.HBox;
-	import com.idzeir.components.v2.HSlider;
+	import com.idzeir.components.v2.Label;
 	import com.idzeir.components.v2.UIContainer;
-	import com.idzeir.ui.components.TimeLabel;
-	import com.idzeir.ui.utils.DrawUtil;
+	import com.idzeir.components.v2.VBox;
+	import com.idzeir.ui.layers.CameraOptView;
+	import com.idzeir.ui.layers.ColorOptView;
+	import com.idzeir.ui.layers.ImageOptView;
+	import com.idzeir.ui.layers.LayerType;
+	import com.idzeir.ui.layers.VideoOptView;
 	
-	import flash.display.Sprite;
-	import flash.events.Event;
+	import flash.display.DisplayObject;
+	import flash.utils.Dictionary;
 	
 	public class Footer extends UIContainer
 	{
-		private var warpBox:HBox;
-		private var _bglayer:Sprite;
+		private var warpBox:VBox;
+		private var typeTitle:Label;
+		
+		private var optViewMap:Dictionary = new Dictionary(true);
+
+		private var viewBox:UIContainer;
 		
 		public function Footer()
 		{
 			super();
-			_bgColor = Color.White;
-			setSize(600 - Gap.PADDING*2, 75);
 			createChildren();
-			visible = false;
 		}
 		
 		private function createChildren():void
 		{
-			_bglayer = new Sprite();
+			const warpBox:VBox = new VBox();
 			
-			warpBox = new HBox();
-			warpBox.algin = HBox.MIDDLE;
-			warpBox.gap = Gap.LINE_GAP;
+			var titleBox:HBox = new HBox();
+			titleBox.gap = 10;
+			const titleTxt:Label = new Label('详细设置',Color.Title);
+			typeTitle = new Label('',Color.Primary,false, 200);
+			titleBox.addChild(titleTxt);
+			titleBox.addChild(typeTitle);
 			
-			const preBtn:Button = new Button(function():void{});
-			preBtn.selectSkin = preBtn.overSkin = null;
-			preBtn.normalSkin = new V3Pre();
-			preBtn.setSize(12,12);
+			viewBox = new UIContainer();
 			
-			const playBtn:Button =  new Button(function():void{});
-			playBtn.overSkin = null;
-			playBtn.selectSkin = new V3Pause();
-			playBtn.normalSkin = new V3Play();
-			playBtn.setSize(30,30);
-			
-			const nextBtn:Button = new Button(function():void{});
-			nextBtn.selectSkin = nextBtn.overSkin = null;
-			nextBtn.normalSkin = new V3Next();
-			nextBtn.setSize(12,12);
-			
-			const volBtn:Button = new Button(function():void{});
-			volBtn.overSkin = null;
-			volBtn.selectSkin = new V3Mute();
-			volBtn.normalSkin = new V3Volume();
-			volBtn.setSize(24,24);
-			
-			warpBox.addChild(preBtn);
-			warpBox.addChild(playBtn);
-			warpBox.addChild(nextBtn);
-			warpBox.addChild(volBtn);
-			
-			createProgressBar();
-			
-			_bglayer.x = Gap.PADDING;
-			warpBox.move(_bglayer.x + Gap.PADDING, _height - warpBox.height >> 1);
-			
-			addChild(_bglayer);
+			warpBox.x = Gap.PADDING;
+			warpBox.addChild(titleBox);
+			warpBox.addChild(viewBox);
 			addChild(warpBox);
 		}
 		
-		private function createProgressBar():void
+		private function getView(data:*):UIContainer
 		{
-			var proBox:HBox = new HBox();
-			proBox.gap = 3;
-			proBox.algin = HBox.MIDDLE;
-			
-			var duration:uint = 4346;
-			var current:uint = 0;
-			
-			const curTime:TimeLabel = new TimeLabel(current);
-			const slider:HSlider = new HSlider();
-			slider.scaleThumb = false;
-			slider.thumbSkin = createThumb();
-			slider.bgColor = Color.Black;
-			slider.bgAlpha = .3;
-			slider.setSize(250,3);
-			slider.addEventListener(Event.CHANGE,function():void
+			if(!optViewMap.hasOwnProperty(data.type))
 			{
-				curTime.time = duration*slider.value;
-			});
-			
-			const durTime:TimeLabel = new TimeLabel(duration);
-			
-			proBox.addChild(curTime);
-			proBox.addChild(slider);
-			proBox.addChild(durTime);
-			
-			warpBox.addChild(DrawUtil.drawRectRound(1,24,Color.Line));
-			warpBox.addChild(proBox);
-		}
-		
-		private function createThumb():Button
-		{
-			const btn:Button = new Button();
-			btn.normalSkin = DrawUtil.drawCircle(Color.Primary,10);
-			btn.overSkin= btn.selectSkin = null;
-			btn.setSize(10,10);
-			return btn;
-		}
-		
-		override public function immediateUpdate():void
-		{
-			super.immediateUpdate();
-			if(_setWH) 
-			{
-				DrawUtil.drawRectRoundTo(_width,_height,_bgColor,_bglayer,6);
-				visible = true;
+				var layer:DisplayObject;
+				switch(data.type)
+				{
+					case LayerType.VIDEO:
+						layer = new VideoOptView();
+						break;
+					case LayerType.IMAGE:
+						layer = new ImageOptView();
+						break;
+					case LayerType.COLOR:
+						layer = new ColorOptView();
+						break;
+					case LayerType.CAMERA:
+						layer = new CameraOptView();
+						break;
+					default:
+						layer = new UIContainer();
+						break;
+				}
+				optViewMap[data.type] = layer;
 			}
+			return optViewMap[data.type]
+		}
+		
+		public function setView(data:*):void 
+		{
+			typeTitle.text = data.title;
+			const view:UIContainer = getView(data);
+			viewBox.removeChildren();
+			viewBox.addChild(view);
 		}
 	}
 }

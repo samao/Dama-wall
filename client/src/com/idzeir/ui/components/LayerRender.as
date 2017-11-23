@@ -14,9 +14,10 @@ package com.idzeir.ui.components
 	import com.idzeir.components.v2.Label;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.api.IItemRender;
-	import com.idzeir.emit.Emit;
+	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
+	import com.idzeir.ui.utils.DrawUtil;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
@@ -70,11 +71,13 @@ package com.idzeir.ui.components
 			leftBox.addChild(lockedBtn);
 			leftBox.addChild(eyeBtn);
 			
-			typeTxt = new Label('类型',Color.Primary);
+			typeTxt = new Label('类型',Color.Primary,false,200);
 			leftBox.addChild(typeTxt);
 			addChild(leftBox);
 			
-			const upBtn:Button = new Button(function():void{});
+			const upBtn:Button = new Button(function():void{
+				bringLayerUp();
+			});
 			upBtn.selectSkin = null;
 			upBtn.normalSkin = new V3UpArrow();
 			upBtn.overSkin = new V3UpArrowHover();
@@ -86,7 +89,7 @@ package com.idzeir.ui.components
 			downBtn.setSize(12,12);
 			
 			const optBtn: Button = new Button(function():void{
-				Emit.get().fire('openLayerDetail',_data)
+				fire(EventType.OPEN_LAYER_DETAIL,_data);
 			});
 			optBtn.selectSkin = null;
 			optBtn.overSkin = new V3OptHover();
@@ -105,12 +108,22 @@ package com.idzeir.ui.components
 			addChild(warpBox);
 		}
 		
+		private function bringLayerUp():void
+		{
+			fire(EventType.BRING_LAYER_UP,_data);
+		}
+		
+		private function bringLayerDown():void
+		{
+			fire(EventType.BRING_LAYER_DOWN,_data);
+		}
+		
 		override public function immediateUpdate():void
 		{
 			super.immediateUpdate();
 			if(_setWH) 
 			{
-				drawRect(_color,_width,_height, this);
+				DrawUtil.drawRectRoundTo(_width, _height, _color, this, 8);
 				warpBox.move(_width - warpBox.width - 50, _height - warpBox.height >> 1)
 				leftBox.move(20, _height - leftBox.height >>1);
 			}
@@ -119,7 +132,7 @@ package com.idzeir.ui.components
 		public function startup(value:*):void
 		{
 			_data = value;
-			typeTxt.text = value;
+			typeTxt.text = value.title;
 		}
 		
 		public function get warp():DisplayObject

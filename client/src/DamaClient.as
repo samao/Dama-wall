@@ -10,8 +10,9 @@
 package
 {
 	import com.idzeir.app.App;
+	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.VBox;
-	import com.idzeir.emit.Emit;
+	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.Body;
 	import com.idzeir.ui.Footer;
 	import com.idzeir.ui.Gap;
@@ -48,27 +49,26 @@ package
 			
 			addChild(warpBox);
 			
-			Emit.get().on('openLayerDetail',function(e: *):void 
+			on(EventType.OPEN_LAYER_DETAIL, function(e: *):void 
 			{
-				if(!_horLine)
-					addFooter();
-				trace(e.data);
+				addFooter(e.data);
 			});
 		}
 		
-		private function addFooter():void
+		private function addFooter(data:Array):void
 		{
 			if(!_horLine)
 			{
 				_horLine = new HLine();
 				_footer = new Footer();
+				
+				var rect: Rectangle =  stage.nativeWindow.bounds;
+				rect.height = 630;
+				stage.nativeWindow.bounds = rect;
 			}
 			warpBox.addChild(_horLine);
+			_footer.setView(data[0]);
 			warpBox.addChild(_footer);
-			
-			var rect: Rectangle =  stage.nativeWindow.bounds;
-			rect.height = 600;
-			stage.nativeWindow.bounds = rect;
 		}
 	}
 }

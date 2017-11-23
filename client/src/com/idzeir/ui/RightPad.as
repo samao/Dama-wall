@@ -16,12 +16,10 @@ package com.idzeir.ui
 	import com.idzeir.media.impl.MediaProxyType;
 	import com.idzeir.media.video.VideoPlayer;
 	
-	import flash.desktop.NativeApplication;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
 	import flash.geom.Rectangle;
-	import flash.net.FileReference;
 	import flash.text.TextFormat;
 	
 	public class RightPad extends UIContainer
