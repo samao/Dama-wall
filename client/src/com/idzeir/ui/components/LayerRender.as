@@ -82,7 +82,9 @@ package com.idzeir.ui.components
 			upBtn.normalSkin = new V3UpArrow();
 			upBtn.overSkin = new V3UpArrowHover();
 			upBtn.setSize(12,12);
-			const downBtn:Button = new Button(function():void{});
+			const downBtn:Button = new Button(function():void{
+				bringLayerDown();
+			});
 			downBtn.selectSkin = null;
 			downBtn.normalSkin = new V3DownArrow();
 			downBtn.overSkin = new V3DownArrowHover();

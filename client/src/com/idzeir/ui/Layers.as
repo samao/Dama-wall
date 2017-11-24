@@ -68,11 +68,12 @@ package com.idzeir.ui
 			on(EventType.BRING_LAYER_UP,function(e:DEvent):void
 			{
 				const item:* = e.data[0];
-				trace(JSON.stringify(item));
+				dp.setItemAt(dp.indexOf(item) - 1, item);
 			});
 			on(EventType.BRING_LAYER_DOWN,function(e:DEvent):void
 			{
 				const item: * = e.data[0];
+				dp.setItemAt(dp.indexOf(item) + 1, item);
 			});
 		}
 		
