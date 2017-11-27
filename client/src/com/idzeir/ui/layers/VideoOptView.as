@@ -16,10 +16,10 @@ package com.idzeir.ui.layers
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.components.TimeLabel;
 	import com.idzeir.ui.utils.DrawUtil;
+	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.filters.DropShadowFilter;
 	
 	public class VideoOptView extends OptView
 	{
@@ -29,7 +29,7 @@ package com.idzeir.ui.layers
 		
 		public function VideoOptView()
 		{
-			this.filters = [new DropShadowFilter(3,45,0,.1,6,6,1)];
+			FilterUtil.border(this);
 		}
 		
 		override protected function createChildren():void
@@ -62,10 +62,16 @@ package com.idzeir.ui.layers
 			volBtn.normalSkin = new V3Volume();
 			volBtn.setSize(24,24);
 			
+			const listBtn:Button = new Button(function():void{});
+			listBtn.overSkin = listBtn.selectSkin = null;
+			listBtn.normalSkin = new V3List();
+			listBtn.setSize(24,24);
+			
 			contentBox.addChild(preBtn);
 			contentBox.addChild(playBtn);
 			contentBox.addChild(nextBtn);
 			contentBox.addChild(volBtn);
+			contentBox.addChild(listBtn);
 			
 			createProgressBar();
 			
@@ -88,7 +94,7 @@ package com.idzeir.ui.layers
 			slider.thumbSkin = createThumb();
 			slider.bgColor = Color.Black;
 			slider.bgAlpha = .3;
-			slider.setSize(250,3);
+			slider.setSize(210,3);
 			slider.addEventListener(Event.CHANGE,function():void
 			{
 				curTime.time = duration*slider.value;

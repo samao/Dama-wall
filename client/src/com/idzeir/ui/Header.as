@@ -9,18 +9,32 @@
 
 package com.idzeir.ui
 {
+	import com.idzeir.components.v2.Button;
 	import com.idzeir.components.v2.DropList;
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.Label;
+	import com.idzeir.components.v2.List;
 	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.data.Provider;
+	import com.idzeir.ui.components.CameraRender;
+	import com.idzeir.ui.components.DButton;
 	import com.idzeir.ui.components.DropRender;
+	import com.idzeir.ui.utils.DrawUtil;
+	import com.idzeir.ui.utils.FilterUtil;
 	
+	import flash.events.Event;
+	import flash.filters.DropShadowFilter;
+	import flash.geom.Rectangle;
+	import flash.media.Camera;
 	import flash.text.TextFormat;
 	
 	public class Header extends UIContainer
 	{
+		private var _droplist:List;
+		
+		private var _openListBtn:DButton;
+		
 		public function Header()
 		{
 			super();
@@ -40,16 +54,22 @@ package com.idzeir.ui
 			actBox.gap = 10;
 			
 			//----活动
-			var actTitle: Label = new Label('线下活动名称', Color.Title,false, 120);
+			var actTitle: Label = new Label('线下活动切换', Color.Title,false, 120);
 			actTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true);
 			
-			var droplist:DropList = new DropList(DropList.DOWN, DropRender);
-			droplist.setSize(75,30);
-			droplist.dataProvider = new Provider(['黄金联赛','绝地求生','WCG'])
-			droplist.index = 0;
+			_openListBtn = new DButton(function():void
+			{
+				showCameraList();	
+			});
+			_openListBtn.filters = [];
+			_openListBtn.overSkin = null;
+			_openListBtn.normalSkin = new UIContainer();
+			_openListBtn.labelColor = Color.Primary;
+			_openListBtn.setSize(120,20);
+			_openListBtn.label = '默认';
 			
 			actBox.addChild(actTitle);
-			actBox.addChild(droplist);
+			actBox.addChild(_openListBtn);
 			warpBox.addChild(actBox)
 			
 			//弹幕服务器状态
@@ -67,6 +87,47 @@ package com.idzeir.ui
 			
 			warpBox.move(Gap.PADDING, Gap.PADDING);
 			addChild(warpBox);
+		}
+		
+		private function showCameraList():void
+		{
+			if(!_droplist)
+			{
+				_droplist = new List(DropRender);
+				_droplist.scaleThumb = false;
+				_droplist.thumbSkin = createThumb();
+				_droplist.bgColor = Color.Background;
+				_droplist.sliderBglayerColor = 0x99ffcc;
+				_droplist.sliderBglayerAlpha = .8;
+				FilterUtil.border(_droplist);
+				_droplist.bgColor = Color.Background;
+				_droplist.setSize(120,100);
+				_droplist.dataProvider = new Provider(['WCG中国赛','DOAT2预选赛','CHINA JOY','风暴英雄','绝地求生']);
+				_droplist.index = 0;
+				var rect:Rectangle =  _openListBtn.getBounds(stage);
+				_droplist.x = rect.left + (rect.width - _droplist.width) * .5;
+				_droplist.y = rect.bottom + 3;
+				_droplist.addEventListener(Event.SELECT,function():void
+				{
+					_droplist.removeFromParent();
+					_openListBtn.label = _droplist.selectedItem.data;
+				});
+			}
+			if(contains(_droplist))
+			{
+				_droplist.removeFromParent();
+				return;
+			}
+			stage.addChild(_droplist);
+		}
+		
+		private function createThumb():Button
+		{
+			const thumb: Button = new Button();
+			thumb.setSize(8,30);
+			thumb.overSkin = thumb.selectSkin = null;
+			thumb.normalSkin = DrawUtil.drawRectRound(8, 30, Color.Title, 6);
+			return thumb;
 		}
 		
 		override public function immediateUpdate():void 

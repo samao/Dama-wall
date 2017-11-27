@@ -14,7 +14,9 @@ package com.idzeir.ui
 	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
+	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.components.DButton;
+	import com.idzeir.ui.layers.LayerType;
 	
 	import flash.display.DisplayObjectContainer;
 	import flash.text.TextFormat;
@@ -77,7 +79,7 @@ package com.idzeir.ui
 			const W: uint = 65,H:uint = 30, R: uint = 30;
 			var videoBtn: DButton = new DButton(function videoHandler(): void
 			{
-				
+				fire(EventType.ADD_LAYER,LayerType.VIDEO);
 			});
 			videoBtn.raduis = R;
 			videoBtn.label = '视频';
@@ -85,23 +87,23 @@ package com.idzeir.ui
 			
 			var camBtn:DButton = new DButton(function camHandler(): void
 			{
-				
+				fire(EventType.ADD_LAYER,LayerType.CAMERA);
 			});
 			camBtn.raduis = R;
 			camBtn.label = '摄像头';
 			camBtn.setSize(W,H);
 			
-			var streamBtn:DButton = new DButton(function streamHandler(): void
+			var textBtn:DButton = new DButton(function textHandler(): void
 			{
-				
+				fire(EventType.ADD_LAYER,LayerType.TEXT);	
 			});
-			streamBtn.raduis = R;
-			streamBtn.label = '直播流';
-			streamBtn.setSize(W,H);
+			textBtn.raduis = R;
+			textBtn.label = '文本';
+			textBtn.setSize(W,H);
 			
 			container.addChild(videoBtn);
 			container.addChild(camBtn);
-			container.addChild(streamBtn);
+			container.addChild(textBtn);
 		}
 		
 		private function createHeader(container: DisplayObjectContainer): void
@@ -117,7 +119,7 @@ package com.idzeir.ui
 			
 			var picBtn:DButton = new DButton(function picHandler(): void
 			{
-				
+				fire(EventType.ADD_LAYER,LayerType.IMAGE);
 			});
 			picBtn.raduis = R;
 			picBtn.label = '图片';
@@ -125,7 +127,7 @@ package com.idzeir.ui
 			
 			var pureColor:DButton = new DButton(function pureHandler(): void
 			{
-				
+				fire(EventType.ADD_LAYER,LayerType.COLOR);
 			});
 			pureColor.raduis = R;
 			pureColor.label = '纯色';

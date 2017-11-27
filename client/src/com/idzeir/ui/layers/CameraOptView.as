@@ -18,8 +18,8 @@ package com.idzeir.ui.layers
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.components.CameraRender;
 	import com.idzeir.ui.components.DButton;
-	import com.idzeir.ui.components.DropRender;
 	import com.idzeir.ui.utils.DrawUtil;
+	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.events.Event;
 	import flash.filters.DropShadowFilter;
@@ -86,10 +86,10 @@ package com.idzeir.ui.layers
 				_droplist.bgColor = Color.Background;
 				_droplist.sliderBglayerColor = 0x99ffcc;
 				_droplist.sliderBglayerAlpha = .8;
-				_droplist.filters =  [new DropShadowFilter(1,45,Color.Border,.2,1,1),new DropShadowFilter(1,-135,Color.Border,.2,1,1),new DropShadowFilter(3,45,0,.1,6,6,1)]
+				FilterUtil.border(_droplist);
 				_droplist.bgColor = Color.Background;
 				_droplist.setSize(120,120);
-				_droplist.dataProvider = new Provider(Camera.names.concat('9158Cam','Guagua','1','2'));
+				_droplist.dataProvider = new Provider(Camera.names.concat('9158Cam','Guagua','k歌伴侣'));
 				_droplist.index = 0;
 				var rect:Rectangle =  _openListBtn.getBounds(this);
 				_droplist.x = rect.left + (rect.width - _droplist.width) * .5;

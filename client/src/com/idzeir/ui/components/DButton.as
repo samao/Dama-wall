@@ -11,6 +11,7 @@ package com.idzeir.ui.components
 {
 	import com.idzeir.components.v2.Button;
 	import com.idzeir.ui.Color;
+	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.display.Shape;
 	
@@ -27,6 +28,8 @@ package com.idzeir.ui.components
 		public function DButton(handler:Function=null)
 		{
 			super(handler);
+			
+			FilterUtil.border(this);
 			
 			_bgColor = 0xFFFFFF;
 			

@@ -15,5 +15,6 @@ package com.idzeir.ui.layers
 		public static const IMAGE:String = '图像';
 		public static const COLOR:String = '纯色';
 		public static const CAMERA:String = '摄像头';
+		public static const TEXT:String = '文本';
 	}
 }

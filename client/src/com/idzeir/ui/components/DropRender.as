@@ -22,7 +22,7 @@ package com.idzeir.ui.components
 		
 		private var _bglayer: Shape;
 		
-		private var _color: uint = Color.Background;
+		private var _color: uint = Color.White;
 		
 		public function DropRender(handler:Function=null)
 		{
@@ -36,7 +36,7 @@ package com.idzeir.ui.components
 			this.overSkin = this.selectSkin = null;
 			this.normalSkin = _bglayer
 			
-			_label.textColor = Color.Primary;
+			_label.textColor = Color.Black;
 			this.setSize(75,30);
 		}
 		
@@ -60,21 +60,21 @@ package com.idzeir.ui.components
 		public function select():void
 		{
 			this.selected = true;
-			this._color = Color.Hover;
+			this._color = Color.Primary;
 			vaild();
 		}
 		
 		public function unselect():void
 		{
 			this.selected = false;
-			this._color = Color.Background;
+			this._color = Color.White;
 			vaild();
 		}
 		
 		public function out():void
 		{
 			if(this._selected) this._color = Color.Hover;
-			else this._color = Color.Background;
+			else this._color = Color.White;
 			vaild();
 		}
 		

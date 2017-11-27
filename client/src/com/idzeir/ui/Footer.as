@@ -17,6 +17,7 @@ package com.idzeir.ui
 	import com.idzeir.ui.layers.ColorOptView;
 	import com.idzeir.ui.layers.ImageOptView;
 	import com.idzeir.ui.layers.LayerType;
+	import com.idzeir.ui.layers.TextOptView;
 	import com.idzeir.ui.layers.VideoOptView;
 	
 	import flash.display.DisplayObject;
@@ -74,6 +75,9 @@ package com.idzeir.ui
 						break;
 					case LayerType.CAMERA:
 						layer = new CameraOptView();
+						break;
+					case LayerType.TEXT:
+						layer = new TextOptView();
 						break;
 					default:
 						layer = new UIContainer();

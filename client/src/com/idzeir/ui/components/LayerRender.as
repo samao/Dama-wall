@@ -97,7 +97,9 @@ package com.idzeir.ui.components
 			optBtn.overSkin = new V3OptHover();
 			optBtn.normalSkin = new V3Opt();
 			optBtn.setSize(12,12);
-			const delBtn: Button = new Button(function():void{});
+			const delBtn: Button = new Button(function():void{
+				delLayer();
+			});
 			delBtn.selectSkin = null;
 			delBtn.overSkin = new V3CrashBoxHover();
 			delBtn.normalSkin = new V3CrashBox();
@@ -108,6 +110,11 @@ package com.idzeir.ui.components
 			warpBox.addChild(delBtn);
 			warpBox.addChild(optBtn);
 			addChild(warpBox);
+		}
+		
+		private function delLayer():void
+		{
+			fire(EventType.DELETE_LAYER,_data);
 		}
 		
 		private function bringLayerUp():void

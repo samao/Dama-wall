@@ -18,6 +18,7 @@ package com.idzeir.ui.layers
 	import com.idzeir.ui.components.ColorPicker;
 	import com.idzeir.ui.components.ColorText;
 	import com.idzeir.ui.components.DButton;
+	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.events.Event;
 	import flash.filters.DropShadowFilter;
@@ -65,7 +66,7 @@ package com.idzeir.ui.layers
 			var colorPicker:ColorPicker = new ColorPicker();
 			
 			var box:UIContainer = new UIContainer();
-			box.filters = [new DropShadowFilter(3,45,0,.1,6,6,1)]
+			FilterUtil.border(box);
 			box.graphics.beginFill(Color.White);
 			box.graphics.lineStyle(.02,Color.Border);
 			box.graphics.drawRoundRect(0,0, 250,160,8,8);

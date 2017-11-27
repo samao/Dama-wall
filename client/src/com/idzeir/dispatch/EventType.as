@@ -18,5 +18,10 @@ package com.idzeir.dispatch
 		public static const BRING_LAYER_UP: String = 'bringLayerUp';
 		
 		public static const BRING_LAYER_DOWN: String = 'bringLayerDown';
+		
+		public static const DELETE_LAYER:String = 'deleteLayer';
+		
+		
+		public static const ADD_LAYER:String = 'addLayer';
 	}
 }
