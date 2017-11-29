@@ -9,6 +9,7 @@
 
 package com.idzeir.ui.windows
 {
+	import flash.display.DisplayObject;
 	import flash.display.NativeWindow;
 	import flash.display.NativeWindowInitOptions;
 	import flash.display.NativeWindowSystemChrome;
@@ -48,6 +49,36 @@ package com.idzeir.ui.windows
 				e.stopPropagation();
 				visible = false;
 			})
+		}
+		
+		public function get width():Number
+		{
+			return _window.bounds.width;
+		}
+		
+		public function set width(value:Number):void
+		{
+			_window.bounds.width = uint(value);
+		}
+		
+		public function get height():Number
+		{
+			return _window.bounds.height;
+		}
+		
+		public function set height(value:Number):void
+		{
+			_window.bounds.height = uint(value);
+		}
+		
+		public function addChild(child:DisplayObject):void
+		{
+			stage.addChild(child);
+		}
+		
+		public function removeChild(child:DisplayObject):void
+		{
+			stage.removeChild(child);
 		}
 		
 		public function set x(value:uint):void

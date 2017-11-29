@@ -49,7 +49,7 @@ package com.idzeir.ui
 			warpBox.addChild(titleBox);
 			
 			var startBtn: DButton = new DButton(function start():void {
-			
+				fire(EventType.START);
 			});
 			startBtn.raduis = 45;
 			startBtn.label = '开启投屏';

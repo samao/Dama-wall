@@ -11,6 +11,7 @@ package com.idzeir.ui
 {
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.UIContainer;
+	import com.idzeir.ui.screen.Canvas;
 	
 	public class Body extends UIContainer
 	{
@@ -33,6 +34,9 @@ package com.idzeir.ui
 			warpBox.addChild(rightPad);
 			warpBox.x = Gap.PADDING;
 			addChild(warpBox);
+
+			//不可见画布源
+			new Canvas();
 		}
 	}
 }

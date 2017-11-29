@@ -9,18 +9,15 @@
 
 package com.idzeir.ui
 {
-	import com.idzeir.components.v2.Label;
-	import com.idzeir.components.v2.Style;
+	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
-	import com.idzeir.media.impl.MediaProxyType;
-	import com.idzeir.media.video.VideoPlayer;
+	import com.idzeir.components.v2.ViewStack;
+	import com.idzeir.ui.components.DButton;
+	import com.idzeir.ui.screen.OperateScreen;
 	
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.filesystem.File;
-	import flash.geom.Rectangle;
-	import flash.text.TextFormat;
+	import flash.display.DisplayObject;
+	import flash.display.Shape;
 	
 	public class RightPad extends UIContainer
 	{
@@ -34,32 +31,50 @@ package com.idzeir.ui
 		private function createChildren():void
 		{
 			const warpBox: VBox = new VBox();
+			warpBox.gap = Gap.PADDING;
 			
-			const videoTitle: Label = new Label('预览',Color.Title);
-			videoTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true);
+			const titleBox:HBox = new HBox();
+			titleBox.gap = Gap.LINE_GAP;
+			titleBox.algin = HBox.MIDDLE;
 			
-			const video: VideoPlayer = VideoPlayer.create();
-			video.opaqueBackground = 0x000000;
-			video.viewPort = new Rectangle(0,0,265,165);
-			video.mute = true;
+			const W:uint = 288, H:uint = 162;
+			const sourceView:DisplayObject = drawRect(0xFF0000,W,H,new Shape());
 			
-			//选择本地视频
-			var file:File = new File();
-			video.mouseEnabled = true;
-			videoTitle.addEventListener(MouseEvent.CLICK,function():void
+			const sourceBtn:DButton = new DButton(function():void
 			{
-				file.browse()
+				viewStack.index = 0;
+				sourceBtn.labelColor = Color.Red;
+				previewBtn.labelColor = Color.Primary;
 			});
-			file.addEventListener(Event.SELECT,function():void
-			{
-				video.connect(MediaProxyType.HTTP,file.url);
-			});
-			const appPath: String = File.applicationDirectory.nativePath;
-			var vodUrl:String = File.applicationDirectory.resolvePath(appPath + File.separator + '..' + File.separator + 'vod' + File.separator + 'ac4053541.mp4').url;
-			video.connect(MediaProxyType.HTTP,vodUrl);
+			sourceBtn.setSize(60,20);
+			sourceBtn.label = '画布源';
+			sourceBtn.labelColor = Color.Red
+			sourceBtn.raduis = 20;
 			
-			warpBox.addChild(videoTitle);
-			warpBox.addChild(video);
+			const previewBtn:DButton = new DButton(function():void
+			{
+				//file.browse()
+				viewStack.index = 1;
+				previewBtn.labelColor = Color.Red;
+				sourceBtn.labelColor = Color.Primary;
+			});
+			previewBtn.setSize(45,20);
+			previewBtn.label = '预览';
+			previewBtn.labelColor = Color.Primary;
+			previewBtn.raduis = 20;
+			
+			const operScreen:OperateScreen = new OperateScreen();
+			operScreen.setSize(W, H);
+			
+			const viewStack:ViewStack = new ViewStack();
+			viewStack.setSize(265,265);
+			viewStack.mapView([operScreen, sourceView]);
+			
+			titleBox.addChild(sourceBtn);
+			titleBox.addChild(previewBtn);
+
+			warpBox.addChild(titleBox);
+			warpBox.addChild(viewStack);
 			
 			addChild(warpBox);
 		}

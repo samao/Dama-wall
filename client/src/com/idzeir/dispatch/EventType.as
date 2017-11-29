@@ -11,6 +11,8 @@ package com.idzeir.dispatch
 {
 	public final class EventType
 	{
+		public static const START:String = 'start';
+		
 		public static const OPEN_LAYER_DETAIL:String = 'openLayerDetail';
 		
 		public static const BACKGROUND_COLOR:String = 'backgroundColor';

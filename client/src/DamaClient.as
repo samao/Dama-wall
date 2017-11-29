@@ -10,7 +10,6 @@
 package
 {
 	import com.idzeir.app.App;
-	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.Body;
@@ -18,8 +17,12 @@ package
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.Header;
 	import com.idzeir.ui.Layers;
+	import com.idzeir.ui.Monitor;
 	import com.idzeir.ui.components.HLine;
+	import com.idzeir.ui.windows.BigWindow;
 	
+	import flash.desktop.NativeApplication;
+	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
 	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="60")]
@@ -49,9 +52,28 @@ package
 			
 			addChild(warpBox);
 			
+			addChild(new Monitor());
+			
 			on(EventType.OPEN_LAYER_DETAIL, function(e: *):void 
 			{
 				addFooter(e.data);
+			});
+			
+			var _win:BigWindow;
+			on(EventType.START, function():void
+			{
+				_win ||= new BigWindow(stage, 289*3, 162*3)
+				_win.visible = true;
+			})
+			addViewListener();
+		}
+		
+		private function addViewListener():void
+		{
+			stage.nativeWindow.addEventListener(Event.CLOSE, function():void
+			{
+				trace('关闭客户端')
+				NativeApplication.nativeApplication.exit();
 			});
 		}
 		
