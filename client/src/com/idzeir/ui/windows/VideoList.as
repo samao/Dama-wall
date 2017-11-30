@@ -32,6 +32,7 @@ package com.idzeir.ui.windows
 		public function VideoList(rootStage:Stage, width:uint=0, height:uint=0)
 		{
 			super(rootStage, width, height);
+			title = '播放视频列表';
 		}
 		
 		override protected function setViewPort(w:Number, h:Number):void

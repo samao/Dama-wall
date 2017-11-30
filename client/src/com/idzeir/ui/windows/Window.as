@@ -11,6 +11,7 @@ package com.idzeir.ui.windows
 {
 	import flash.display.DisplayObject;
 	import flash.display.NativeWindow;
+	import flash.display.NativeWindowDisplayState;
 	import flash.display.NativeWindowInitOptions;
 	import flash.display.NativeWindowSystemChrome;
 	import flash.display.NativeWindowType;
@@ -141,6 +142,11 @@ package com.idzeir.ui.windows
 		public function get stage(): Stage
 		{
 			return _window.stage;	
+		}
+		
+		public function set title(value:String):void
+		{
+			_window && (_window.title = value);
 		}
 		
 		/**

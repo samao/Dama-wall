@@ -36,6 +36,7 @@ package com.idzeir.ui.windows
 		{
 			_mirro = Mirro.getInstance();
 			super(rootStage, width, height);
+			title = '投屏窗口|双击切换全屏';
 		}
 		
 		override protected function setViewPort(w:Number, h:Number):void
