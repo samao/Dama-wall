@@ -12,6 +12,7 @@ package com.idzeir.ui.layers
 	import com.idzeir.components.v2.Button;
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.HSlider;
+	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.components.TimeLabel;
@@ -62,7 +63,9 @@ package com.idzeir.ui.layers
 			volBtn.normalSkin = new V3Volume();
 			volBtn.setSize(24,24);
 			
-			const listBtn:Button = new Button(function():void{});
+			const listBtn:Button = new Button(function():void{
+				toggleVideoList(listBtn.selected)
+			});
 			listBtn.overSkin = listBtn.selectSkin = null;
 			listBtn.normalSkin = new V3List();
 			listBtn.setSize(24,24);
@@ -77,6 +80,11 @@ package com.idzeir.ui.layers
 			
 			addChild(_bglayer);
 			addChild(contentBox);
+		}
+		
+		private function toggleVideoList(open:Boolean):void
+		{
+			fire(EventType.TOGGLE_VIDEO_LIST,open);
 		}
 		
 		private function createProgressBar():void

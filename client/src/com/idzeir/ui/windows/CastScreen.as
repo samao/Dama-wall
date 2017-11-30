@@ -38,6 +38,12 @@ package com.idzeir.ui.windows
 			super(rootStage, width, height);
 		}
 		
+		override protected function setViewPort(w:Number, h:Number):void
+		{
+			super.setViewPort(w,h);
+			height += 20;
+		}
+		
 		override protected function setupGUI():void
 		{
 			_box = new Box();

@@ -11,6 +11,7 @@ package
 {
 	import com.idzeir.app.App;
 	import com.idzeir.components.v2.VBox;
+	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.Body;
 	import com.idzeir.ui.Footer;
@@ -20,9 +21,13 @@ package
 	import com.idzeir.ui.Monitor;
 	import com.idzeir.ui.components.HLine;
 	import com.idzeir.ui.windows.CastScreen;
+	import com.idzeir.ui.windows.VideoList;
+	import com.idzeir.ui.windows.Window;
 	
 	import flash.desktop.NativeApplication;
+	import flash.display.NativeWindow;
 	import flash.events.Event;
+	import flash.events.NativeWindowBoundsEvent;
 	import flash.geom.Rectangle;
 	
 	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="60")]
@@ -32,6 +37,8 @@ package
 		
 		private var _horLine:HLine
 		private var _footer:Footer;
+		//播放适配列表窗口
+		private var _videoList:VideoList;
 		
 		override protected function createChildren():void
 		{
@@ -54,15 +61,18 @@ package
 			
 			addChild(new Monitor());
 			
-			on(EventType.OPEN_LAYER_DETAIL, function(e: *):void 
+			on(EventType.OPEN_LAYER_DETAIL, function(e: DEvent):void 
 			{
 				addFooter(e.data);
+			});
+			on(EventType.TOGGLE_VIDEO_LIST,function(e:DEvent):void
+			{
+				toggleVideoList(e.data[0]);
 			});
 			
 			var _win:CastScreen;
 			on(EventType.START, function():void
 			{
-				16 * 40 
 				_win ||= new CastScreen(stage, 16 * 60, 9 * 60)
 				_win.visible = true;
 			})
@@ -71,11 +81,31 @@ package
 		
 		private function addViewListener():void
 		{
-			stage.nativeWindow.addEventListener(Event.CLOSE, function():void
+			nativeWindow.addEventListener(Event.CLOSE, function():void
 			{
-				trace('关闭客户端')
 				NativeApplication.nativeApplication.exit();
 			});
+			nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVING,function(e:NativeWindowBoundsEvent):void
+			{
+				if(_videoList)
+				{
+					_videoList.move(e.afterBounds.right,e.afterBounds.top);
+				}
+			});
+		}
+		
+		private function get nativeWindow():NativeWindow
+		{
+			return stage.nativeWindow;
+		}
+		
+		private function toggleVideoList(bool:Boolean):void
+		{
+			if(!_videoList)
+			{
+				_videoList = new VideoList(stage, 300, 630);
+			}
+			_videoList.visible = !_videoList.visible;
 		}
 		
 		private function addFooter(data:Array):void

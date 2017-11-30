@@ -40,6 +40,7 @@ package com.idzeir.ui.screen
 			const appPath: String = File.applicationDirectory.nativePath;
 			var vodUrl:String = File.applicationDirectory.resolvePath(appPath + File.separator + '..' + File.separator + 'vod' + File.separator + 'ac4053541.mp4').url;
 			_video.connect(MediaProxyType.HTTP,vodUrl);
+			_video.mute = true;
 			Mirro.getInstance().attach(this);
 			addChild(_video);
 		}

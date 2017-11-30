@@ -18,5 +18,10 @@ package com.idzeir.ui.utils
 		{
 			target.filters = [new DropShadowFilter(3,45,0,.1,6,6,1),new DropShadowFilter(1,-135,0,.1,2,2)];
 		}
+		
+		public static function horBorder(target:DisplayObject):void
+		{
+			target.filters = [new DropShadowFilter(1,0,0,1,1,1,1),new DropShadowFilter(1,180,0,.1,1,1)];
+		}
 	}
 }

@@ -20,11 +20,9 @@ package com.idzeir.ui
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.components.LayerRender;
-	import com.idzeir.ui.layers.LayerType;
 	import com.idzeir.ui.utils.DrawUtil;
 	import com.idzeir.ui.utils.FilterUtil;
 	
-	import flash.filters.DropShadowFilter;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	

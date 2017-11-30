@@ -15,6 +15,8 @@ package com.idzeir.dispatch
 		
 		public static const OPEN_LAYER_DETAIL:String = 'openLayerDetail';
 		
+		public static const TOGGLE_VIDEO_LIST:String = 'toggleVideoList';
+		
 		public static const BACKGROUND_COLOR:String = 'backgroundColor';
 		
 		public static const BRING_LAYER_UP: String = 'bringLayerUp';
@@ -25,5 +27,6 @@ package com.idzeir.dispatch
 		
 		
 		public static const ADD_LAYER:String = 'addLayer';
+		
 	}
 }

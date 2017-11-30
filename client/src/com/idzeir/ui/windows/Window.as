@@ -23,36 +23,63 @@ package com.idzeir.ui.windows
 	public class Window
 	{
 		protected var _window: NativeWindow;
+
+		protected var _options:NativeWindowInitOptions = new NativeWindowInitOptions();
+		
+		protected var _root:Stage;
 		
 		public function Window(rootStage: Stage,width: uint = 0, height: uint = 0)
 		{
+			_root = rootStage;
 			createWindow(rootStage,width,height);
 			setupGUI();
 		}
 		
+		protected function createOptions(rootStage: Stage):void
+		{
+			_options.systemChrome = NativeWindowSystemChrome.STANDARD;
+			_options.type = NativeWindowType.NORMAL;
+			_options.minimizable = false;
+			_options.maximizable = false;
+			_options.resizable = false;
+			_options.owner = rootStage.nativeWindow;
+		}
+		
+		protected function get rootBounds():Rectangle
+		{
+			return _root.nativeWindow.bounds;
+		}
+		
+		/**
+		 * 默认位置居中
+		 */		
+		protected function setViewPort(w:Number, h:Number):void
+		{
+			var bounds:Rectangle = new Rectangle(stage.fullScreenWidth - w >> 1, stage.fullScreenHeight - h >> 1,w, h);
+			_window.bounds = bounds;
+		}
+		
 		protected function createWindow(rootStage: Stage, width:uint = 0, height: uint = 0): void 
 		{
-			const bounds:Rectangle = rootStage.nativeWindow.bounds;
-			const options: NativeWindowInitOptions = new NativeWindowInitOptions();
-			options.systemChrome = NativeWindowSystemChrome.STANDARD;
-			options.type = NativeWindowType.NORMAL;
-			options.minimizable = false;
-			options.maximizable = false;
-			options.resizable = false;
-			options.owner = rootStage.nativeWindow;
-			
-			_window = new NativeWindow(options);
+			createOptions(rootStage);
+			_window = new NativeWindow(_options);
 			_window.stage.scaleMode = StageScaleMode.NO_SCALE;
 			_window.stage.align = StageAlign.TOP_LEFT;
-			_window.bounds = new Rectangle(bounds.right, bounds.top,width, height + 20);
-			
-			_window.addEventListener(Event.CLOSING,function(e:Event):void
-			{
-				e.preventDefault();
-				e.stopImmediatePropagation();
-				e.stopPropagation();
-				visible = false;
-			})
+			setViewPort(width, height);
+			addWindowListener();
+		}
+		
+		protected function addWindowListener():void
+		{
+			_window.addEventListener(Event.CLOSING,onCloseing);
+		}
+		
+		protected function onCloseing(e:Event):void
+		{
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			e.stopPropagation();
+			visible = false;
 		}
 		
 		public function get width():Number
@@ -62,7 +89,9 @@ package com.idzeir.ui.windows
 		
 		public function set width(value:Number):void
 		{
-			_window.bounds.width = uint(value);
+			var rect:Rectangle = _window.bounds;
+			rect.width = uint(value);
+			_window.bounds = rect;
 		}
 		
 		public function get height():Number
@@ -72,7 +101,9 @@ package com.idzeir.ui.windows
 		
 		public function set height(value:Number):void
 		{
-			_window.bounds.height = uint(value);
+			var rect:Rectangle = _window.bounds;
+			rect.height = uint(value);
+			_window.bounds = rect;
 		}
 		
 		public function addChild(child:DisplayObject):void
@@ -85,14 +116,26 @@ package com.idzeir.ui.windows
 			stage.removeChild(child);
 		}
 		
-		public function set x(value:uint):void
+		public function set x(value:Number):void
 		{
-			_window.x = value;
+			var rect:Rectangle = _window.bounds;
+			rect.x = value;
+			_window.bounds =rect;
 		}
 		
-		public function set y(value:uint):void
+		public function move(x:Number, y:Number):void
 		{
-			_window.y = value;
+			var rect:Rectangle = _window.bounds;
+			rect.x = x;
+			rect.y = y;
+			_window.bounds =rect;
+		}
+		
+		public function set y(value:Number):void
+		{
+			var rect:Rectangle = _window.bounds;
+			rect.y = value;
+			_window.bounds = rect;
 		}
 		
 		public function get stage(): Stage
