@@ -19,7 +19,7 @@ package
 	import com.idzeir.ui.Layers;
 	import com.idzeir.ui.Monitor;
 	import com.idzeir.ui.components.HLine;
-	import com.idzeir.ui.windows.BigWindow;
+	import com.idzeir.ui.windows.CastScreen;
 	
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
@@ -59,10 +59,11 @@ package
 				addFooter(e.data);
 			});
 			
-			var _win:BigWindow;
+			var _win:CastScreen;
 			on(EventType.START, function():void
 			{
-				_win ||= new BigWindow(stage, 289*3, 162*3)
+				16 * 40 
+				_win ||= new CastScreen(stage, 16 * 60, 9 * 60)
 				_win.visible = true;
 			})
 			addViewListener();

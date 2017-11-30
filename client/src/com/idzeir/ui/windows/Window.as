@@ -36,11 +36,15 @@ package com.idzeir.ui.windows
 			const options: NativeWindowInitOptions = new NativeWindowInitOptions();
 			options.systemChrome = NativeWindowSystemChrome.STANDARD;
 			options.type = NativeWindowType.NORMAL;
+			options.minimizable = false;
+			options.maximizable = false;
+			options.resizable = false;
+			options.owner = rootStage.nativeWindow;
 			
 			_window = new NativeWindow(options);
 			_window.stage.scaleMode = StageScaleMode.NO_SCALE;
 			_window.stage.align = StageAlign.TOP_LEFT;
-			_window.bounds = new Rectangle(bounds.right, bounds.top,width, height);
+			_window.bounds = new Rectangle(bounds.right, bounds.top,width, height + 20);
 			
 			_window.addEventListener(Event.CLOSING,function(e:Event):void
 			{

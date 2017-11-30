@@ -16,13 +16,12 @@ package com.idzeir.ui.layers
 	import com.idzeir.data.Provider;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
-	import com.idzeir.ui.components.CameraRender;
 	import com.idzeir.ui.components.DButton;
+	import com.idzeir.ui.components.DropRender;
 	import com.idzeir.ui.utils.DrawUtil;
 	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.events.Event;
-	import flash.filters.DropShadowFilter;
 	import flash.geom.Rectangle;
 	import flash.media.Camera;
 
@@ -80,7 +79,7 @@ package com.idzeir.ui.layers
 		{
 			if(!_droplist)
 			{
-				_droplist = new List(CameraRender);
+				_droplist = new List(DropRender);
 				_droplist.scaleThumb = false;
 				_droplist.thumbSkin = createThumb();
 				_droplist.bgColor = Color.Background;

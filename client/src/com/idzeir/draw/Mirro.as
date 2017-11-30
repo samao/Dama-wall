@@ -17,7 +17,11 @@ package com.idzeir.draw
 	public class Mirro
 	{
 		private static var _instance:Mirro;
-		private var _bitmapFrame:BitmapFrame = new BitmapFrame();
+		
+		public const width:uint = 1920;
+		public const height:uint = 1080;
+		
+		private var _bitmapFrame:BitmapFrame = new BitmapFrame(width,height);
 		
 		public static function getInstance():Mirro
 		{
@@ -49,8 +53,9 @@ import flash.display.BitmapData;
 
 class BitmapFrame extends BitmapData
 {
-	public function BitmapFrame(){
-		super(1920,1080,false,0x000000);
+	public function BitmapFrame(width:uint, height:uint)
+	{
+		super(width, height, false, 0x000000);
 	}
 	override public function dispose():void{};
 }

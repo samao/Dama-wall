@@ -9,94 +9,21 @@
 
 package com.idzeir.ui.components
 {
-	import com.idzeir.components.v2.Button;
-	import com.idzeir.components.v2.api.IItemRender;
+	import com.idzeir.components.v2.impl.LabelRender;
 	import com.idzeir.ui.Color;
+	import com.idzeir.ui.utils.DrawUtil;
 	
-	import flash.display.DisplayObject;
-	import flash.display.Shape;
+	import flash.display.Sprite;
 	
-	public class DropRender extends Button implements IItemRender
+	public class DropRender extends LabelRender
 	{
-		private var _data:*;
-		
-		private var _bglayer: Shape;
-		
-		private var _color: uint = Color.White;
-		
 		public function DropRender(handler:Function=null)
 		{
-			_bglayer = new Shape();
-			_bglayer.graphics.beginFill(_color);
-			_bglayer.graphics.drawRect(0,0,75, 30);
-			_bglayer.graphics.endFill();
-			
-			super(handler);
-			
-			this.overSkin = this.selectSkin = null;
-			this.normalSkin = _bglayer
-			
-			_label.textColor = Color.Black;
-			this.setSize(75,30);
-		}
-		
-		public function startup(value:*):void
-		{
-			_data = value;
-			this.label = value;
-		}
-		
-		public function get warp():DisplayObject
-		{
-			return this;
-		}
-		
-		public function over():void
-		{
-			this._color = Color.Hover;
-			vaild();
-		}
-		
-		public function select():void
-		{
-			this.selected = true;
-			this._color = Color.Primary;
-			vaild();
-		}
-		
-		public function unselect():void
-		{
-			this.selected = false;
-			this._color = Color.White;
-			vaild();
-		}
-		
-		public function out():void
-		{
-			if(this._selected) this._color = Color.Hover;
-			else this._color = Color.White;
-			vaild();
-		}
-		
-		public function get data():*
-		{
-			return _data;
-		}
-		
-		public function disable(bool:Boolean):void
-		{
-		}
-		
-		override public function immediateUpdate():void 
-		{
-			super.immediateUpdate();
-			if(_setWH) 
-			{
-				_bglayer.graphics.clear();
-				_bglayer.graphics.beginFill(_color);
-				_bglayer.graphics.drawRect(0 , 0, _width, 20);
-				_bglayer.graphics.endFill();
-			}
+			const W:uint = 75, H:uint = 30;
+			this.normalSkin = DrawUtil.drawRectRoundTo(W,H,Color.White,new Sprite(), 8); 
+			this.overSkin = DrawUtil.drawRectRoundTo(W,H,Color.Hover,new Sprite(), 8); 
+			this.selectSkin = null;
+			this.setSize(W,H);
 		}
 	}
 }

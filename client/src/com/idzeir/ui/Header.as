@@ -10,23 +10,19 @@
 package com.idzeir.ui
 {
 	import com.idzeir.components.v2.Button;
-	import com.idzeir.components.v2.DropList;
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.Label;
 	import com.idzeir.components.v2.List;
 	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.data.Provider;
-	import com.idzeir.ui.components.CameraRender;
 	import com.idzeir.ui.components.DButton;
 	import com.idzeir.ui.components.DropRender;
 	import com.idzeir.ui.utils.DrawUtil;
 	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.events.Event;
-	import flash.filters.DropShadowFilter;
 	import flash.geom.Rectangle;
-	import flash.media.Camera;
 	import flash.text.TextFormat;
 	
 	public class Header extends UIContainer

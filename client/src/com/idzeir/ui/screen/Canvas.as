@@ -9,10 +9,10 @@
 
 package com.idzeir.ui.screen
 {
-	import com.idzeir.draw.Mirro;
 	import com.idzeir.components.v2.Box;
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.dispatch.EventType;
+	import com.idzeir.draw.Mirro;
 	import com.idzeir.media.impl.MediaProxyType;
 	import com.idzeir.media.video.VideoPlayer;
 	
@@ -26,8 +26,9 @@ package com.idzeir.ui.screen
 		public function Canvas()
 		{
 			super();
+			var _mirr:Mirro = Mirro.getInstance()
 			//原始画布尺寸
-			setSize(1920,1080);
+			setSize(_mirr.width, _mirr.height);
 			createChildren();
 			addListener();
 		}
