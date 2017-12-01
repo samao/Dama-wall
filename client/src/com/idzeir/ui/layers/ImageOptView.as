@@ -14,7 +14,10 @@ package com.idzeir.ui.layers
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.components.DButton;
 	
+	import flash.events.Event;
+	import flash.events.FileListEvent;
 	import flash.filesystem.File;
+	import flash.net.FileReference;
 
 	public class ImageOptView extends OptView
 	{
@@ -38,7 +41,9 @@ package com.idzeir.ui.layers
 			resetBtn.label = '恢复默认'
 			resetBtn.raduis = 24;
 			resetBtn.setSize(90,24);
-			const selectBtn:DButton = new DButton(function():void{});
+			const selectBtn:DButton = new DButton(function():void{
+				browFile();
+			});
 			selectBtn.label = '选取图片'
 			selectBtn.raduis = 24;
 			selectBtn.setSize(70,24);
@@ -51,6 +56,10 @@ package com.idzeir.ui.layers
 			
 			addChild(leftBox);
 			addChild(rightBox);
+		}
+		
+		private function browFile():void
+		{
 		}
 		
 		override public function immediateUpdate():void

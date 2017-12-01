@@ -30,10 +30,10 @@ package com.idzeir.ui.components
 			_rates = rates;
 			_labes = labes;
 			createChildren();
-			setSize(300, 30);
+			setSize(200, 30);
 		}
 		
-		private function createChildren():void
+		protected function createChildren():void
 		{
 			_warpBox = new HBox();
 			_warpBox.gap = 1;

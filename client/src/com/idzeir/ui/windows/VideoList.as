@@ -9,97 +9,152 @@
 
 package com.idzeir.ui.windows
 {
+	import com.greensock.TweenNano;
+	import com.idzeir.components.v2.Box;
 	import com.idzeir.components.v2.Button;
 	import com.idzeir.components.v2.HBox;
+	import com.idzeir.components.v2.Label;
 	import com.idzeir.components.v2.List;
+	import com.idzeir.components.v2.Style;
+	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.data.Provider;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
-	import com.idzeir.ui.components.DButton;
-	import com.idzeir.ui.components.TableHeader;
+	import com.idzeir.ui.components.IButton;
 	import com.idzeir.ui.components.TableRender;
 	import com.idzeir.ui.utils.DrawUtil;
 	import com.idzeir.ui.utils.FilterUtil;
 	import com.idzeir.ui.utils.TimeUtil;
 	
-	import flash.display.Stage;
-	import flash.events.NativeWindowBoundsEvent;
-	import flash.geom.Rectangle;
+	import flash.display.DisplayObject;
+	import flash.display.Shape;
+	import flash.text.TextFormat;
 	
-	public class VideoList extends Window
+	public class VideoList extends Box
 	{
-		public function VideoList(rootStage:Stage, width:uint=0, height:uint=0)
+		private var warpBox:VBox;
+		
+		private var _bgLayer:DisplayObject;
+
+		private var totalText:Label;
+		
+		public function VideoList()
 		{
-			super(rootStage, width, height);
-			title = '播放视频列表';
+			createChildren();
+			setSize(250,510);
+			FilterUtil.border(_bgLayer);
+			visible = false;
 		}
 		
-		override protected function setViewPort(w:Number, h:Number):void
+		protected function createChildren():void
 		{
-			var bounds:Rectangle = new Rectangle(rootBounds.right, rootBounds.top,w, h);
-			_window.bounds = bounds;
+			_bgLayer = DrawUtil.drawRectRound(250, 510, Color.Background, 6);
+			addChild(_bgLayer);
+			warpBox = new VBox();
+			warpBox.gap = 10;
+			createHeader();
+			warpBox.addChild(drawRect(Color.Line, 220,1, new Shape()));
+			createOperLine();
+			createList();
+			addChild(warpBox);
 		}
 		
-		override protected function addWindowListener():void
+		private function createList():void
 		{
-			super.addWindowListener();
-			_window.addEventListener(NativeWindowBoundsEvent.MOVING,function(e:NativeWindowBoundsEvent):void
-			{
-				e.preventDefault();
-			})
-		}
-		
-		override protected function setupGUI():void
-		{
-			var warpBox:VBox = new VBox();
-			warpBox.gap = 1;
-			const widths:Array = [.7, .3]
-			var tableHeader:TableHeader = new TableHeader(widths,['视频','时长']);
-			tableHeader.bgColor = Color.Primary;
-			tableHeader.textColor = Color.White;
-			
-			var layers:List = new List(TableRender);
-			const dp:Provider = new Provider();
-			layers.dataProvider = dp;
-			
+			var videolist:List = new List(TableRender);
+			FilterUtil.border(videolist);
+			var dp:Provider = new Provider();
+			videolist.dataProvider = dp;
+			videolist.scaleThumb = false;
+			videolist.thumbSkin = createThumb();
+			videolist.bgColor = Color.Background;
+			videolist.sliderBglayerColor = 0x99ffcc;
+			videolist.sliderBglayerAlpha = .8;
+			videolist.setSize(220,420);
 			testCreater(dp);
 			
-			FilterUtil.border(layers);
-			layers.bgColor = Color.Background;
-			layers.sliderBglayerColor = 0x99ffcc;
-			layers.sliderBglayerAlpha = .8;
-			layers.scaleThumb = false;
-			layers.thumbSkin = createThumb();
-			layers.setSize(300, 500);
+			totalText.text = totalText.text.replace('{total}',dp.size);
+			warpBox.addChild(videolist);
+		}
+		
+		private function createOperLine():void
+		{
+			var operBox:UIContainer = new UIContainer();
+			var bglayer:DisplayObject = drawRect(0, 220, 20);
+			bglayer.alpha = 0;
+			operBox.addChild(bglayer);
+			operBox.setSize(210, 20);
 			
-			var addBox:HBox = new HBox();
-			addBox.gap = Gap.PADDING;
-			const addBtn:DButton = new DButton(function():void{});
-			addBtn.label = '添加';
-			addBtn.setSize(70, 24);
-			addBtn.raduis = 24;
+			totalText = new Label('共{total}个视频',Color.Primary);
+			totalText.y = operBox.height - totalText.height >> 1;
 			
-			const clearBtn:DButton = new DButton(function():void{});
-			clearBtn.label = '清空';
-			clearBtn.setSize(70, 24);	
-			clearBtn.raduis = 24;
+			var addBtn:Button = new Button(function():void{});
+			addBtn.selectSkin = null;
+			addBtn.normalSkin = new V3Add();
+			addBtn.overSkin = new V3AddHover();
+			addBtn.setSize(12,12);
+			var iconAddBtn:IButton = new IButton(function():void{});
+			iconAddBtn.icon = addBtn;
+			iconAddBtn.label = '添加到';
 			
-			addBox.addChild(addBtn);
-			addBox.addChild(clearBtn);
-
-			warpBox.addChild(tableHeader);
-			warpBox.addChild(layers);
-			addChild(warpBox);
+			var delBtn:Button = new Button();
+			delBtn.selectSkin = null;
+			delBtn.normalSkin = new V3CrashBox()
+			delBtn.overSkin = new V3CrashBoxHover();
+			delBtn.setSize(12,12);
+			var iconDelBtn:IButton = new IButton(function():void{});
+			iconDelBtn.icon = delBtn;
+			iconDelBtn.label = '清空';
 			
-			addBox.move(width - addBox.width >> 1, warpBox.height + (stage.stageHeight - warpBox.height - addBox.height >> 1))
-			addChild(addBox);
+			var optBox:HBox = new HBox();
+			optBox.gap = Gap.LINE_GAP;
+			optBox.algin = HBox.MIDDLE;
+			optBox.addChild(iconAddBtn);
+			optBox.addChild(iconDelBtn);
+			optBox.x = operBox.width - optBox.width;
+			optBox.y = operBox.height - optBox.height >> 1;
+			
+			operBox.addChild(totalText);
+			operBox.addChild(optBox);
+			
+			warpBox.addChild(operBox);
+		}
+		
+		private function createHeader():void
+		{
+			var titleTxt:Label = new Label('播放列表',Color.Title,true,200);
+			titleTxt.defaultTextFormat = new TextFormat(Style.font,18, Color.Title,true);
+			
+			warpBox.addChild(titleTxt);
+		}
+		
+		override public function immediateUpdate():void
+		{
+			if(_setWH)
+			{
+				DrawUtil.drawRectRoundTo(_width, _height, Color.Background, this, 8);
+				warpBox.move(_width - warpBox.width >> 1, _height - warpBox.height >> 1);
+			}
+		}
+		
+		public function toggle():void
+		{
+			if(visible)
+			{
+				TweenNano.to(this, .5, {x: 610,onComplete:function():void{
+						visible = false;
+				}});
+			} else {
+				visible = true;
+				TweenNano.to(this, .5, {x:600 - _width - 10});
+			}
 		}
 		
 		private function testCreater(dp:Provider):void
 		{
-			for(var i:uint = 0; i < 40; ++i)
-				dp.addItem(['视频'+i+'.mp4',TimeUtil.format(100 + Math.random() * 500)]);
+			for(var i:uint = 0; i < 32; ++i)
+				dp.addItem(['视频'+i+'.mp4',TimeUtil.format(123423 + Math.random() * 125200),'']);
 		}
 		
 		private function createThumb():Button

@@ -22,12 +22,10 @@ package
 	import com.idzeir.ui.components.HLine;
 	import com.idzeir.ui.windows.CastScreen;
 	import com.idzeir.ui.windows.VideoList;
-	import com.idzeir.ui.windows.Window;
 	
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeWindow;
 	import flash.events.Event;
-	import flash.events.NativeWindowBoundsEvent;
 	import flash.geom.Rectangle;
 	
 	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="60")]
@@ -85,13 +83,6 @@ package
 			{
 				NativeApplication.nativeApplication.exit();
 			});
-			nativeWindow.addEventListener(NativeWindowBoundsEvent.MOVING,function(e:NativeWindowBoundsEvent):void
-			{
-				if(_videoList)
-				{
-					_videoList.move(e.afterBounds.right,e.afterBounds.top);
-				}
-			});
 		}
 		
 		private function get nativeWindow():NativeWindow
@@ -103,9 +94,11 @@ package
 		{
 			if(!_videoList)
 			{
-				_videoList = new VideoList(stage, 300, 630);
+				_videoList = new VideoList();
+				_videoList.move(600, 2);
+				addChild(_videoList);
 			}
-			_videoList.visible = !_videoList.visible;
+			_videoList.toggle();
 		}
 		
 		private function addFooter(data:Array):void

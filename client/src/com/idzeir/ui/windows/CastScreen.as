@@ -52,10 +52,8 @@ package com.idzeir.ui.windows
 			_box.addChild(_bitmap);
 			addChild(_box);
 			
-			_box.mouseChildren = false;
-			_box.mouseEnabled = true;
-			_box.doubleClickEnabled = true;
-			_box.addEventListener(MouseEvent.DOUBLE_CLICK,function(e:MouseEvent):void
+			stage.doubleClickEnabled = true;
+			stage.addEventListener(MouseEvent.DOUBLE_CLICK,function(e:MouseEvent):void
 			{
 				if(stage.displayState == StageDisplayState.FULL_SCREEN)
 				{
@@ -64,6 +62,11 @@ package com.idzeir.ui.windows
 				}
 				stage.displayState = StageDisplayState.FULL_SCREEN;
 			})
+			stage.mouseChildren = false;
+			stage.addEventListener(MouseEvent.MOUSE_DOWN,function(e:MouseEvent):void
+			{
+				_window.startMove();
+			});
 			stage.addEventListener(Event.RESIZE,resizeHandler);
 			resizeHandler();
 		}
@@ -78,8 +81,8 @@ package com.idzeir.ui.windows
 			
 			_bitmap.width = toWidth;
 			_bitmap.height = toHeight;
-			_bitmap.x = stage.stageWidth - toWidth >> 1;
-			_bitmap.y = stage.stageHeight - toHeight >> 1;
+			_bitmap.x = (stage.stageWidth - toWidth) * .5;
+			_bitmap.y = (stage.stageHeight - toHeight) * .5;
 			DrawUtil.drawRectRoundTo(stage.stageWidth, stage.stageHeight,Color.Black,_box);
 		}
 	}

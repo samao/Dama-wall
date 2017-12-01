@@ -10,6 +10,8 @@
 package com.idzeir.ui.components
 {
 	import com.idzeir.components.v2.Button;
+	import com.idzeir.components.v2.HBox;
+	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.api.IItemRender;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.utils.DrawUtil;
@@ -22,7 +24,7 @@ package com.idzeir.ui.components
 		
 		public function TableRender()
 		{
-			super([.7, .3], ['', '']);
+			super([1], ['']);
 			_warpBox.gap = 0;
 			_bgColor = Color.White;
 		}
