@@ -39,7 +39,7 @@ package com.idzeir.ui.screen
 			addChild(_danmuBox);
 		}
 		
-		public function addDanmu(msg:String):void
+		public function addDanmu(msg:Object):void
 		{
 			var danmu:DanmuElement = DanmuElement.createDanmu(msg);
 			danmu.x = START_Y;

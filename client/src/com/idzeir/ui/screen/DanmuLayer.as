@@ -45,7 +45,7 @@ package com.idzeir.ui.screen
 			}
 		}
 		
-		public function addDanmu(message:String):void
+		public function addDanmu(message:Object):void
 		{
 			const line:DanmuLine = getFreeLine();
 			line && line.addDanmu(message);

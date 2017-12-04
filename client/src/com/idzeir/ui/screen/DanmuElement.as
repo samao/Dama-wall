@@ -29,7 +29,7 @@ package com.idzeir.ui.screen
 			addChild(_text);
 		}
 		
-		public static function createDanmu(msg:String):DanmuElement
+		public static function createDanmu(msg:Object):DanmuElement
 		{
 			var danmu:DanmuElement
 			if(ALL_MAP.length>0)
@@ -40,9 +40,10 @@ package com.idzeir.ui.screen
 			return danmu;
 		}
 		
-		public function set text(value:String):void
+		public function set text(value:Object):void
 		{
-			_text.text = value;
+			_text.text = value.message;
+			_text.textColor = Number(value.color);
 			setSize(_text.width, _text.height);
 		}
 		
