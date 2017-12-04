@@ -84,10 +84,14 @@ router.route('/:rid').all((req, res, next) => {
     }
     //加工敏感词
     req.body.message = danmuCertify.filter(req.body.message,res.locals.owner).out;
+    const resonseBody = {
+        message:req.body.message,
+        color:req.body.color
+    }
     //回复用户
-    success(res, req.body.message)
+    success(res, resonseBody)
     //同步线程消息
-    syncTransfer({action: Actions.POST,data: req.body.message, pathname:`${req.params.rid}`});
+    syncTransfer({action: Actions.POST,data: resonseBody, pathname:`${req.params.rid}`});
 })
 
 export default router;

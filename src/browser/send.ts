@@ -8,6 +8,7 @@
 import * as $ from 'jquery';
 import { log, error } from "../utils/log";
 import { SuccessType, FailType, isSuccessType } from "../utils/feedback";
+import { Storages } from './storage';
 
 $(() => {
     //最多输入字个数
@@ -22,9 +23,19 @@ $(() => {
     const font = $('.fontPanel');
     const info = $('#info');
 
+    let color = localStorage.getItem(Storages.DanmuColor)||'0xFFFFFF';
+
+    function saveColor(value:string):void{
+        color = value;
+        localStorage.setItem(Storages.DanmuColor,value);
+    }
+
     function reset(): void {
         input.val('');
         remain.text(MAX_INPUT);
+        font.hide();
+        emoj.hide();
+        hiden = fontHiden = true;
     }
 
     function tips(msg: string): void {
@@ -51,12 +62,14 @@ $(() => {
     $('#sendBtn').click(() => {
         let putStr = input.val();
         if(typeof putStr === 'string' && putStr.trim().length !== 0) {
+            log(`发送弹幕：${input.val()}<${color}>`);
             $.post(location.href, {
-                message:input.val()
+                message:input.val(),
+                color
             },(data: SuccessType|FailType) => {
                 log(JSON.stringify(data));
                 if(isSuccessType(data)) 
-                    tips('发送成功:'+ data.data);
+                    tips('发送成功:'+ data.data.message);
                 else
                     tips(data.reason);
             })
@@ -111,7 +124,7 @@ $(() => {
         if(rgb) {
             const rgbNum = rgb.map(e => Number(e));
             const hex = ((rgbNum[0] << 16) | (rgbNum[1] << 8) | rgbNum[2]).toString(16);
-            console.log(`选取弹幕颜色为: #${padStart(hex,6)}`);
+            saveColor(`0x${padStart(hex,6)}`);
         }
     })
 })
