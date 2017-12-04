@@ -28,5 +28,7 @@ package com.idzeir.dispatch
 		
 		public static const ADD_LAYER:String = 'addLayer';
 		
+		/** 聊天消息*/
+		public static const POST:String = 'postMessage';
 	}
 }

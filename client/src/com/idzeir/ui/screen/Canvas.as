@@ -22,6 +22,8 @@ package com.idzeir.ui.screen
 	public class Canvas extends Box
 	{
 		private var _video:VideoPlayer;
+
+		private var _danmuLayer:DanmuLayer;
 		
 		public function Canvas()
 		{
@@ -41,8 +43,12 @@ package com.idzeir.ui.screen
 			var vodUrl:String = File.applicationDirectory.resolvePath(appPath + File.separator + '..' + File.separator + 'vod' + File.separator + 'ac4053541.mp4').url;
 			_video.connect(MediaProxyType.HTTP,vodUrl);
 			_video.mute = true;
-			Mirro.getInstance().attach(this);
 			addChild(_video);
+			
+			_danmuLayer = new DanmuLayer();
+			addChild(_danmuLayer);
+			
+			Mirro.getInstance().attach(this);
 		}
 		
 		private function addListener():void
@@ -71,7 +77,13 @@ package com.idzeir.ui.screen
 			{
 				
 			});
+			
+			on(EventType.POST,function(e:DEvent):void
+			{
+				_danmuLayer.addDanmu(e.data[0]);
+			});
 		}		
+		
 		
 	}
 }

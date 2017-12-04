@@ -13,6 +13,7 @@ package
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.dispatch.EventType;
+	import com.idzeir.service.LiveService;
 	import com.idzeir.ui.Body;
 	import com.idzeir.ui.Footer;
 	import com.idzeir.ui.Gap;
@@ -75,6 +76,8 @@ package
 				_win.visible = true;
 			})
 			addViewListener();
+			
+			new LiveService();
 		}
 		
 		private function addViewListener():void
