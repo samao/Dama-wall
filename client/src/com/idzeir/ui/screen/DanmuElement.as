@@ -25,7 +25,7 @@ package com.idzeir.ui.screen
 		{
 			super();
 			_text.autoSize = 'left';
-			_text.defaultTextFormat = new TextFormat(Style.font,80,null,true);
+			_text.defaultTextFormat = new TextFormat(Style.font,60,null,true);
 			addChild(_text);
 		}
 		

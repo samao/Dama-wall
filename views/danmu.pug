@@ -19,11 +19,14 @@ html
                                         img(src=emo.url)
                     .color
                         a.font(href='javescript:void(0)')
-                        .fontPanel
-                            - var colors = ['#ffffff','#999999','#e6151e','#9d22b1','#6738b8','#3d50b6','#03a9f4','#009688','#259b24','#8bc34a'];
+                        - var colors = ['#ffffff','#999999','#e6151e','#9d22b1','#6738b8','#3d50b6','#03a9f4','#009688','#259b24','#8bc34a']
+                        .setting-panel
+                            p 弹幕颜色
                             ul
                                 each color in colors
-                                    li(style={background:color}).colorItem
+                                    li(data=color)
+                                        input(type='radio' name='color')
+                                        span(style={background:color})
                     .speak
                         cite 30
                         input(type="text" name="message" placeholder="输入内容发送" maxlength='30')

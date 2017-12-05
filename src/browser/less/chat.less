@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:26:38 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-12-04 19:28:43
+ * @Last Modified time: 2017-12-05 11:40:50
  */
 
 @import 'base';
@@ -111,27 +111,64 @@
 
 .color {
     .emotion;
-    .fontPanel {
+    .setting-panel {
+        color:white;
+        position:relative;
+        margin:0;
+        padding:3px;
         width: 160px;
-        height:70px;
+        height:90px;
         border:1px solid gray;
         background: #666;
         border-radius: 5px;
-        text-align: center;
+        text-align:center;
         display: none;
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 5px;
-            li {
-                float: left;
-                width:20px;
-                height:20px;
-                margin: 5px;
-                border-radius: 50%;
-            }
+        p{
+          text-align:left;
+          margin:5px 0 8px 5px;
         }
-    }
+        ul {
+          margin:0px 0 0;
+          padding:0px;
+          list-style:none;
+          li {
+            font-size:0px;
+            position:relative;
+            display:inline-block;
+            width:20px;
+            height:20px;
+            margin:5px;
+            input {
+              margin:auto;
+              position:absolute;
+              top:0px;
+              left:0px;
+              width:20px;
+              height:20px;
+              z-index:100;
+              opacity:0;
+            }
+            input:checked + span {
+              border:2px solid red;
+              position:absolute;
+              top:-2px;
+              left:-2px;
+              float:left;
+            }
+            
+            input + span {
+              display:block;
+              width:20px;
+              height:20px;
+              position:relative;
+              top:0px;
+              left:0px;
+              border-radius:50%;
+              float:left;
+            }
+          }
+        }
+      }
 }
 .font {
     .face-toggle;

@@ -20,7 +20,7 @@ package com.idzeir.ui.screen
 	
 	public class DanmuLine extends Sprite
 	{
-		public static const LINE_H:uint = Mirro.getInstance().height / 12;
+		public static const LINE_H:uint = Mirro.getInstance().height / 15;
 		
 		private static const START_Y:uint = Mirro.getInstance().width; 
 		

@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:27:36 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-12-04 19:32:17
+ * @Last Modified time: 2017-12-05 12:04:01
  */
 
 import * as $ from 'jquery';
@@ -15,27 +15,36 @@ $(() => {
     const MAX_INPUT = 30;
     //表情面板状态
     let hiden: boolean = true;
-    let fontHiden: boolean = true;
+    let settingHiden: boolean = true;
 
     const input = $('input[type="text"]');
     const remain = $('.speak cite');
     const emoj = $('.emojPanel');
-    const font = $('.fontPanel');
+    const settingPanel = $('.setting-panel');
     const info = $('#info');
 
-    let color = localStorage.getItem(Storages.DanmuColor)||'0xFFFFFF';
+    let color = localStorage.getItem(Storages.DanmuColor)||'FFFFFF';
 
     function saveColor(value:string):void{
+        log(`保存弹幕颜色：${value}`);
         color = value;
         localStorage.setItem(Storages.DanmuColor,value);
+    }
+
+    function applyStorage():void {
+        settingPanel.find(`li[data="#${color.toLocaleLowerCase()}"]`).find('input').attr('checked','checked')
+    }
+
+    function hidenPop():void {
+        settingPanel.hide();
+        emoj.hide();
+        hiden = settingHiden = true;
     }
 
     function reset(): void {
         input.val('');
         remain.text(MAX_INPUT);
-        font.hide();
-        emoj.hide();
-        hiden = fontHiden = true;
+        hidenPop();
     }
 
     function tips(msg: string): void {
@@ -51,21 +60,23 @@ $(() => {
         return source.substr(0,length);
     }
 
+    applyStorage()
+
     input.on('input', () => {
         let putStr = input.val();
         if(typeof putStr === 'string') {
             let left = MAX_INPUT - putStr.length;
             remain.text(left);
         }
-    })
+    }).focus(() => hidenPop());
 
     $('#sendBtn').click(() => {
         let putStr = input.val();
         if(typeof putStr === 'string' && putStr.trim().length !== 0) {
-            log(`发送弹幕：${input.val()}<${color}>`);
+            //log(`发送弹幕：${input.val()}<${color}>`);
             $.post(location.href, {
                 message:input.val(),
-                color
+                color:`0x${color}`
             },(data: SuccessType|FailType) => {
                 log(JSON.stringify(data));
                 if(isSuccessType(data)) 
@@ -86,21 +97,20 @@ $(() => {
         }else{
             emoj.hide();
         }
-        font.hide();
-        fontHiden = true;
+        settingPanel.hide();
+        settingHiden = true;
         hiden = !hiden;
     });
 
     $('.font').click(() => {
-        log(fontHiden);
-        if(fontHiden) {
-            font.show();
+        if(settingHiden) {
+            settingPanel.show();
         }else {
-            font.hide();
+            settingPanel.hide();
         }
         emoj.hide();
         hiden = true;
-        fontHiden = !fontHiden;
+        settingHiden = !settingHiden;
     })
 
     $('.emojPanel li').click(function() {
@@ -119,12 +129,12 @@ $(() => {
         }
     })
 
-    $('.fontPanel li').click(function() {
-        const rgb = $(this).css('background-color').match(/\d+/ig);
+    $('.setting-panel li').click(function() {
+        const rgb = $(this).find('span').css('background-color').match(/\d+/ig);
         if(rgb) {
             const rgbNum = rgb.map(e => Number(e));
             const hex = ((rgbNum[0] << 16) | (rgbNum[1] << 8) | rgbNum[2]).toString(16);
-            saveColor(`0x${padStart(hex,6)}`);
+            saveColor(`${padStart(hex,6)}`);
         }
     })
 })
