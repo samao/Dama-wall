@@ -13,6 +13,7 @@ package
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.dispatch.EventType;
+	import com.idzeir.draw.Mirro;
 	import com.idzeir.service.LiveService;
 	import com.idzeir.ui.Body;
 	import com.idzeir.ui.Footer;
@@ -29,7 +30,7 @@ package
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
-	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="60")]
+	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="30")]
 	public class DamaClient extends App
 	{
 		private var warpBox:VBox;
@@ -72,7 +73,7 @@ package
 			var _win:CastScreen;
 			on(EventType.START, function():void
 			{
-				_win ||= new CastScreen(stage, 16 * 60, 9 * 60)
+				_win ||= new CastScreen(stage, Mirro.getInstance().width, Mirro.getInstance().height)
 				_win.visible = true;
 			})
 			addViewListener();

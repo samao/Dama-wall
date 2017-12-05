@@ -9,13 +9,13 @@
 
 package com.idzeir.ui.windows
 {
-	import com.hurlant.util.Base64;
 	import com.idzeir.components.v2.Box;
 	import com.idzeir.draw.Mirro;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.utils.DrawUtil;
 	
 	import flash.display.Bitmap;
+	import flash.display.PixelSnapping;
 	import flash.display.Stage;
 	import flash.display.StageDisplayState;
 	import flash.events.Event;
@@ -48,7 +48,7 @@ package com.idzeir.ui.windows
 		override protected function setupGUI():void
 		{
 			_box = new Box();
-			_bitmap = new Bitmap(_mirro.bitmapFrame,'auto',true);
+			_bitmap = new Bitmap(_mirro.bitmapFrame, PixelSnapping.AUTO, false);
 			_box.addChild(_bitmap);
 			addChild(_box);
 			
@@ -76,8 +76,8 @@ package com.idzeir.ui.windows
 			const xscale:Number = stage.stageWidth/_mirro.width;
 			const yscale:Number = stage.stageHeight/_mirro.height;
 			const toScale:Number = Math.min(xscale, yscale);
-			const toWidth:Number = _mirro.width * toScale;
-			const toHeight:Number = _mirro.height * toScale;
+			const toWidth:Number = uint(_mirro.width * toScale);
+			const toHeight:Number = uint(_mirro.height * toScale);
 			
 			_bitmap.width = toWidth;
 			_bitmap.height = toHeight;

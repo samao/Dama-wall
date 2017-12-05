@@ -11,18 +11,20 @@ package com.idzeir.ui.layers
 {
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.Label;
+	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.components.DButton;
 	
 	import flash.events.Event;
-	import flash.events.FileListEvent;
 	import flash.filesystem.File;
-	import flash.net.FileReference;
+	import flash.net.FileFilter;
 
 	public class ImageOptView extends OptView
 	{
 		private var leftBox:HBox;
 		private var rightBox:HBox;
+
+		private var urlLabel:Label;
 		
 		public function ImageOptView()
 		{
@@ -33,7 +35,7 @@ package com.idzeir.ui.layers
 			leftBox = new HBox();
 			
 			const urlTitle:Label = new Label('图片地址：', Color.Title);
-			const urlLabel:Label  = new Label(File.applicationDirectory.nativePath,Color.Primary,false,300)
+			urlLabel  = new Label(File.applicationDirectory.nativePath,Color.Primary,false,300)
 	
 			rightBox = new HBox();
 			
@@ -60,6 +62,14 @@ package com.idzeir.ui.layers
 		
 		private function browFile():void
 		{
+			var file:File = new File();
+			file.addEventListener(Event.SELECT,function selectHandler():void
+			{
+				fire(EventType.ADD_ELEMENT, file.url);
+				urlLabel.text = file.url;
+				file.removeEventListener(Event.SELECT, selectHandler);
+			});
+			file.browse([new FileFilter('本地图片','*.jpg;*.png;*.gif')]);
 		}
 		
 		override public function immediateUpdate():void

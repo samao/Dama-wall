@@ -13,15 +13,21 @@ package com.idzeir.draw
 	import com.idzeir.timer.impl.Ticker;
 	
 	import flash.display.DisplayObject;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 
 	public class Mirro
 	{
 		private static var _instance:Mirro;
 		
-		public const width:uint = 1920;
-		public const height:uint = 1080;
+		public const width:uint = 960;
+		public const height:uint = 540;
 		
 		private var _bitmapFrame:BitmapFrame = new BitmapFrame(width,height);
+		/**
+		 * 绘制画布帧频 
+		 */		
+		private const FPS:uint = 15;
 		
 		public static function getInstance():Mirro
 		{
@@ -34,13 +40,15 @@ package com.idzeir.draw
 			if(!ticker.has(update))
 			{
 				//9fps 网络动画最低帧频
-				ticker.call(1000/9, update, 0, false, view);
+				ticker.call(1000/FPS, update, 0, false, view);
 			}
 		}
 		
 		private function update(view:DisplayObject):void
 		{
-			_bitmapFrame.draw(view,null,null, null, null, true);
+			_bitmapFrame.lock();
+			_bitmapFrame.draw(view, null, null, null, null, true);
+			_bitmapFrame.unlock();
 		}
 		
 		public function get bitmapFrame():BitmapFrame

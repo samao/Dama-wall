@@ -10,6 +10,7 @@
 package com.idzeir.ui.screen
 {
 	import com.idzeir.components.v2.Box;
+	import com.idzeir.components.v2.Image;
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.dispatch.EventType;
 	import com.idzeir.draw.Mirro;
@@ -82,8 +83,19 @@ package com.idzeir.ui.screen
 			{
 				_danmuLayer.addDanmu(e.data[0]);
 			});
+			
+			on(EventType.ADD_ELEMENT,function(e:DEvent): void
+			{
+				var img:Image = new Image(e.data[0]);
+				img.setSize(100,100);
+				addChild(img);
+				
+				on('moving',function(e:DEvent):void
+				{
+					var pos:Object = e.data[0]
+					img.move(pos.x,pos.y);
+				});
+			});
 		}		
-		
-		
 	}
 }

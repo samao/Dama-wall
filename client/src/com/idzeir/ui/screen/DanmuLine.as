@@ -41,7 +41,8 @@ package com.idzeir.ui.screen
 		
 		public function addDanmu(msg:Object):void
 		{
-			var danmu:DanmuElement = DanmuElement.createDanmu(msg);
+			const size:uint = LINE_H - 10;
+			var danmu:DanmuElement = DanmuElement.createDanmu(msg, size);
 			danmu.x = START_Y;
 			danmu.y = LINE_H - danmu.height >> 1;
 			addChild(danmu);
