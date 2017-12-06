@@ -14,6 +14,7 @@ package
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.dispatch.EventType;
 	import com.idzeir.draw.Mirro;
+	import com.idzeir.service.Emotions;
 	import com.idzeir.service.LiveService;
 	import com.idzeir.ui.Body;
 	import com.idzeir.ui.Footer;
@@ -77,8 +78,12 @@ package
 				_win.visible = true;
 			})
 			addViewListener();
-			
-			new LiveService();
+			Emotions.getInstance().request(function handler(ok:Boolean,data:*):void
+			{
+				if(ok) trace('成功',JSON.stringify(data));
+				else trace('失败：', data)
+				new LiveService();
+			});
 		}
 		
 		private function addViewListener():void

@@ -29,6 +29,7 @@ interface IWordData {
 
 const router = express.Router();
 
+//用户信息修改
 router.route('/user/:uid').post((req, res, next) => {
     checkout(db => {
         const users = db.collection(Collection.USER);
@@ -50,7 +51,7 @@ router.route('/user/:uid').post((req, res, next) => {
     }, reason => failure(res, `数据库连接失败无法删除用户`))
 })
 
-//提供哦前端数据接口
+//活动数据接口
 router.route('/activity/:rid').all((req, res,next) => {
     //分权限
     log(`本次rid: ${req.params.rid}`)
@@ -66,6 +67,7 @@ router.route('/activity/:rid').all((req, res,next) => {
     res.end('更新活动信息');
 })
 
+//导航接口
 router.route('/nav').patch((req, res, next) => {
     const id = +req.body.id;
     const checked = req.body.checked === 'true';
@@ -77,6 +79,7 @@ router.route('/nav').patch((req, res, next) => {
     }, reason => failure(res, `无法连接数据库 ${reason}`))
 })
 
+//敏感词接口
 router.route('/word').all((req, res, next) => {
     const word = req.body.word;
     if(!word || word === '' || Object.is(word, undefined) || Object.is(word,null)) {
@@ -104,6 +107,16 @@ router.route('/word').all((req, res, next) => {
             wordAction(WordActions.DELETE, {word, owner});
         }).catch(reason => failure(res, `删除敏感词失败 ${reason}`)).then(() => restore(db));
     }, reason => failure(res, `无法连接数据库 ${reason}`))
+})
+
+//表情接口
+router.route('/emotions').get((req, res, next) => {
+    checkout(db => {
+        const emotions = db.collection(Collection.EMOTION);
+        emotions.find({},{_id:0,tag:1,url:1}).toArray().then(data => {
+            success(res,data);
+        }).catch(reason => failure(res, `读取表情数据失败: ${reason}`)).then(() => restore(db));
+    },reason => failure(res, `获取表情失败:${reason}`))
 })
 
 /**

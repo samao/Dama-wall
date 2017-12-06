@@ -13,14 +13,13 @@ package com.idzeir.draw
 	import com.idzeir.timer.impl.Ticker;
 	
 	import flash.display.DisplayObject;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
 
 	public class Mirro
 	{
 		private static var _instance:Mirro;
-		
+		/** 原始画布宽 */
 		public const width:uint = 960;
+		/** 原始画布高 */
 		public const height:uint = 540;
 		
 		private var _bitmapFrame:BitmapFrame = new BitmapFrame(width,height);
@@ -34,6 +33,7 @@ package com.idzeir.draw
 			return _instance ||= new Mirro();
 		}
 		
+		/** 画布绑定绘制的显示对象 */
 		public function attach(view:DisplayObject):void
 		{
 			const ticker:ITicker = Ticker.getInstance()
@@ -44,6 +44,7 @@ package com.idzeir.draw
 			}
 		}
 		
+		/** 更新画布图像 */
 		private function update(view:DisplayObject):void
 		{
 			_bitmapFrame.lock();
@@ -51,12 +52,14 @@ package com.idzeir.draw
 			_bitmapFrame.unlock();
 		}
 		
+		/** 获取画布图像 */
 		public function get bitmapFrame():BitmapFrame
 		{
 			return _bitmapFrame;
 		}
 	}
 }
+
 import flash.display.BitmapData;
 
 class BitmapFrame extends BitmapData
@@ -65,5 +68,6 @@ class BitmapFrame extends BitmapData
 	{
 		super(width, height, false, 0x000000);
 	}
+	/** 禁止外部销毁画布 */
 	override public function dispose():void{};
 }

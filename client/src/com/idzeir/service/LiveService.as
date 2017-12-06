@@ -9,6 +9,7 @@
 
 package com.idzeir.service
 {
+	import com.idzeir.conf.Host;
 	import com.idzeir.dispatch.EventType;
 	import com.idzeir.timer.impl.Ticker;
 	import com.worlize.websocket.WebSocket;
@@ -26,7 +27,7 @@ package com.idzeir.service
 		
 		private function createWs():void
 		{
-			_ws = new WebSocket('ws://localhost:8080/jiafeiyan','*');
+			_ws = new WebSocket('ws://' + Host.DOMAIN + ':' + Host.WS_PORT + '/jiafeiyan', '*');
 			_ws.addEventListener(WebSocketEvent.OPEN,function():void
 			{
 				trace('OPEN')

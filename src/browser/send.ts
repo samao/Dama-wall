@@ -119,13 +119,15 @@ $(() => {
         const msg = input.val();
         if(typeof msg === 'string') {
             let tag = $(this).attr('data-tag')||'';
-            const dom: any = input.get(0);
+            const dom: HTMLInputElement = input.get(0) as HTMLInputElement;
             const begin: number = dom.selectionStart;
             const end: number = dom.selectionEnd;
             let olds = msg.split('');
             olds.splice(begin, end - begin,tag);
             input.val(olds.join(''));
             input.trigger('input');
+            dom.selectionStart = dom.selectionEnd = begin + tag.length
+            input.focus();
         }
     })
 
