@@ -9,6 +9,7 @@ import * as express from "express";
 import * as QRCode from "qrcode";
 import * as path from 'path';
 
+import uuid from '../../utils/uuid';
 import { checkout, restore, insert, IActivityDB, getAutoKey } from "../db/pool";
 import { Collection } from "../db/collection";
 import { log, error } from "../../utils/log";
@@ -17,6 +18,7 @@ import { success, failure } from "../../utils/feedback";
 import { dfa } from '../../utils/dfa/DFA';
 import { syncTransfer } from '../worker/syncTransfer';
 import { WordActions } from '../worker/actions';
+import { call, remove, has } from '../../utils/ticker';
 
 /**
  * 线程敏感词消息体
@@ -28,6 +30,10 @@ interface IWordData {
 }
 
 const router = express.Router();
+//用户请求活动token
+const tokenMap = new Map<string, number>();
+
+let tokenTicker:Symbol;
 
 //用户信息修改
 router.route('/user/:uid').post((req, res, next) => {
@@ -65,6 +71,44 @@ router.route('/activity/:rid').all((req, res,next) => {
 }).patch((req, res, next) => {
     //更新活动
     res.end('更新活动信息');
+})
+
+//生成用户名密码关联的token用于客户端之后的连接会话
+router.route('/token/:uid').post((req, res, next) => {
+    checkout(db => {
+        const users = db.collection(Collection.USER);
+        users.count({name: req.params.uid, pwd: req.body.pwd}).then(total => {
+            if(total === 0)
+                failure(res, `用户名或者密码错误`);
+            else
+                success(res,createToken());
+        })
+    }, reason => failure(res,`无法连接数据库 ${reason}`))
+})
+
+//获取用户创建的所有活动
+router.route('/activities/:uid/:token').get((req,res,next) => {
+    if(!tokenMap.has(req.params.token)) {
+        failure(res, '参数错误');
+        return;
+    }
+    checkout(db => {
+        const users = db.collection(Collection.USER);
+        users.count({name: req.params.uid}).then(total => {
+            if(total === 0)
+                failure(res, `权限不足,用户不存在`);
+            else
+                next();
+        })
+    }, reason => failure(res,`无法连接数据库 ${reason}`))
+},(req, res, next) => {
+    checkout(db => {
+        const activities = db.collection(Collection.ACTIVITY);
+        activities.find({master:req.params.uid},{_id:1, rid: 1, title: 1}).sort({_id: 1}).toArray().then(data => {
+            success(res,data);
+            removeToken(req.params.token);
+        }).catch(reason => failure(res, `获取活动数据失败 ${reason}`)).then(() => restore(db))
+    },reason => failure(res,`无法连接数据库 ${reason}`))
 })
 
 //导航接口
@@ -118,6 +162,40 @@ router.route('/emotions').get((req, res, next) => {
         }).catch(reason => failure(res, `读取表情数据失败: ${reason}`)).then(() => restore(db));
     },reason => failure(res, `获取表情失败:${reason}`))
 })
+
+/**
+ * 生成请求token
+ */
+function createToken(): string {
+    const token = uuid();
+    //log(`生成token: ${token}`);
+    tokenMap.set(token, Date.now());
+    if(!has(tokenTicker))
+        tokenTicker = call(deactivatedToken, 5000)
+    return token;
+}
+/**
+ * 请求成功移除token
+ * @param token 
+ */
+function removeToken(token: string):void {
+    //log(`token已使用: ${token}`)
+    tokenMap.delete(token);
+}
+/**
+ * 移除过期token
+ */
+function deactivatedToken(): void {
+    for(const [token, date] of tokenMap.entries()) {
+        if(Date.now() - date >= 30 * 1000) {
+            //log(`token过期：${token}`);
+            tokenMap.delete(token);
+        }
+    }
+    if(tokenMap.size === 0) {
+        remove(tokenTicker);
+    }
+}
 
 /**
  * 线程间同步敏感词消息

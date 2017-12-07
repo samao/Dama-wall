@@ -49,6 +49,12 @@ const remove = (idOrfn:Function|Symbol) => {
     running && handleMap.size === 0 && clearInterval(id);
 }
 
+const has = (id: Symbol) => {
+    if(Object.is(id, null) || Object.is(id, undefined))
+        return false;
+    return handleMap.has(id);
+}
+
 const runTicker = () => {
     if(!running) {
         running = true;
@@ -85,4 +91,4 @@ const update = () => {
     }
 }
 
-export {call,remove};
+export {call,remove,has};
