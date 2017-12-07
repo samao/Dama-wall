@@ -32,5 +32,9 @@ package com.idzeir.dispatch
 		
 		/** 聊天消息*/
 		public static const POST:String = 'postMessage';
+		/** 获取服务器活动列表成功 */
+		public static const ACTIVIES_UPDATE:String = 'activiesUpdate';
+		/** 投屏元素移动 */
+		public static const ELEMENT_MOVED:String = 'elementMoved';
 	}
 }

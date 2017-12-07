@@ -25,5 +25,11 @@ package com.idzeir.ui.components
 			this.selectSkin = null;
 			this.setSize(W,H);
 		}
+		
+		override public function startup(value:*):void
+		{
+			_data = value;
+			label = value.title;
+		}
 	}
 }

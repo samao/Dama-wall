@@ -14,6 +14,7 @@ package
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.dispatch.EventType;
 	import com.idzeir.draw.Mirro;
+	import com.idzeir.service.Activities;
 	import com.idzeir.service.Emotions;
 	import com.idzeir.service.LiveService;
 	import com.idzeir.ui.Body;
@@ -78,6 +79,12 @@ package
 				_win.visible = true;
 			})
 			addViewListener();
+			
+			//用户活动数据获取
+			new Activities().getToken(function(actis:String):void{
+				fire(EventType.ACTIVIES_UPDATE,JSON.parse(actis).data);
+			});
+			
 			Emotions.getInstance().request(function handler(ok:Boolean,data:*):void
 			{
 				if(ok) trace('成功',JSON.stringify(data));

@@ -77,12 +77,13 @@ router.route('/activity/:rid').all((req, res,next) => {
 router.route('/token/:uid').post((req, res, next) => {
     checkout(db => {
         const users = db.collection(Collection.USER);
+        log('token:',req.params.uid, req.body.pwd);
         users.count({name: req.params.uid, pwd: req.body.pwd}).then(total => {
             if(total === 0)
                 failure(res, `用户名或者密码错误`);
             else
                 success(res,createToken());
-        })
+        }).catch(reason => failure(res, `获取用户失败`)).then(() => restore(db));
     }, reason => failure(res,`无法连接数据库 ${reason}`))
 })
 
@@ -99,7 +100,7 @@ router.route('/activities/:uid/:token').get((req,res,next) => {
                 failure(res, `权限不足,用户不存在`);
             else
                 next();
-        })
+        }).catch(reason => failure(res, `查询用户失败 ${reason}`)).then(() => restore(db));
     }, reason => failure(res,`无法连接数据库 ${reason}`))
 },(req, res, next) => {
     checkout(db => {

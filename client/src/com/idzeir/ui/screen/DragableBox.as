@@ -10,6 +10,7 @@
 package com.idzeir.ui.screen
 {
 	import com.idzeir.components.v2.Box;
+	import com.idzeir.dispatch.EventType;
 	import com.idzeir.draw.Mirro;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.utils.DrawUtil;
@@ -58,7 +59,7 @@ package com.idzeir.ui.screen
 			
 			stopDrag();
 			
-			fire('moving',new Point(x/scale.x,y/scale.y));
+			fire(EventType.ELEMENT_MOVED,new Point(x/scale.x,y/scale.y));
 		}
 		
 		protected function createChildren():void

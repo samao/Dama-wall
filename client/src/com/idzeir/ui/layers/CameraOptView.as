@@ -88,7 +88,7 @@ package com.idzeir.ui.layers
 				FilterUtil.border(_droplist);
 				_droplist.bgColor = Color.Background;
 				_droplist.setSize(120,120);
-				_droplist.dataProvider = new Provider(Camera.names.concat('9158Cam','Guagua','k歌伴侣'));
+				_droplist.dataProvider = new Provider(cameras);
 				_droplist.index = 0;
 				var rect:Rectangle =  _openListBtn.getBounds(this);
 				_droplist.x = rect.left + (rect.width - _droplist.width) * .5;
@@ -96,7 +96,7 @@ package com.idzeir.ui.layers
 				_droplist.addEventListener(Event.SELECT,function():void
 				{
 					_droplist.removeFromParent();
-					_cameraBtn.label = _droplist.selectedItem.data;
+					_cameraBtn.label = _droplist.selectedItem.data.title;
 				});
 			}
 			if(contains(_droplist))
@@ -105,6 +105,18 @@ package com.idzeir.ui.layers
 				return;
 			}
 			addChild(_droplist);
+		}
+		
+		/**
+		 * 当前机器摄像头数据列表 
+		 */		
+		private function get cameras():Array
+		{
+			if(!Camera.isSupported) return [];
+			return Camera.names.concat('9158Cam','Guagua','k歌伴侣').map(function(cam:String, index:int, arr:Array):Object
+			{
+				return {title: cam};
+			});
 		}
 		
 		private function createThumb():Button

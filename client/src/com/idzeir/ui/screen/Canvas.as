@@ -102,7 +102,7 @@ package com.idzeir.ui.screen
 				img.setSize(100,100);
 				addChild(img);
 				
-				on('moving',function(e:DEvent):void
+				on(EventType.ELEMENT_MOVED,function(e:DEvent):void
 				{
 					var pos:Object = e.data[0]
 					img.move(pos.x,pos.y);

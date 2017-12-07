@@ -16,6 +16,8 @@ package com.idzeir.ui
 	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.data.Provider;
+	import com.idzeir.dispatch.DEvent;
+	import com.idzeir.dispatch.EventType;
 	import com.idzeir.ui.components.DButton;
 	import com.idzeir.ui.components.DropRender;
 	import com.idzeir.ui.utils.DrawUtil;
@@ -28,6 +30,8 @@ package com.idzeir.ui
 	public class Header extends UIContainer
 	{
 		private var _droplist:List;
+		
+		private var _dp:Provider = new Provider();
 		
 		private var _openListBtn:DButton;
 		
@@ -55,7 +59,7 @@ package com.idzeir.ui
 			
 			_openListBtn = new DButton(function():void
 			{
-				showCameraList();	
+				showActList();
 			});
 			_openListBtn.filters = [];
 			_openListBtn.overSkin = null;
@@ -83,9 +87,14 @@ package com.idzeir.ui
 			
 			warpBox.move(Gap.PADDING, Gap.PADDING);
 			addChild(warpBox);
+			
+			on(EventType.ACTIVIES_UPDATE,function(e:DEvent):void
+			{
+				_dp.map = e.data[0];
+			});
 		}
 		
-		private function showCameraList():void
+		private function showActList():void
 		{
 			if(!_droplist)
 			{
@@ -98,7 +107,7 @@ package com.idzeir.ui
 				FilterUtil.border(_droplist);
 				_droplist.bgColor = Color.Background;
 				_droplist.setSize(120,100);
-				_droplist.dataProvider = new Provider(['WCG中国赛','DOAT2预选赛','CHINA JOY','风暴英雄','绝地求生']);
+				_droplist.dataProvider = _dp;
 				_droplist.index = 0;
 				var rect:Rectangle =  _openListBtn.getBounds(stage);
 				_droplist.x = rect.left + (rect.width - _droplist.width) * .5;
@@ -106,7 +115,7 @@ package com.idzeir.ui
 				_droplist.addEventListener(Event.SELECT,function():void
 				{
 					_droplist.removeFromParent();
-					_openListBtn.label = _droplist.selectedItem.data;
+					_openListBtn.label = _droplist.selectedItem.data.title;
 				});
 			}
 			if(contains(_droplist))
