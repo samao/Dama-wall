@@ -16,6 +16,8 @@ package com.idzeir.business.init
 	import com.idzeir.manager.activity.api.IActivity;
 	
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
@@ -40,7 +42,8 @@ package com.idzeir.business.init
 		{
 			const url:URLRequest = new URLRequest('http://'+Host.DOMAIN +':' + Host.PORT +'/api/activities/qiyanlong/'+ token);
 			var loader:URLLoader = new URLLoader(url);
-			loader.addEventListener(Event.COMPLETE,function(e:Event):void
+			
+			function okHandler(e:Event):void
 			{
 				const result:Object = JSON.parse(e.target.data);
 				if(result.ok)
@@ -48,7 +51,25 @@ package com.idzeir.business.init
 					($(ContextType.ACTIVITY) as IActivity).persist(result.data);
 					next()
 				}
-			});
+				clear();
+			}
+			
+			function failHandler(e:Event):void
+			{
+				clear();
+			}
+			
+			function clear():void
+			{
+				loader.removeEventListener(Event.COMPLETE,okHandler);
+				loader.removeEventListener(IOErrorEvent.IO_ERROR,failHandler);
+				loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR,failHandler);
+			}
+			
+			
+			loader.addEventListener(Event.COMPLETE,okHandler);
+			loader.addEventListener(IOErrorEvent.IO_ERROR,failHandler);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,failHandler);
 		}
 	}
 }
