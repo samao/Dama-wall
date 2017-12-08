@@ -17,7 +17,7 @@ package com.idzeir.ui
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.data.Provider;
 	import com.idzeir.dispatch.DEvent;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.components.DButton;
 	import com.idzeir.ui.components.DropRender;
 	import com.idzeir.ui.utils.DrawUtil;

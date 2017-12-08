@@ -12,8 +12,8 @@ package com.idzeir.ui.screen
 	import com.idzeir.components.v2.Box;
 	import com.idzeir.components.v2.Image;
 	import com.idzeir.dispatch.DEvent;
-	import com.idzeir.dispatch.EventType;
 	import com.idzeir.draw.Mirro;
+	import com.idzeir.event.EventType;
 	import com.idzeir.media.impl.MediaProxyStates;
 	import com.idzeir.media.impl.MediaProxyType;
 	import com.idzeir.media.video.VideoPlayer;

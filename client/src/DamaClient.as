@@ -10,13 +10,18 @@
 package
 {
 	import com.idzeir.app.App;
+	import com.idzeir.business.Queue;
+	import com.idzeir.business.init.ActivitiesInit;
+	import com.idzeir.business.init.EmotionsInit;
+	import com.idzeir.business.init.TcpInit;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.dispatch.DEvent;
-	import com.idzeir.dispatch.EventType;
 	import com.idzeir.draw.Mirro;
-	import com.idzeir.service.Activities;
-	import com.idzeir.service.Emotions;
-	import com.idzeir.service.LiveService;
+	import com.idzeir.event.EventType;
+	import com.idzeir.manager.ContextType;
+	import com.idzeir.manager.activity.api.IActivity;
+	import com.idzeir.manager.activity.impl.Activity;
+	import com.idzeir.manager.emotion.impl.Emotion;
 	import com.idzeir.ui.Body;
 	import com.idzeir.ui.Footer;
 	import com.idzeir.ui.Gap;
@@ -41,6 +46,8 @@ package
 		private var _footer:Footer;
 		//播放适配列表窗口
 		private var _videoList:VideoList;
+		
+		public function DamaClient() {}
 		
 		override protected function createChildren():void
 		{
@@ -80,17 +87,18 @@ package
 			})
 			addViewListener();
 			
-			//用户活动数据获取
-			new Activities().getToken(function(actis:String):void{
-				fire(EventType.ACTIVIES_UPDATE,JSON.parse(actis).data);
-			});
+			$(ContextType.EMOTION, new Emotion());
+			$(ContextType.ACTIVITY, new Activity());
 			
-			Emotions.getInstance().request(function handler(ok:Boolean,data:*):void
-			{
-				if(ok) trace('成功',JSON.stringify(data));
-				else trace('失败：', data)
-				new LiveService();
-			});
+			Queue.getInstance()
+				.add(new ActivitiesInit())
+				.add(new EmotionsInit())
+				.add(new TcpInit())
+				.excute(function(...results):void 
+				{
+					const act:IActivity = $(ContextType.ACTIVITY) as IActivity;
+					fire(EventType.ACTIVIES_UPDATE, act.activies);
+				});
 		}
 		
 		private function addViewListener():void

@@ -7,10 +7,13 @@
  * ===================================
  */
 
-package com.idzeir.service
+package com.idzeir.business.init
 {
 	import com.adobe.crypto.MD5;
+	import com.idzeir.business.IJob;
 	import com.idzeir.conf.Host;
+	import com.idzeir.manager.ContextType;
+	import com.idzeir.manager.activity.api.IActivity;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -18,14 +21,9 @@ package com.idzeir.service
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 
-	public class Activities
+	public class ActivitiesInit implements IJob
 	{
-		public function Activities()
-		{
-			
-		}
-		
-		public function getToken(cb:Function):void
+		public function enter(next:Function):void
 		{
 			const url:URLRequest = new URLRequest('http://'+Host.DOMAIN +':'+Host.PORT +'/api/token/qiyanlong');
 			url.method = URLRequestMethod.POST;
@@ -34,17 +32,22 @@ package com.idzeir.service
 			loader.addEventListener(Event.COMPLETE,function(e:Event):void
 			{
 				const data:Object = JSON.parse(e.target.data);
-				getActivities(data.data, cb);
+				getActivities(data.data, next);
 			});
 		}
 		
-		private function getActivities(token:String, cb:Function):void
+		private function getActivities(token:String, next:Function):void
 		{
 			const url:URLRequest = new URLRequest('http://'+Host.DOMAIN +':' + Host.PORT +'/api/activities/qiyanlong/'+ token);
 			var loader:URLLoader = new URLLoader(url);
 			loader.addEventListener(Event.COMPLETE,function(e:Event):void
 			{
-				cb(e.target.data);
+				const result:Object = JSON.parse(e.target.data);
+				if(result.ok)
+				{
+					($(ContextType.ACTIVITY) as IActivity).persist(result.data);
+					next()
+				}
 			});
 		}
 	}

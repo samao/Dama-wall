@@ -7,7 +7,7 @@
  * ===================================
  */
 
-package com.idzeir.dispatch
+package com.idzeir.event
 {
 	public final class EventType
 	{

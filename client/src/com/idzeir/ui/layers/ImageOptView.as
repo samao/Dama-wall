@@ -11,7 +11,7 @@ package com.idzeir.ui.layers
 {
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.Label;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.components.DButton;
 	
@@ -43,7 +43,8 @@ package com.idzeir.ui.layers
 			resetBtn.label = '恢复默认'
 			resetBtn.raduis = 24;
 			resetBtn.setSize(90,24);
-			const selectBtn:DButton = new DButton(function():void{
+			const selectBtn:DButton = new DButton(function():void
+			{
 				browFile();
 			});
 			selectBtn.label = '选取图片'

@@ -7,7 +7,7 @@
  * ===================================
  */
 
-package com.idzeir.service
+package com.idzeir.manager.emotion.impl
 {
 	/**
 	 * 聊天消息数据分片

@@ -11,8 +11,8 @@ package com.idzeir.ui.screen
 {
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.dispatch.DEvent;
-	import com.idzeir.dispatch.EventType;
 	import com.idzeir.draw.Mirro;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.display.Bitmap;

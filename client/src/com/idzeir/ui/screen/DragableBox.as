@@ -10,7 +10,7 @@
 package com.idzeir.ui.screen
 {
 	import com.idzeir.components.v2.Box;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.draw.Mirro;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.utils.DrawUtil;

@@ -7,30 +7,33 @@
  * ===================================
  */
 
-package com.idzeir.service
+package com.idzeir.business.init
 {
+	import com.idzeir.business.IJob;
 	import com.idzeir.conf.Host;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.timer.impl.Ticker;
 	import com.worlize.websocket.WebSocket;
 	import com.worlize.websocket.WebSocketErrorEvent;
 	import com.worlize.websocket.WebSocketEvent;
 
-	public class LiveService
+	public class TcpInit implements IJob
 	{
 
 		private var _ws:WebSocket;
-		public function LiveService()
+		
+		public function TcpInit()
 		{
-			createWs();
+			
 		}
 		
-		private function createWs():void
+		public function enter(next:Function):void
 		{
 			_ws = new WebSocket('ws://' + Host.DOMAIN + ':' + Host.WS_PORT + '/jiafeiyan', '*');
 			_ws.addEventListener(WebSocketEvent.OPEN,function():void
 			{
 				trace('OPEN')
+				next();
 			});
 			_ws.addEventListener(WebSocketEvent.CLOSED,function():void
 			{

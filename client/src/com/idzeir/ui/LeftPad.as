@@ -14,7 +14,7 @@ package com.idzeir.ui
 	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.components.DButton;
 	import com.idzeir.ui.layers.LayerType;
 	

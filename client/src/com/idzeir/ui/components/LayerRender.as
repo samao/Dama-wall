@@ -14,7 +14,7 @@ package com.idzeir.ui.components
 	import com.idzeir.components.v2.Label;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.api.IItemRender;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.utils.DrawUtil;

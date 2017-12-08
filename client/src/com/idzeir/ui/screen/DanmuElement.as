@@ -12,8 +12,9 @@ package com.idzeir.ui.screen
 	import com.idzeir.components.v2.Image;
 	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
-	import com.idzeir.service.DanmuPart;
-	import com.idzeir.service.Emotions;
+	import com.idzeir.manager.ContextType;
+	import com.idzeir.manager.emotion.api.IEmotion;
+	import com.idzeir.manager.emotion.impl.DanmuPart;
 	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.geom.Point;
@@ -80,7 +81,8 @@ package com.idzeir.ui.screen
 		public function set text(value:Object):void
 		{
 			_color = value.color;
-			const pieces:Vector.<DanmuPart> = Emotions.getInstance().split(value.message);
+			const emotion:IEmotion = $(ContextType.EMOTION) as IEmotion;
+			const pieces:Vector.<DanmuPart> = emotion.split(value.message);
 			if(pieces.length == 1 && pieces[0].type === DanmuPart.TEXT)
 			{
 				_text.text = value.message;

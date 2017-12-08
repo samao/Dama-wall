@@ -18,7 +18,7 @@ package com.idzeir.ui
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.data.Provider;
 	import com.idzeir.dispatch.DEvent;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.components.LayerRender;
 	import com.idzeir.ui.utils.DrawUtil;
 	import com.idzeir.ui.utils.FilterUtil;

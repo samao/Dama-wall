@@ -105,7 +105,11 @@ router.route('/activities/:uid/:token').get((req,res,next) => {
 },(req, res, next) => {
     checkout(db => {
         const activities = db.collection(Collection.ACTIVITY);
-        activities.find({master:req.params.uid},{_id:1, rid: 1, title: 1}).sort({_id: 1}).toArray().then(data => {
+        activities.find({master:req.params.uid},{
+                _id:1, 
+                rid: 1, 
+                title: 1
+            }).sort({_id: 1}).toArray().then(data => {
             success(res,data);
             removeToken(req.params.token);
         }).catch(reason => failure(res, `获取活动数据失败 ${reason}`)).then(() => restore(db))

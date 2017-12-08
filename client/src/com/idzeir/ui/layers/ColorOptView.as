@@ -9,10 +9,10 @@
 
 package com.idzeir.ui.layers
 {
-	import com.idzeir.components.Label;
 	import com.idzeir.components.v2.HBox;
+	import com.idzeir.components.v2.Label;
 	import com.idzeir.components.v2.UIContainer;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.components.ColorPicker;
@@ -21,7 +21,6 @@ package com.idzeir.ui.layers
 	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.events.Event;
-	import flash.filters.DropShadowFilter;
 
 	public class ColorOptView extends OptView
 	{

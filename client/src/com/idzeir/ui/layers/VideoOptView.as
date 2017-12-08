@@ -12,7 +12,7 @@ package com.idzeir.ui.layers
 	import com.idzeir.components.v2.Button;
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.HSlider;
-	import com.idzeir.dispatch.EventType;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.components.TimeLabel;
