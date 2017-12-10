@@ -30,6 +30,8 @@ package com.idzeir.ui
 	{
 
 		private var noLayer:TextField;
+		
+		private var _layerTotal:uint = 0;
 
 		public function Layers()
 		{
@@ -107,7 +109,7 @@ package com.idzeir.ui
 		
 		private function addLayer(type:String,dp:Provider):void
 		{
-			dp.addItemAt(0, {title:'图层 ('+(dp.size+1)+') - 类型 [' + type+']', type:type});
+			dp.addItemAt(0, {title:'图层 ('+(++_layerTotal)+') - 类型 [' + type+']', type:type});
 			noLayer.visible = false;
 		}
 		

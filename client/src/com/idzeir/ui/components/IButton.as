@@ -14,7 +14,6 @@ package com.idzeir.ui.components
 	import com.idzeir.components.v2.Label;
 	import com.idzeir.ui.Color;
 	
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	public class IButton extends HBox

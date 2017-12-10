@@ -14,5 +14,7 @@ package com.idzeir.manager
 		public static const EMOTION:String = 'emotion';
 		
 		public static const ACTIVITY:String = 'activity';
+		
+		public static const PLAYER:String = 'player';
 	}
 }

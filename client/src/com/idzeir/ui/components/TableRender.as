@@ -10,8 +10,6 @@
 package com.idzeir.ui.components
 {
 	import com.idzeir.components.v2.Button;
-	import com.idzeir.components.v2.HBox;
-	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.api.IItemRender;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.utils.DrawUtil;
@@ -27,6 +25,7 @@ package com.idzeir.ui.components
 			super([1], ['']);
 			_warpBox.gap = 0;
 			_bgColor = Color.White;
+			mouseChildren = false;
 		}
 		
 		public function startup(value:*):void
@@ -46,6 +45,8 @@ package com.idzeir.ui.components
 				btn.setSize(W, _height)
 			});
 			_warpBox.immediateUpdate();
+			
+			trace(mouseEnabled, mouseChildren)
 		}
 		
 		override public function immediateUpdate():void

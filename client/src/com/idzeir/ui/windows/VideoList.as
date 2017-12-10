@@ -19,6 +19,7 @@ package com.idzeir.ui.windows
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.data.Provider;
+	import com.idzeir.event.EventType;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.components.IButton;
@@ -29,6 +30,9 @@ package com.idzeir.ui.windows
 	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
+	import flash.events.Event;
+	import flash.events.FileListEvent;
+	import flash.filesystem.File;
 	import flash.text.TextFormat;
 	
 	public class VideoList extends Box
@@ -38,6 +42,8 @@ package com.idzeir.ui.windows
 		private var _bgLayer:DisplayObject;
 
 		private var totalText:Label;
+
+		private var dp:Provider;
 		
 		public function VideoList()
 		{
@@ -64,7 +70,7 @@ package com.idzeir.ui.windows
 		{
 			var videolist:List = new List(TableRender);
 			FilterUtil.border(videolist);
-			var dp:Provider = new Provider();
+			dp = new Provider();
 			videolist.dataProvider = dp;
 			videolist.scaleThumb = false;
 			videolist.thumbSkin = createThumb();
@@ -72,10 +78,13 @@ package com.idzeir.ui.windows
 			videolist.sliderBglayerColor = 0x99ffcc;
 			videolist.sliderBglayerAlpha = .8;
 			videolist.setSize(220,420);
-			testCreater(dp);
 			
-			totalText.text = totalText.text.replace('{total}',dp.size);
+			totalText.text = totalText.text.replace(/\d+/,dp.size);
 			warpBox.addChild(videolist);
+			videolist.addEventListener(Event.SELECT,function():void
+			{
+				fire(EventType.PLAY_URL, videolist.selectedItem.data[1]);
+			});
 		}
 		
 		private function createOperLine():void
@@ -86,24 +95,24 @@ package com.idzeir.ui.windows
 			operBox.addChild(bglayer);
 			operBox.setSize(210, 20);
 			
-			totalText = new Label('共{total}个视频',Color.Primary);
+			totalText = new Label('共0个视频',Color.Primary);
 			totalText.y = operBox.height - totalText.height >> 1;
 			
-			var addBtn:Button = new Button(function():void{});
+			var addBtn:Button = new Button(addHandler);
 			addBtn.selectSkin = null;
 			addBtn.normalSkin = new V3Add();
 			addBtn.overSkin = new V3AddHover();
 			addBtn.setSize(12,12);
-			var iconAddBtn:IButton = new IButton(function():void{});
+			var iconAddBtn:IButton = new IButton(addHandler);
 			iconAddBtn.icon = addBtn;
 			iconAddBtn.label = '添加到';
 			
-			var delBtn:Button = new Button();
+			var delBtn:Button = new Button(clearHandler);
 			delBtn.selectSkin = null;
 			delBtn.normalSkin = new V3CrashBox()
 			delBtn.overSkin = new V3CrashBoxHover();
 			delBtn.setSize(12,12);
-			var iconDelBtn:IButton = new IButton(function():void{});
+			var iconDelBtn:IButton = new IButton(clearHandler);
 			iconDelBtn.icon = delBtn;
 			iconDelBtn.label = '清空';
 			
@@ -119,6 +128,39 @@ package com.idzeir.ui.windows
 			operBox.addChild(optBox);
 			
 			warpBox.addChild(operBox);
+		}
+		
+		private function addHandler(e:Event):void
+		{
+			var file:File = new File();
+			function selectHandler(e:FileListEvent):void
+			{
+				e.files.forEach(function(file:File,index:int,arr:Array):void
+				{
+					dp.addItem([file.name, file.url, file.size]);
+				});
+				clear();
+				totalText.text = totalText.text.replace(/\d+/,dp.size);
+			}
+			function cancleHandler(e:Event):void
+			{
+				clear();
+			}
+			function clear():void
+			{
+				file.removeEventListener(FileListEvent.SELECT_MULTIPLE, selectHandler);
+				file.removeEventListener(Event.CANCEL,cancleHandler);
+			}
+			
+			file.addEventListener(FileListEvent.SELECT_MULTIPLE, selectHandler);
+			file.addEventListener(Event.CANCEL,cancleHandler);
+			file.browseForOpenMultiple('视频');
+		}
+		
+		private function clearHandler(e:Event):void
+		{
+			dp.removeAll();
+			totalText.text = totalText.text.replace(/\d+/,dp.size);
 		}
 		
 		private function createHeader():void
@@ -149,12 +191,6 @@ package com.idzeir.ui.windows
 				visible = true;
 				TweenNano.to(this, .5, {x:600 - _width - 10});
 			}
-		}
-		
-		private function testCreater(dp:Provider):void
-		{
-			for(var i:uint = 0; i < 32; ++i)
-				dp.addItem(['视频'+i+'.mp4',TimeUtil.format(123423 + Math.random() * 125200),'']);
 		}
 		
 		private function createThumb():Button

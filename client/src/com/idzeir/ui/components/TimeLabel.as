@@ -22,6 +22,7 @@ package com.idzeir.ui.components
 		public function TimeLabel(time:uint)
 		{
 			super();
+			this.mouseEnabled = false;
 			this.overSkin = this.selectSkin = null;
 			this.normalSkin = new Sprite();
 			this.labelFormat = new TextFormat(Style.font,null,Color.Black,false);

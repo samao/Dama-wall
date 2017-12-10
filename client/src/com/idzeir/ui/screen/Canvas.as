@@ -14,6 +14,7 @@ package com.idzeir.ui.screen
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.draw.Mirro;
 	import com.idzeir.event.EventType;
+	import com.idzeir.manager.ContextType;
 	import com.idzeir.media.impl.MediaProxyStates;
 	import com.idzeir.media.impl.MediaProxyType;
 	import com.idzeir.media.video.VideoPlayer;
@@ -51,6 +52,22 @@ package com.idzeir.ui.screen
 			addChild(_danmuLayer);
 			
 			Mirro.getInstance().attach(this);
+			
+			$(ContextType.PLAYER, _video);
+			
+			on(EventType.SEEK,function(e:DEvent):void
+			{
+				_video.time = e.data[0];
+			});
+			on(EventType.VIDEO_TOGGLE, function(e:DEvent):void
+			{
+				_video.toggle();
+			})
+			on(EventType.PLAY_URL,function(e:DEvent):void
+			{
+				_video.dispose();
+				_video.connect(MediaProxyType.HTTP, e.data[0],null, videoHandler);
+			});
 		}
 		
 		private function videoHandler(code:String,...info):void
@@ -60,6 +77,18 @@ package com.idzeir.ui.screen
 					trace('播放结束，重新播放');
 					_video.time = 0;
 					_video.start();
+					break;
+				case MediaProxyStates.CONNECT_NOTIFY:
+					trace('播放吧老板');
+					break;
+				case MediaProxyStates.DURATION_NOTIFY:
+					fire(EventType.DURATION_UPDATE);
+					break;
+				case MediaProxyStates.PROXY_ERROR:
+					
+					break;
+				default:
+					
 					break;
 			}
 		}

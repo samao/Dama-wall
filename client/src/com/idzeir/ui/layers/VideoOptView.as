@@ -13,6 +13,9 @@ package com.idzeir.ui.layers
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.HSlider;
 	import com.idzeir.event.EventType;
+	import com.idzeir.manager.ContextType;
+	import com.idzeir.media.video.IVideoPlayer;
+	import com.idzeir.timer.impl.Ticker;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.components.TimeLabel;
@@ -46,10 +49,14 @@ package com.idzeir.ui.layers
 			preBtn.normalSkin = new V3Pre();
 			preBtn.setSize(12,12);
 			
-			const playBtn:Button =  new Button(function():void{});
+			const playBtn:Button =  new Button(function():void
+			{
+				fire(EventType.VIDEO_TOGGLE,playBtn.selected);
+			});
 			playBtn.overSkin = null;
 			playBtn.selectSkin = new V3Pause();
 			playBtn.normalSkin = new V3Play();
+			playBtn.selected = true;
 			playBtn.setSize(30,30);
 			
 			const nextBtn:Button = new Button(function():void{});
@@ -93,10 +100,7 @@ package com.idzeir.ui.layers
 			proBox.gap = 3;
 			proBox.algin = HBox.MIDDLE;
 			
-			var duration:uint = 4346;
-			var current:uint = 0;
-			
-			const curTime:TimeLabel = new TimeLabel(current);
+			const curTime:TimeLabel = new TimeLabel(0);
 			const slider:HSlider = new HSlider();
 			slider.scaleThumb = false;
 			slider.thumbSkin = createThumb();
@@ -105,10 +109,10 @@ package com.idzeir.ui.layers
 			slider.setSize(210,3);
 			slider.addEventListener(Event.CHANGE,function():void
 			{
-				curTime.time = duration*slider.value;
+				fire(EventType.SEEK, slider.value);
 			});
 			
-			const durTime:TimeLabel = new TimeLabel(duration);
+			const durTime:TimeLabel = new TimeLabel(0);
 			
 			proBox.addChild(curTime);
 			proBox.addChild(slider);
@@ -116,15 +120,46 @@ package com.idzeir.ui.layers
 			
 			contentBox.addChild(DrawUtil.drawRectRound(1,24,Color.Line));
 			contentBox.addChild(proBox);
+			
+			var player:IVideoPlayer
+			Ticker.getInstance().call(1000, function():void
+			{
+				player ||= getPlayer();
+				if(player && !slider.draging)
+				{
+					if(slider.max !== player.duration)
+						durTime.time = slider.max = player.duration;
+					if(slider.value !== player.time)
+						curTime.time = slider.value = player.time;
+				}
+			});
+			
+			//初始化UI显示
+			player ||= getPlayer();
+			if(player) 
+			{
+				durTime.time = slider.max = player.duration;
+				curTime.time = slider.value = player.time;
+			}
+		}
+		
+		private function getPlayer():IVideoPlayer
+		{
+			return $(ContextType.PLAYER)
 		}
 		
 		private function createThumb():Button
 		{
-			const btn:Button = new Button();
-			btn.normalSkin = DrawUtil.drawCircle(Color.Primary,10);
-			btn.overSkin= btn.selectSkin = null;
-			btn.setSize(10,10);
-			return btn;
+			var but:Button = new Button();
+			but.selectSkin = null;
+			but.overSkin = null;
+			var skin:Sprite = new Sprite();
+			skin.graphics.lineStyle(1, Color.Border);
+			skin.graphics.beginFill(Color.White);
+			skin.graphics.drawCircle(0, 0, 7);
+			skin.graphics.endFill();
+			but.normalSkin = skin;
+			return but;
 		}
 		
 		override public function immediateUpdate():void

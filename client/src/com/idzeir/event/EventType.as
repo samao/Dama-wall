@@ -36,5 +36,16 @@ package com.idzeir.event
 		public static const ACTIVIES_UPDATE:String = 'activiesUpdate';
 		/** 投屏元素移动 */
 		public static const ELEMENT_MOVED:String = 'elementMoved';
+		
+		
+		public static const DURATION_UPDATE:String = 'durationUpdate';
+		
+		public static const CURRENT_UPDATE:String = 'currentUpdate';
+		
+		public static const SEEK:String = 'seek';
+		
+		public static const VIDEO_TOGGLE:String = 'videoToggle';
+		
+		public static const PLAY_URL:String = 'playUrl';
 	}
 }

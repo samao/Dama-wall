@@ -27,7 +27,7 @@ package com.idzeir.ui.utils
 		{
 			const shape: Shape = new Shape();
 			shape.graphics.beginFill(color);
-			shape.graphics.drawCircle(radius,radius,radius);
+			shape.graphics.drawCircle(0,0,radius);
 			shape.graphics.endFill();
 			return shape;
 		}
