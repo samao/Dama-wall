@@ -14,5 +14,7 @@ package com.idzeir.ui
 		public static const PADDING: uint = 20;
 		
 		public static const LINE_GAP: uint = 15;
+		
+		public static const POP_GAP:uint = 5;
 	}
 }

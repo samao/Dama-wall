@@ -17,23 +17,37 @@ package com.idzeir.ui.components
 	
 	public class HLine extends UIContainer
 	{
-		public function HLine()
+
+		private var line:Shape;
+		public function HLine(width:Number = 600)
 		{
 			super();
 			alpha = .5;
 			_height = Gap.PADDING;
-			createChildren();
+			createChildren(width);
 			visible = false;
 		}
 		
-		private function createChildren():void
+		private function createChildren(width:Number = 600):void
 		{
-			var line: Shape = new Shape();
-			drawRect(Color.Line, 600 - Gap.PADDING * 2,1,line);
+			line = new Shape();
+			drawRect(Color.Line, width - Gap.PADDING * 2,1,line);
 			line.x = Gap.PADDING;
 			line.y = _height;
 			this.addChild(line);
 			vaild();
+		}
+		
+		override public function set width(value:Number):void
+		{
+			line.width = value;
+			super.width = value;
+		}
+		
+		override public function setSize(w:Number, h:Number):void
+		{
+			line.width = w;
+			super.setSize(w,h);
 		}
 		
 		override public function immediateUpdate():void

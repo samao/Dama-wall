@@ -24,6 +24,7 @@ package com.idzeir.ui
 	import com.idzeir.ui.utils.FilterUtil;
 	
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.text.TextFormat;
 	
@@ -81,12 +82,23 @@ package com.idzeir.ui
 			statusTitle.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true);
 			var status: Label = new Label('已连接', Color.Primary);
 			
+			var loginBtn:Label = new Label('登录',Color.Primary);
+			loginBtn.defaultTextFormat = new TextFormat(Style.font,null, Color.Primary,true);
+			loginBtn.mouseEnabled = true;
+			loginBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void
+			{
+				new LoginPop(stage);
+			});
+			
 			statusBox.addChild(statusTitle);
 			statusBox.addChild(status);
 			warpBox.addChild(statusBox);
 			
 			warpBox.move(Gap.PADDING, Gap.PADDING);
 			addChild(warpBox);
+			
+			loginBtn.move(600 - loginBtn.width - Gap.PADDING, Gap.PADDING + (warpBox.height - loginBtn.height >> 1));
+			addChild(loginBtn);
 			
 			on(EventType.ACTIVIES_UPDATE,function(e:DEvent):void
 			{
@@ -96,6 +108,7 @@ package com.idzeir.ui
 		
 		private function showActList():void
 		{
+			if(_dp.size === 0) return;
 			if(!_droplist)
 			{
 				_droplist = new List(DropRender);
@@ -108,7 +121,6 @@ package com.idzeir.ui
 				_droplist.bgColor = Color.Background;
 				_droplist.setSize(120,100);
 				_droplist.dataProvider = _dp;
-				_droplist.index = 0;
 				var rect:Rectangle =  _openListBtn.getBounds(stage);
 				_droplist.x = rect.left + (rect.width - _droplist.width) * .5;
 				_droplist.y = rect.bottom + 3;

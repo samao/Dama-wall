@@ -31,11 +31,29 @@ package com.idzeir.business.init
 			url.method = URLRequestMethod.POST;
 			url.data = new URLVariables('pwd='+MD5.hash('admin'));
 			var loader:URLLoader = new URLLoader(url);
-			loader.addEventListener(Event.COMPLETE,function(e:Event):void
+			
+			function okHandler(e:Event):void
 			{
 				const data:Object = JSON.parse(e.target.data);
 				getActivities(data.data, next);
-			});
+				clear();
+			}
+			
+			function failHandler(e:Event):void
+			{
+				clear();
+			}
+			
+			function clear():void
+			{
+				loader.removeEventListener(Event.COMPLETE,okHandler);
+				loader.removeEventListener(IOErrorEvent.IO_ERROR,failHandler);
+				loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR,failHandler);
+			}
+			
+			loader.addEventListener(Event.COMPLETE,okHandler);
+			loader.addEventListener(IOErrorEvent.IO_ERROR,failHandler);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,failHandler);
 		}
 		
 		private function getActivities(token:String, next:Function):void
