@@ -11,7 +11,6 @@ package
 {
 	import com.idzeir.app.App;
 	import com.idzeir.business.Queue;
-	import com.idzeir.business.init.ActivitiesInit;
 	import com.idzeir.business.init.EmotionsInit;
 	import com.idzeir.business.init.TcpInit;
 	import com.idzeir.components.v2.VBox;
@@ -19,7 +18,6 @@ package
 	import com.idzeir.draw.Mirro;
 	import com.idzeir.event.EventType;
 	import com.idzeir.manager.ContextType;
-	import com.idzeir.manager.activity.api.IActivity;
 	import com.idzeir.manager.activity.impl.Activity;
 	import com.idzeir.manager.emotion.impl.Emotion;
 	import com.idzeir.ui.Body;
@@ -91,14 +89,14 @@ package
 			$(ContextType.ACTIVITY, new Activity());
 			
 			Queue.getInstance()
-				.add(new ActivitiesInit())
 				.add(new EmotionsInit())
 				.add(new TcpInit())
 				.excute(function(...results):void 
 				{
-					const act:IActivity = $(ContextType.ACTIVITY) as IActivity;
-					fire(EventType.ACTIVIES_UPDATE, act.activies);
+					trace('启动完成');
 				});
+			
+			tabChildren = false;
 		}
 		
 		private function addViewListener():void

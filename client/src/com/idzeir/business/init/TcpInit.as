@@ -27,7 +27,7 @@ package com.idzeir.business.init
 			
 		}
 		
-		public function enter(next:Function):void
+		public function enter(next:Function, error:Function = null):void
 		{
 			_ws = new WebSocket('ws://' + Host.DOMAIN + ':' + Host.WS_PORT + '/jiafeiyan', '*');
 			_ws.addEventListener(WebSocketEvent.OPEN,function():void

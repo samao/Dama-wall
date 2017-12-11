@@ -18,6 +18,6 @@ package com.idzeir.business
 		/**
 		 * 开始执行业务
 		 */		
-		function enter(next:Function):void;
+		function enter(next:Function, error:Function = null):void;
 	}
 }

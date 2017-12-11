@@ -26,7 +26,7 @@ package com.idzeir.business.init
 		/**
 		 * 获取服务器表情配置
 		 */		
-		public function enter(next:Function):void
+		public function enter(next:Function, error:Function = null):void
 		{
 			function okHandler(e:Event):void
 			{

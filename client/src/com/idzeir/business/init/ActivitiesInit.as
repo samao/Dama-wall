@@ -25,23 +25,38 @@ package com.idzeir.business.init
 
 	public class ActivitiesInit implements IJob
 	{
-		public function enter(next:Function):void
+		private var _user:String = '';
+		private var _pwd:String = '';
+		
+		public function ActivitiesInit(user:String = '', pwd:String = 'admin')
 		{
-			const url:URLRequest = new URLRequest('http://'+Host.DOMAIN +':'+Host.PORT +'/api/token/qiyanlong');
+			this._user = user;
+			this._pwd = pwd;
+		}
+		
+		public function enter(next:Function, error:Function = null):void
+		{
+			const url:URLRequest = new URLRequest('http://'+Host.DOMAIN +':'+Host.PORT +'/api/token/'+_user);
 			url.method = URLRequestMethod.POST;
-			url.data = new URLVariables('pwd='+MD5.hash('admin'));
+			url.data = new URLVariables('pwd='+MD5.hash(_pwd));
 			var loader:URLLoader = new URLLoader(url);
 			
 			function okHandler(e:Event):void
 			{
 				const data:Object = JSON.parse(e.target.data);
-				getActivities(data.data, next);
+				if(data.ok)
+				{
+					getActivities(data.data, next);
+				}else{
+					error && error.apply(null,['用户名密码错误']);
+				}
 				clear();
 			}
 			
 			function failHandler(e:Event):void
 			{
 				clear();
+				error && error.apply(null,[e.type]);
 			}
 			
 			function clear():void
@@ -56,9 +71,9 @@ package com.idzeir.business.init
 			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,failHandler);
 		}
 		
-		private function getActivities(token:String, next:Function):void
+		private function getActivities(token:String, next:Function, error:Function = null):void
 		{
-			const url:URLRequest = new URLRequest('http://'+Host.DOMAIN +':' + Host.PORT +'/api/activities/qiyanlong/'+ token);
+			const url:URLRequest = new URLRequest('http://'+Host.DOMAIN +':' + Host.PORT +'/api/activities/'+_user+'/'+ token);
 			var loader:URLLoader = new URLLoader(url);
 			
 			function okHandler(e:Event):void
@@ -68,6 +83,8 @@ package com.idzeir.business.init
 				{
 					($(ContextType.ACTIVITY) as IActivity).persist(result.data);
 					next()
+				}else {
+					error && error.apply(null,['服务器出错']);
 				}
 				clear();
 			}
@@ -75,6 +92,7 @@ package com.idzeir.business.init
 			function failHandler(e:Event):void
 			{
 				clear();
+				error && error.apply(null,[e.type]);
 			}
 			
 			function clear():void

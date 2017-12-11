@@ -47,5 +47,8 @@ package com.idzeir.event
 		public static const VIDEO_TOGGLE:String = 'videoToggle';
 		
 		public static const PLAY_URL:String = 'playUrl';
+		
+		
+		public static const LOGIN_IN:String = 'loginIn';
 	}
 }

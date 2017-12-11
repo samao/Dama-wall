@@ -39,7 +39,12 @@ package com.idzeir.business
 			return this;
 		}
 		
-		public function excute(done:Function = null):void
+		public function error(cb:Function):void
+		{
+			
+		}
+		
+		public function excute(done:Function = null,error:Function = null):void
 		{
 			const results:Array = [];
 			function next(result:* = null):void
@@ -47,10 +52,15 @@ package com.idzeir.business
 				results.push(result);
 				if(_map.length > 0)
 				{
-					_map.shift().enter(next);
+					_map.shift().enter(next,errorHandler);
 				}else{
 					done && (done.apply(null, results.slice(1, results.length)));
 				}
+			}
+			
+			function errorHandler(reason:String):void
+			{
+				error && error.apply(null,[reason]);
 			}
 			next();
 		}

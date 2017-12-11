@@ -24,6 +24,6 @@ package com.idzeir.business
 		 * 开始执行业务
 		 * 回调函数的参数为每个业务调用next传入参数的数组
 		 */		
-		function excute(done:Function = null):void;
+		function excute(done:Function = null, error:Function = null):void;
 	}
 }

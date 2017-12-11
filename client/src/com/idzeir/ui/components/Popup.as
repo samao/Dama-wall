@@ -48,6 +48,7 @@ package com.idzeir.ui.components
 			
 			addEventListener(Event.ADDED_TO_STAGE,function():void
 			{
+				removeEventListener(Event.ADDED_TO_STAGE,arguments.callee);
 				vaild();
 			});
 			stage.addChild(this);

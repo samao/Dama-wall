@@ -84,10 +84,20 @@ package com.idzeir.ui
 			
 			var loginBtn:Label = new Label('登录',Color.Primary);
 			loginBtn.defaultTextFormat = new TextFormat(Style.font,null, Color.Primary,true);
-			loginBtn.mouseEnabled = true;
+			loginBtn.buttonMode = true;
+			loginBtn.userData = false;
 			loginBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void
 			{
-				new LoginPop(stage);
+				if(!loginBtn.userData)
+				{
+					//登录
+					new LoginPop(stage);
+				}else{
+					//注销
+					loginBtn.userData = false;
+					loginBtn.text = '登录';
+					loginBtn.textColor = Color.Primary;
+				}
 			});
 			
 			statusBox.addChild(statusTitle);
@@ -103,6 +113,13 @@ package com.idzeir.ui
 			on(EventType.ACTIVIES_UPDATE,function(e:DEvent):void
 			{
 				_dp.map = e.data[0];
+			});
+			
+			on(EventType.LOGIN_IN,function():void
+			{
+				loginBtn.userData = true;
+				loginBtn.text = '注销';
+				loginBtn.textColor = Color.Red;
 			});
 		}
 		
