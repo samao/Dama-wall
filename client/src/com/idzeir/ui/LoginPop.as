@@ -12,7 +12,7 @@ package com.idzeir.ui
 	import com.adobe.utils.StringUtil;
 	import com.greensock.TweenNano;
 	import com.idzeir.business.Queue;
-	import com.idzeir.business.init.ActivitiesInit;
+	import com.idzeir.business.task.ObtainActivities;
 	import com.idzeir.components.v2.Box;
 	import com.idzeir.components.v2.HBox;
 	import com.idzeir.components.v2.Label;
@@ -25,10 +25,8 @@ package com.idzeir.ui
 	import com.idzeir.ui.components.StatusButtton;
 	import com.idzeir.ui.utils.DrawUtil;
 	
-	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Stage;
-	import flash.events.Event;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
@@ -77,7 +75,7 @@ package com.idzeir.ui
 				}
 				okBut.loading = true;
 				Queue.getInstance()
-					.add(new ActivitiesInit(user.text(),pwd.text()))
+					.add(new ObtainActivities(user.text(),pwd.text()))
 					.excute(function():void
 					{
 						const act:IActivity = $(ContextType.ACTIVITY) as IActivity;
@@ -123,7 +121,7 @@ package com.idzeir.ui
 		private function createText(pwd:Boolean = false): Object
 		{
 			var text:TextField = new TextField();
-			text.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true);
+			text.defaultTextFormat = new TextFormat(Style.font,null,Color.Title,true,null,null,null,null,null,5,5);
 			text.type = 'input';
 			text.maxChars = 12;
 			text.restrict = 'a-z|A-Z|0-9|_';

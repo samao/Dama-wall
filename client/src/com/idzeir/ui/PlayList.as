@@ -7,7 +7,7 @@
  * ===================================
  */
 
-package com.idzeir.ui.windows
+package com.idzeir.ui
 {
 	import com.greensock.TweenNano;
 	import com.idzeir.components.v2.Box;
@@ -20,13 +20,10 @@ package com.idzeir.ui.windows
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.data.Provider;
 	import com.idzeir.event.EventType;
-	import com.idzeir.ui.Color;
-	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.components.IButton;
 	import com.idzeir.ui.components.TableRender;
 	import com.idzeir.ui.utils.DrawUtil;
 	import com.idzeir.ui.utils.FilterUtil;
-	import com.idzeir.ui.utils.TimeUtil;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
@@ -35,7 +32,10 @@ package com.idzeir.ui.windows
 	import flash.filesystem.File;
 	import flash.text.TextFormat;
 	
-	public class VideoList extends Box
+	/**
+	 * 视频播放列表 
+	 */	
+	public class PlayList extends Box
 	{
 		private var warpBox:VBox;
 		
@@ -45,7 +45,7 @@ package com.idzeir.ui.windows
 
 		private var dp:Provider;
 		
-		public function VideoList()
+		public function PlayList()
 		{
 			createChildren();
 			setSize(250,510);

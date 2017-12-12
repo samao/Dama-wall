@@ -31,11 +31,15 @@ package com.idzeir.ui.screen
 		public function Canvas()
 		{
 			super();
-			var _mirr:Mirro = Mirro.getInstance()
+			//绑定绘制
+			const _mirr:Mirro = Mirro.getInstance();
+			_mirr.attach(this);
 			//原始画布尺寸
 			setSize(_mirr.width, _mirr.height);
+			//创建ui
 			createChildren();
-			addListener();
+			//监听全局消息
+			register();
 		}
 		
 		protected function createChildren():void
@@ -51,23 +55,7 @@ package com.idzeir.ui.screen
 			_danmuLayer = new DanmuLayer();
 			addChild(_danmuLayer);
 			
-			Mirro.getInstance().attach(this);
-			
 			$(ContextType.PLAYER, _video);
-			
-			on(EventType.SEEK,function(e:DEvent):void
-			{
-				_video.time = e.data[0];
-			});
-			on(EventType.VIDEO_TOGGLE, function(e:DEvent):void
-			{
-				_video.toggle();
-			})
-			on(EventType.PLAY_URL,function(e:DEvent):void
-			{
-				_video.dispose();
-				_video.connect(MediaProxyType.HTTP, e.data[0],null, videoHandler);
-			});
 		}
 		
 		private function videoHandler(code:String,...info):void
@@ -93,7 +81,7 @@ package com.idzeir.ui.screen
 			}
 		}
 		
-		private function addListener():void
+		private function register():void
 		{
 			on(EventType.ADD_LAYER, function(e:DEvent):void
 			{
@@ -136,6 +124,20 @@ package com.idzeir.ui.screen
 					var pos:Object = e.data[0]
 					img.move(pos.x,pos.y);
 				});
+			});
+			
+			on(EventType.SEEK,function(e:DEvent):void
+			{
+				_video.time = e.data[0];
+			});
+			on(EventType.VIDEO_TOGGLE, function(e:DEvent):void
+			{
+				_video.toggle();
+			})
+			on(EventType.PLAY_URL,function(e:DEvent):void
+			{
+				_video.dispose();
+				_video.connect(MediaProxyType.HTTP, e.data[0],null, videoHandler);
 			});
 		}		
 	}

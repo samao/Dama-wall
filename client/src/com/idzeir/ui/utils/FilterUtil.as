@@ -17,6 +17,10 @@ package com.idzeir.ui.utils
 
 	public class FilterUtil
 	{
+		/**
+		 * 弹幕显示元素 补色边框 
+		 * @param dm
+		 */		
 		public static function danmu(dm:DanmuElement):void
 		{
 			const color:int = dm.color;
@@ -29,11 +33,19 @@ package com.idzeir.ui.utils
 			dm.filters = [new DropShadowFilter(1, 0, border, .5, 1, 1), new GlowFilter(border, .5, 2, 2, 1)];
 		}
 		
+		/**
+		 * 显示对象设置滤镜边框 
+		 * @param target
+		 */		
 		public static function border(target:DisplayObject):void
 		{
 			target.filters = [new DropShadowFilter(3, 45, 0, .1, 6, 6, 1), new DropShadowFilter(1, -135, 0, .1, 2, 2)];
 		}
 		
+		/**
+		 * 显示对象设置左右水平边
+		 * @param target
+		 */		
 		public static function horBorder(target:DisplayObject):void
 		{
 			target.filters = [new DropShadowFilter(1, 0, 0, 1, 1, 1, 1), new DropShadowFilter(1, 180, 0, .1, 1, 1)];

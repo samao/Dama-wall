@@ -11,6 +11,11 @@ package com.idzeir.ui.utils
 {
 	public class TimeUtil
 	{
+		/**
+		 * 时间数字转00：00：00格式
+		 * @param time
+		 * @return 
+		 */		
 		public static function format(time:uint): String
 		{
 			var _hours:* = Math.floor(time / 3600);

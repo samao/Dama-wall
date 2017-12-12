@@ -13,7 +13,7 @@ package com.idzeir.business
 	/**
 	 * 具体业务接口
 	 */	
-	public interface IJob
+	public interface ITask
 	{
 		/**
 		 * 开始执行业务

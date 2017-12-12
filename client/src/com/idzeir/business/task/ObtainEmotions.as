@@ -7,9 +7,9 @@
  * ===================================
  */
 
-package com.idzeir.business.init
+package com.idzeir.business.task
 {
-	import com.idzeir.business.IJob;
+	import com.idzeir.business.ITask;
 	import com.idzeir.conf.Host;
 	import com.idzeir.manager.ContextType;
 	import com.idzeir.manager.emotion.api.IEmotion;
@@ -20,7 +20,10 @@ package com.idzeir.business.init
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 
-	public class EmotionsInit implements IJob
+	/**
+	 * 获取服务器表情数据 
+	 */	
+	public class ObtainEmotions implements ITask
 	{
 		
 		/**

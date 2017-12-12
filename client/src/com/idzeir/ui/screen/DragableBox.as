@@ -20,6 +20,9 @@ package com.idzeir.ui.screen
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	/**
+	 * 画布源元素操控对象
+	 */	
 	public class DragableBox extends Box
 	{
 		private var _controlLayer:Sprite;

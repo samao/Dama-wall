@@ -15,7 +15,7 @@ package com.idzeir.business
 	 */	
 	public class Queue implements IQueue
 	{
-		private var _map:Vector.<IJob> = new Vector.<IJob>();
+		private var _map:Vector.<ITask> = new Vector.<ITask>();
 		
 		private static var _instance:Queue;
 		
@@ -32,16 +32,11 @@ package com.idzeir.business
 			return _instance ||= new Queue();
 		}
 		
-		public function add(queue:IJob,clear:Boolean = false):IQueue
+		public function add(queue:ITask,clear:Boolean = false):IQueue
 		{
 			clear&&(_map.length = 0);
 			_map.push(queue);
 			return this;
-		}
-		
-		public function error(cb:Function):void
-		{
-			
 		}
 		
 		public function excute(done:Function = null,error:Function = null):void

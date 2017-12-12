@@ -7,9 +7,9 @@
  * ===================================
  */
 
-package com.idzeir.business.init
+package com.idzeir.business.task
 {
-	import com.idzeir.business.IJob;
+	import com.idzeir.business.ITask;
 	import com.idzeir.conf.Host;
 	import com.idzeir.event.EventType;
 	import com.idzeir.timer.impl.Ticker;
@@ -17,15 +17,12 @@ package com.idzeir.business.init
 	import com.worlize.websocket.WebSocketErrorEvent;
 	import com.worlize.websocket.WebSocketEvent;
 
-	public class TcpInit implements IJob
+	/**
+	 * 建立聊天长连接
+	 */	
+	public class EstablishConnection implements ITask
 	{
-
 		private var _ws:WebSocket;
-		
-		public function TcpInit()
-		{
-			
-		}
 		
 		public function enter(next:Function, error:Function = null):void
 		{
@@ -47,6 +44,9 @@ package com.idzeir.business.init
 			_ws.connect();
 		}
 		
+		/**
+		 * 心跳
+		 */		
 		private function heartBeat():void
 		{
 			_ws.sendUTF(JSON.stringify({action:'heart',data:{}}));

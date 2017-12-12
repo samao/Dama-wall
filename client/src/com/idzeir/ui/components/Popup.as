@@ -12,7 +12,6 @@ package com.idzeir.ui.components
 	import com.idzeir.components.v2.Box;
 	import com.idzeir.components.v2.Button;
 	import com.idzeir.components.v2.Label;
-	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.UIContainer;
 	import com.idzeir.ui.Color;
 	import com.idzeir.ui.Gap;
@@ -22,7 +21,6 @@ package com.idzeir.ui.components
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
-	import flash.text.TextFormat;
 	
 	public class Popup extends Box
 	{
@@ -79,11 +77,18 @@ package com.idzeir.ui.components
 			createBody();
 		}
 		
+		/**
+		 * 设置弹出框标题 
+		 * @param value
+		 */		
 		public function set title(value:String):void
 		{
 			_titleTxt.text = value;
 		}
 		
+		/**
+		 * pop框覆盖创建body 
+		 */		
 		protected function createBody():void
 		{
 			_line = new HLine()

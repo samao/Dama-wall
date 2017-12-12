@@ -11,8 +11,8 @@ package
 {
 	import com.idzeir.app.App;
 	import com.idzeir.business.Queue;
-	import com.idzeir.business.init.EmotionsInit;
-	import com.idzeir.business.init.TcpInit;
+	import com.idzeir.business.task.EstablishConnection;
+	import com.idzeir.business.task.ObtainEmotions;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.draw.Mirro;
@@ -28,7 +28,7 @@ package
 	import com.idzeir.ui.Monitor;
 	import com.idzeir.ui.components.HLine;
 	import com.idzeir.ui.windows.CastScreen;
-	import com.idzeir.ui.windows.VideoList;
+	import com.idzeir.ui.PlayList;
 	
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeWindow;
@@ -43,7 +43,9 @@ package
 		private var _horLine:HLine
 		private var _footer:Footer;
 		//播放适配列表窗口
-		private var _videoList:VideoList;
+		private var _videoList:PlayList;
+		//同步屏窗口
+		private var _win:CastScreen;
 		
 		public function DamaClient() {}
 		
@@ -68,6 +70,49 @@ package
 			
 			addChild(new Monitor());
 			
+			tabChildren = false;
+		}
+		
+		override protected function preInit():void
+		{
+			//1、注册ui事件
+			addViewListener();
+			//2、注入全局内容
+			inject();
+			//3、监听全局事件
+			register();
+			//4、执行初始化任务
+			createTask();
+		}
+		
+		/**
+		 * 注入全局数据对象
+		 */		
+		private function inject():void
+		{
+			$(ContextType.EMOTION, new Emotion());
+			$(ContextType.ACTIVITY, new Activity());
+		}
+		
+		/**
+		 * 开启任务队列 
+		 */		
+		private function createTask():void
+		{
+			Queue.getInstance()
+				.add(new ObtainEmotions())
+				.add(new EstablishConnection())
+				.excute(function(...results):void 
+				{
+					trace('启动完成');
+				});
+		}
+		
+		/**
+		 * 全局消息处理
+		 */		
+		private function register():void
+		{
 			on(EventType.OPEN_LAYER_DETAIL, function(e: DEvent):void 
 			{
 				addFooter(e.data);
@@ -77,28 +122,16 @@ package
 				toggleVideoList(e.data[0]);
 			});
 			
-			var _win:CastScreen;
 			on(EventType.START, function():void
 			{
 				_win ||= new CastScreen(stage, Mirro.getInstance().width, Mirro.getInstance().height)
 				_win.visible = true;
 			})
-			addViewListener();
-			
-			$(ContextType.EMOTION, new Emotion());
-			$(ContextType.ACTIVITY, new Activity());
-			
-			Queue.getInstance()
-				.add(new EmotionsInit())
-				.add(new TcpInit())
-				.excute(function(...results):void 
-				{
-					trace('启动完成');
-				});
-			
-			tabChildren = false;
 		}
 		
+		/**
+		 * UI交互处理
+		 */		
 		private function addViewListener():void
 		{
 			nativeWindow.addEventListener(Event.CLOSE, function():void
@@ -107,22 +140,32 @@ package
 			});
 		}
 		
+		/**
+		 * 当前窗体
+		 */		
 		private function get nativeWindow():NativeWindow
 		{
 			return stage.nativeWindow;
 		}
 		
+		/**
+		 * 切换视频列表显示
+		 */		
 		private function toggleVideoList(bool:Boolean):void
 		{
 			if(!_videoList)
 			{
-				_videoList = new VideoList();
+				_videoList = new PlayList();
 				_videoList.move(600, 2);
 				addChild(_videoList);
 			}
 			_videoList.toggle();
 		}
 		
+		/**
+		 * 增加主窗体层控制栏
+		 * @param data
+		 */		
 		private function addFooter(data:Array):void
 		{
 			if(!_horLine)
@@ -130,9 +173,9 @@ package
 				_horLine = new HLine();
 				_footer = new Footer();
 				
-				var rect: Rectangle =  stage.nativeWindow.bounds;
+				var rect: Rectangle =  nativeWindow.bounds;
 				rect.height = 630;
-				stage.nativeWindow.bounds = rect;
+				nativeWindow.bounds = rect;
 			}
 			warpBox.addChild(_horLine);
 			_footer.setView(data[0]);

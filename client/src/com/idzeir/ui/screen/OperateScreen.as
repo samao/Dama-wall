@@ -18,6 +18,9 @@ package com.idzeir.ui.screen
 	import flash.display.Bitmap;
 	import flash.display.PixelSnapping;
 	
+	/**
+	 * 可操控画布源 
+	 */	
 	public class OperateScreen extends UIContainer
 	{
 		private var _video:Bitmap;

@@ -30,8 +30,13 @@ package com.idzeir.ui
 	
 	public class Header extends UIContainer
 	{
+		/**
+		 * 活动列表 
+		 */		
 		private var _droplist:List;
-		
+		/**
+		 * 活动列表关联数据对象 
+		 */		
 		private var _dp:Provider = new Provider();
 		
 		private var _openListBtn:DButton;

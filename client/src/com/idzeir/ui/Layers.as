@@ -33,6 +33,8 @@ package com.idzeir.ui
 		
 		private var _layerTotal:uint = 0;
 
+		private var dp:Provider = new Provider();;
+
 		public function Layers()
 		{
 			super();
@@ -40,6 +42,8 @@ package com.idzeir.ui
 			_height = 120;
 			
 			createChildren();
+			
+			register();
 		}
 		
 		private function createChildren():void
@@ -67,14 +71,7 @@ package com.idzeir.ui
 			layers.scaleThumb = false;
 			layers.thumbSkin = createThumb();
 			layers.setSize(600 - 2 * Gap.PADDING, 110);
-			const dp:Provider = new Provider();
 			layers.dataProvider = dp;
-			//测试数据
-			/*addLayer(LayerType.IMAGE,dp);
-			addLayer(LayerType.CAMERA,dp);
-			addLayer(LayerType.VIDEO,dp);
-			addLayer(LayerType.COLOR,dp)
-			addLayer(LayerType.TEXT,dp);*/
 			
 			layerBox.addChild(layers);
 			layerBox.addChild(noLayer);
@@ -83,7 +80,10 @@ package com.idzeir.ui
 			warpBox.addChild(layerBox);
 			warpBox.x = Gap.PADDING;
 			addChild(warpBox);
-			
+		}
+		
+		private function register():void
+		{
 			on(EventType.BRING_LAYER_UP,function(e:DEvent):void
 			{
 				const item:* = e.data[0];

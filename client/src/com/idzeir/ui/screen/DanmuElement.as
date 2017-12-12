@@ -42,6 +42,10 @@ package com.idzeir.ui.screen
 		
 		private var _color:uint = 0xFFFFFF;
 		
+		/**
+		 * 弹幕显示对象
+		 * @param size 弹幕字号
+		 */		
 		public function DanmuElement(size:uint)
 		{
 			super();
@@ -53,6 +57,13 @@ package com.idzeir.ui.screen
 			_textBlock.baselineZero = TextBaseline.IDEOGRAPHIC_CENTER;
 		}
 		
+		/**
+		 * 静态工厂创建弹幕元素 配合recyleDanmu 
+		 * 实现弹幕池，回收重用 
+		 * @param msg 弹幕内容
+		 * @param size 弹幕字号
+		 * @return 
+		 */		
 		public static function createDanmu(msg:Object,size:uint = 60):DanmuElement
 		{
 			var danmu:DanmuElement
@@ -83,14 +94,16 @@ package com.idzeir.ui.screen
 			_color = value.color;
 			const emotion:IEmotion = $(ContextType.EMOTION) as IEmotion;
 			const pieces:Vector.<DanmuPart> = emotion.split(value.message);
+			
 			if(pieces.length == 1 && pieces[0].type === DanmuPart.TEXT)
 			{
+				//普通弹幕渲染
 				_text.text = value.message;
 				_text.textColor = Number(value.color);
 				addChild(_text);
 				setSize(_text.width, _text.height);
 			}else{
-				//创建图文混排富文本
+				//创建图文混排富文本渲染
 				_textBlock.content = createGroup(pieces);
 				const line:TextLine = _textBlock.createTextLine();
 				addChild(line);

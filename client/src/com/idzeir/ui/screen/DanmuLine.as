@@ -18,6 +18,9 @@ package com.idzeir.ui.screen
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	
+	/**
+	 * 弹幕行
+	 */	
 	public class DanmuLine extends Sprite
 	{
 		/** 显示弹幕行高 */

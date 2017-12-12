@@ -57,6 +57,11 @@ package com.idzeir.ui
 			addChild(warpBox);
 		}
 		
+		/**
+		 * 根据数据获取当前层管理工具
+		 * @param data
+		 * @return 
+		 */		
 		private function getView(data:*):UIContainer
 		{
 			if(!optViewMap.hasOwnProperty(data.type))

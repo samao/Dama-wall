@@ -24,6 +24,5 @@ package com.idzeir.manager.emotion.api
 		 * @return 分割片数组
 		 */
 		function split(s:String):Vector.<DanmuPart>;
-		
 	}
 }

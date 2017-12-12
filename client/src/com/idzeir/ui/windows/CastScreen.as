@@ -42,6 +42,7 @@ package com.idzeir.ui.windows
 		override protected function setViewPort(w:Number, h:Number):void
 		{
 			super.setViewPort(w,h);
+			//增加标题栏高度
 			height += 20;
 		}
 		

@@ -7,10 +7,10 @@
  * ===================================
  */
 
-package com.idzeir.business.init
+package com.idzeir.business.task
 {
 	import com.adobe.crypto.MD5;
-	import com.idzeir.business.IJob;
+	import com.idzeir.business.ITask;
 	import com.idzeir.conf.Host;
 	import com.idzeir.manager.ContextType;
 	import com.idzeir.manager.activity.api.IActivity;
@@ -23,12 +23,20 @@ package com.idzeir.business.init
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 
-	public class ActivitiesInit implements IJob
+	/**
+	 * 获取活动
+	 */	
+	public class ObtainActivities implements ITask
 	{
 		private var _user:String = '';
 		private var _pwd:String = '';
 		
-		public function ActivitiesInit(user:String = '', pwd:String = 'admin')
+		/**
+		 * 获取活动
+		 * @param user 登录用户名
+		 * @param pwd 登录密码
+		 */		
+		public function ObtainActivities(user:String = '', pwd:String = 'admin')
 		{
 			this._user = user;
 			this._pwd = pwd;
@@ -101,7 +109,6 @@ package com.idzeir.business.init
 				loader.removeEventListener(IOErrorEvent.IO_ERROR,failHandler);
 				loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR,failHandler);
 			}
-			
 			
 			loader.addEventListener(Event.COMPLETE,okHandler);
 			loader.addEventListener(IOErrorEvent.IO_ERROR,failHandler);

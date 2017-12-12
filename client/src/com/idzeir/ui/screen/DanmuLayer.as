@@ -14,11 +14,18 @@ package com.idzeir.ui.screen
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	
+	/**
+	 * 弹幕显示层
+	 */	
 	public class DanmuLayer extends Sprite
 	{
 		private const _lineMap:Vector.<DanmuLine> = new Vector.<DanmuLine>();
 		
 		private var _height:Number,_width:Number;
+		/**
+		 * 同行弹幕间隔 
+		 */		
+		private const DANMU_GAP:uint = 80;
 		
 		public function DanmuLayer()
 		{
@@ -34,6 +41,9 @@ package com.idzeir.ui.screen
 			_height = h;
 		}
 		
+		/**
+		 * 按照显示层大小生成显示行
+		 */		
 		private function createDanmuLine():void
 		{
 			for(var i:uint = 0; i < _height - DanmuLine.LINE_H; i += DanmuLine.LINE_H)
@@ -64,7 +74,7 @@ package com.idzeir.ui.screen
 			for each(var line:DanmuLine in _lineMap) 
 			{
 				var rect:Rectangle = line.getBounds(this);
-				if(_width - rect.right > 80)
+				if(_width - rect.right >= DANMU_GAP)
 				{
 					return line;
 				}
