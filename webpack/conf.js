@@ -1,15 +1,18 @@
-const {join} = require('path')
+const { join,resolve } = require('path')
+const { log } = require('util')
+//浏览器js文件夹
+const browser = resolve('src','browser');
 
 const allMap = {
-    main:'./src/browser/index.ts',
-    send:'./src/browser/send.ts',
-    register:'./src/browser/register.ts',
-    login:'./src/browser/login.ts',
-    logout:'./src/browser/logout.ts',
-    admin:'./src/browser/admin.ts',
+    main: join(browser, 'index.ts'),
+    send: join(browser, 'send.ts'),
+    register: join(browser, 'register.ts'),
+    login: join(browser, 'login.ts'),
+    logout: join(browser, 'logout.ts'),
+    admin: join(browser, 'admin.ts'),
     boards:{
-        user:'./src/browser/boards/user.ts',
-        nav:'./src/browser/boards/nav.ts'
+        user: join(browser, 'boards', 'user.ts'),
+        nav: join(browser, 'boards', 'nav.ts')
     }
 }
 
@@ -23,6 +26,7 @@ function parserMap(data,pKey = '') {
         let value = Reflect.get(data, key);
         if(typeof value === 'string') {
             Reflect.set(entry, join(pKey, key), value);
+            log(`编译文件配置: ${join(pKey, key)}, 入口: ${value}`);
         }else{
             parserMap(value, join(pKey, key));
         }
@@ -33,4 +37,4 @@ const entry = {}
 
 parserMap(allMap);
 
-module.exports = {entry}
+module.exports = { entry }
