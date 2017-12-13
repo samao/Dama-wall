@@ -10,6 +10,7 @@ const allMap = {
     login: join(browser, 'login.ts'),
     logout: join(browser, 'logout.ts'),
     admin: join(browser, 'admin.ts'),
+    setting: join(browser, 'setting.ts'),
     boards:{
         user: join(browser, 'boards', 'user.ts'),
         nav: join(browser, 'boards', 'nav.ts')

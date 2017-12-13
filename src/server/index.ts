@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:30:41 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-16 10:32:21
+ * @Last Modified time: 2017-12-13 15:55:07
  */
 
 import * as expressSession from 'express-session';
@@ -33,6 +33,16 @@ const MongoStore = connectMongo(expressSession);
 app.disable('x-powered-by');
 log('服务器运行环境：' + app.get('env'));
 
+app.use((req, res, next) => {
+    res.setHeader('Server','DamaServer')
+    next();
+})
+
+//静态资源
+app.use(favicon(path.resolve('public','favicon.ico')));
+app.use('/static',express.static('public'));
+app.use('/js',express.static(path.resolve('dist','browser')));
+
 //所有请求压缩
 app.use(compression());
 
@@ -62,21 +72,11 @@ app.use(expressSession({
     }
 }));
 
-app.use((req, res, next) => {
-    res.setHeader('Server','DamaServer')
-    next();
-})
-
 //less 文件编译,服务器重启后并且有请求会生成一次
 app.use('/less',less(path.resolve('src','browser','less'),{
     dest:path.resolve('public','less'),
     once:false
 }), express.static(path.resolve('public','less')));
-
-//静态资源
-app.use('/static',express.static('public'));
-app.use(favicon(path.resolve('public','favicon.ico')));
-app.use('/js',express.static(path.resolve('dist','browser')));
 
 //模板路径
 app.set('views','./views');
