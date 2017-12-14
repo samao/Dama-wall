@@ -1,2 +1,1 @@
-bin/* eol=lf
-client/* eol=lf
+*.as linguist-language = typescript
