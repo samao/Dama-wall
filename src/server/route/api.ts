@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:25:29 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-12-14 17:29:24
+ * @Last Modified time: 2017-12-14 17:35:00
  */
 import * as cluster from 'cluster';
 import * as express from "express";
@@ -108,8 +108,9 @@ router.route('/activities/:uid/:token').get((req,res,next) => {
         activities.find({master:req.params.uid},{
                 _id:1, 
                 rid: 1, 
-                title: 1
-            }).sort({_id: 1}).toArray().then(data => {
+                title: 1,
+                created: 1
+            }).sort({created: -1}).toArray().then(data => {
             success(res,data);
             removeToken(req.params.token);
         }).catch(reason => failure(res, `获取活动数据失败 ${reason}`)).then(() => restore(db))
