@@ -1,13 +1,15 @@
 .activity
-        button.btn.btn-default 新建活动
+        button.btn.btn-default#create 新建活动
         table.table.table-striped.table-condensed.table-hover.text-center
             thead
                 tr
-                    td 标题
-                    td 页面链接
-                    td 密码
+                    td 活动号
+                    td 活动标题
+                    td 描述
+                    td 地址
+                    td 二维码
                     td 操作
-            tbody
+            tbody#actBody
                 for i in [1,2,3,4,5]
                     tr
                         td 标题#{i}
@@ -15,3 +17,4 @@
                         td 密码#{i}
                         td
                             button.btn.btn-primary.btn-xs 修改
+script(src="/js/user/activity.js")

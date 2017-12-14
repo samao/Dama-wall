@@ -20,22 +20,23 @@ package
 	import com.idzeir.manager.ContextType;
 	import com.idzeir.manager.activity.impl.Activity;
 	import com.idzeir.manager.emotion.impl.Emotion;
+	import com.idzeir.timer.impl.Ticker;
 	import com.idzeir.ui.Body;
 	import com.idzeir.ui.Footer;
 	import com.idzeir.ui.Gap;
 	import com.idzeir.ui.Header;
 	import com.idzeir.ui.Layers;
 	import com.idzeir.ui.Monitor;
+	import com.idzeir.ui.PlayList;
 	import com.idzeir.ui.components.HLine;
 	import com.idzeir.ui.windows.CastScreen;
-	import com.idzeir.ui.PlayList;
 	
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeWindow;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
-	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="30")]
+	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="60")]
 	public class DamaClient extends App
 	{
 		private var warpBox:VBox;
@@ -105,7 +106,23 @@ package
 				.excute(function(...results):void 
 				{
 					trace('启动完成');
+					mock();
 				});
+		}
+		
+		/**
+		 * 模拟弹幕数据 
+		 */		
+		private function mock():void
+		{
+			const colors:Array = ['#ffffff','#999999','#e6151e','#9d22b1','#6738b8','#3d50b6','#03a9f4','#009688','#259b24','#8bc34a']
+			const msgs:Array = ['[亲亲][害羞][无奈]','法论打发[痛苦]好','政治迫害国民','66666']
+			Ticker.getInstance().call(500,function():void
+			{
+				var color:String = colors.shift();
+				colors.push(color);
+				fire(EventType.POST,{color:Number(color.replace('#','0x')),message:msgs[uint(Math.random()*msgs.length)]});
+			});
 		}
 		
 		/**

@@ -1,0 +1,19 @@
+form.form-horizontal(role='form').create-act
+    .form-group
+        label(for='aid').col-sm-2.control-label 活动名称
+        .col-sm-10
+            input(type='text' placeholder='输入活动名' required).form-control#aid
+    .form-group
+        label(for='atitle').col-sm-2.control-label 活动标题
+        .col-sm-10
+            input(type='text' placeholder='活动标题').form-control#atitle
+    .form-group
+        label(for='ades').col-sm-2.control-label 活动描述
+        .col-sm-10
+            textarea(name="ades" rows="8").form-control#adescription
+    .form-group
+        .col-sm-offset-2.col-sm-10
+            .btns
+                button.btn.btn-danger#cancel 取消
+                button.btn.btn-primary#submit 创建
+script(src="/js/user/createAct.js")

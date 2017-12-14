@@ -5,12 +5,12 @@ html
         block css
             link(rel="stylesheet", href="/static/bootstrap.min.css")
             link(rel="stylesheet", href="/less/setting.css")
+        block js
+            script(src="/static/jquery.min.js")
+            script(src="/js/setting.js")
     body
         .container-fluid.content
             if !user
                 | 请先#[a(href='/login?return=/setting') 登录]
             else
                 include wrapper
-        block js
-            script(src="/static/jquery.min.js")
-            script(src="/js/setting.js")

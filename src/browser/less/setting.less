@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 18:28:26 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-12-13 17:39:13
+ * @Last Modified time: 2017-12-14 17:24:16
  */
 
 @import 'base';
@@ -41,9 +41,27 @@
     .wraper {
         margin-top: 30px;
         padding: 0 30px;
-
-        table {
+        .activity table {
             margin-top: 20px;
+            thead {
+                font-weight: bold;
+                font-size: 14px;
+            }
+            #actBody tr td {
+                height: 50px;
+                line-height: 50px;
+                img {
+                    width: 50px;
+                    height: 50px;
+                }
+            }
+        }
+        .create-act {
+            .btns {
+                button:not(:last-child) {
+                    margin-right:10px;
+                }
+            }
         }
     }
 }

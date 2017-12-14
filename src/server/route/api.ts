@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:25:29 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-16 15:05:40
+ * @Last Modified time: 2017-12-14 17:29:24
  */
 import * as cluster from 'cluster';
 import * as express from "express";
@@ -115,6 +115,33 @@ router.route('/activities/:uid/:token').get((req,res,next) => {
         }).catch(reason => failure(res, `获取活动数据失败 ${reason}`)).then(() => restore(db))
     },reason => failure(res,`无法连接数据库 ${reason}`))
 })
+
+//登录用户获取自己创建的活动
+router.route('/activities').post((req, res, next) => {
+    try{
+        const owner = res.locals.loginUser.user
+    }catch(e){
+        failure(res, `用户权限不足`);
+        return;
+    }
+    next();
+},(req, res,next) => {
+    checkout(db => {
+        const master = res.locals.loginUser.user;
+        const acts = db.collection(Collection.ACTIVITY);
+        acts.find({master}, {
+                _id:0, 
+                rid:1, 
+                title:1, 
+                description:1, 
+                created:1})
+            .sort({ created: -1 }).toArray().then(data => {
+            success(res,data)
+        }).catch(reason => failure(res, `读取活动数据错误 ${reason}`)).then(_ => restore(db));
+    }, reason => {
+        failure(res, `无法连接数据库：${reason}`)
+    })
+});
 
 //导航接口
 router.route('/nav').patch((req, res, next) => {
@@ -231,6 +258,7 @@ function createAct(req:IRequest, res:IRespond): void {
         const actTable = db.collection(Collection.ACTIVITY)
         getAutoKey(Collection.ACTIVITY).then(_id => {
             const master = res.locals.loginUser.user;
+            log(res.locals.loginUser.user)
             const {title = '未指定', description = '未指定'} = req.body;
             insert<IActivityDB>(actTable,{
                 _id, 

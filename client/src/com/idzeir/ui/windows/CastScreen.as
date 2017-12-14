@@ -49,7 +49,7 @@ package com.idzeir.ui.windows
 		override protected function setupGUI():void
 		{
 			_box = new Box();
-			_bitmap = new Bitmap(_mirro.bitmapFrame, PixelSnapping.AUTO, false);
+			_bitmap = new Bitmap(_mirro.bitmapFrame, PixelSnapping.NEVER, false);
 			_box.addChild(_bitmap);
 			addChild(_box);
 			

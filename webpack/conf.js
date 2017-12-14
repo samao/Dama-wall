@@ -14,6 +14,12 @@ const allMap = {
     boards:{
         user: join(browser, 'boards', 'user.ts'),
         nav: join(browser, 'boards', 'nav.ts')
+    },
+    user:{
+        activity: join(browser, 'user','activity.ts'),
+        filter: join(browser, 'user', 'filter.ts'),
+        security: join(browser, 'user', 'security.ts'),
+        createAct: join(browser, 'user', 'createAct.ts')
     }
 }
 
