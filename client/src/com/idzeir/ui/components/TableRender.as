@@ -45,8 +45,6 @@ package com.idzeir.ui.components
 				btn.setSize(W, _height)
 			});
 			_warpBox.immediateUpdate();
-			
-			trace(mouseEnabled, mouseChildren)
 		}
 		
 		override public function immediateUpdate():void

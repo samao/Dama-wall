@@ -9,6 +9,7 @@ import * as http from 'http';
 import * as url from 'url';
 import * as cluster from 'cluster';
 import * as WebSocket from 'ws';
+import * as md5 from 'md5';
 
 import danmuCertify, {MAX_MESSAGE_LENGTH, COOL_DOWN} from "../db/danmuCertify";
 
@@ -22,6 +23,9 @@ import { checkout, restore } from "../db/pool";
 import { Collection } from "../db/collection";
 import { roomParser } from "../lobby/roomParser";
 import { dfa } from '../../utils/dfa/DFA';
+import { call } from '../../utils/ticker';
+import { Error, IOError } from '../error/error';
+import { secret } from '../config/conf';
 
 class DanmuServer {
     /**
@@ -91,9 +95,9 @@ class DanmuServer {
         });
 
         //心跳轮询检查
-        setInterval(() => {
+        call(() => {
             lobby.allDeactives().forEach((websocket) => {
-                websocket.close(undefined,`僵尸连接，长连接请发送"${Actions.HEART}"`)
+                websocket.close(undefined,`${IOError.DEACTIVATED},请发送 "${Actions.HEART}" 保持连接`)
             })
         }, this.DELAY);
     }
@@ -117,39 +121,39 @@ class DanmuServer {
             ws.once(WebSocketEvent.MESSAGE, (data: WebSocket.Data) => {
                 clearTimeout(delayid);
                 try{
-                    let info: {action: string, data: {id: string}} = JSON.parse(data.toString()); 
+                    let info: {action: string, data: {id: string, pwd: string}} = JSON.parse(data.toString()); 
                     if(info.action === Actions.ENTRY) {
                         checkout((db) => {
-                            db.collection(Collection.USER).findOne({name:info.data.id}).then(data => {
+                            db.collection(Collection.USER).findOne({name:info.data.id, pwd: md5(info.data.pwd + secret)}).then(data => {
                                 if(data) {
                                     this.setAuthUser(info.data.id, ws, pathname, owner);
                                     log(`用户 ${info.action} ${info.data.id} 登录成功,当前线程 PID: ${process.pid}`);
                                 }else{
-                                    ws.close(undefined,`不存在用户 ${info.data.id} 无法建立连接`);
-                                    error(`不存在用户 ${info.data.id} 无法建立连接`)
+                                    ws.close(undefined,`${Error.INCORRECT_USER_PASSWORD}:${info.data.id}`);
+                                    error(`${Error.INCORRECT_USER_PASSWORD}:${info.data.id}`)
                                 }
                             },reason => {
-                                ws.close(undefined,`无效用户 ${info.data.id}`);
+                                ws.close(undefined,`${Error.DB_READ}: ${reason} > ${info.data.id}`);
                             }).then(() => {
                                 restore(db);
                             })
                         },reason => {
-                            ws.close(undefined,`无法建立数据库连接`)
+                            ws.close(undefined,`${Error.DB_CONNECT}: ${reason}`)
                         })
                     }else
-                        ws.close(undefined, `需要发送登录action "${Actions.ENTRY}"`);
+                        ws.close(undefined, `${IOError.NO_LOGIN_USER}`);
                 }catch{
-                    ws.close(undefined, '用户认证消息参数错误');
+                    ws.close(undefined, IOError.INCORRECT_MESSAGE);
                     return;
                 }
             })
             let delayid = setTimeout(() => ws.close(), 30000);
         },(reason) => {
-            error(`不存在的连接路径: ${reason}`)
-            ws.close(undefined, reason);
+            error(`${IOError.INCORRECT_PATH}: ${reason}`)
+            ws.close(undefined, `${IOError.INCORRECT_PATH}: ${reason}`);
         }).catch((reason) => {
-            error('无法验证访问路径，请检查代码:' + reason);
-            ws.close(undefined, reason);
+            error(`${IOError.INCORRECT_PATH}: ${reason}`);
+            ws.close(undefined, `${IOError.INCORRECT_PATH}: ${reason}`);
         })
     }
 

@@ -24,8 +24,9 @@ function isSuccessType(data: SuccessType | FailType): data is SuccessType {
  * 接口请求失败响应
  * @param res 
  * @param reason 失败原因
+ * @param code 状态吗
  */
-function failure(res:IRespond, reason: string): void {
+function failure(res:IRespond, reason: string, code: number = 200): void {
     error(reason);
     res.json({ok:false, reason});
 }

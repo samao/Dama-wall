@@ -9,6 +9,8 @@
 
 package com.idzeir.ui.windows
 {
+	import com.idzeir.utils.Log;
+	
 	import flash.display.DisplayObject;
 	import flash.display.NativeWindow;
 	import flash.display.NativeWindowInitOptions;
@@ -208,7 +210,7 @@ package com.idzeir.ui.windows
 		 */		
 		protected function setupGUI():void
 		{
-			trace('子窗口',stage.stageWidth,stage.stageHeight)
+			Log.info('子窗口',stage.stageWidth,stage.stageHeight)
 		}
 		
 		/**

@@ -8,6 +8,7 @@ import * as cluster from 'cluster';
 import * as express from "express";
 import * as QRCode from "qrcode";
 import * as path from 'path';
+import * as md5 from 'md5';
 
 import uuid from '../../utils/uuid';
 import { checkout, restore, insert, IActivityDB, getAutoKey } from "../db/pool";
@@ -19,6 +20,8 @@ import { dfa } from '../../utils/dfa/DFA';
 import { syncTransfer } from '../worker/syncTransfer';
 import { WordActions } from '../worker/actions';
 import { call, remove, has } from '../../utils/ticker';
+import { Error } from '../error/error';
+import { secret } from '../config/conf';
 
 /**
  * 线程敏感词消息体
@@ -41,20 +44,20 @@ router.route('/user/:uid').post((req, res, next) => {
         const users = db.collection(Collection.USER);
         users.findOneAndUpdate({_id: +req.params.uid}, {$set: { isAdmin: req.body.checked === 'true' }}, (err, result) => {
             if(err) {
-                error('写入更新失败',err)
+                failure(res, `${Error.DB_WRITE}:${err.message}`)
             }else{
                 success(res, '更新用户信息成功')
             }
             restore(db);
         })
-    }, reason => failure(res, `user 接口无法连接数据库`))
+    }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 }).delete((req, res, next) => {
     checkout(db => {
         const users = db.collection(Collection.USER);
         users.remove({_id: +req.params.uid}).then(data => {
             success(res, '删除成功')
-        }).catch(reason => failure(res, `无法删除用户 ${reason}`)).then(() => restore(db));
-    }, reason => failure(res, `数据库连接失败无法删除用户`))
+        }).catch(reason => failure(res, `${Error.DB_WRITE}:${reason}`)).then(() => restore(db));
+    }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 })
 
 //活动数据接口
@@ -78,30 +81,30 @@ router.route('/token/:uid').post((req, res, next) => {
     checkout(db => {
         const users = db.collection(Collection.USER);
         log('token:',req.params.uid, req.body.pwd);
-        users.count({name: req.params.uid, pwd: req.body.pwd}).then(total => {
+        users.count({name: req.params.uid, pwd: md5(req.body.pwd + secret)}).then(total => {
             if(total === 0)
-                failure(res, `用户名或者密码错误`);
+                failure(res, Error.INCORRECT_USER_PASSWORD);
             else
                 success(res,createToken());
-        }).catch(reason => failure(res, `获取用户失败`)).then(() => restore(db));
-    }, reason => failure(res,`无法连接数据库 ${reason}`))
+        }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(() => restore(db));
+    }, reason => failure(res,`${Error.DB_CONNECT}: ${reason}`))
 })
 
 //获取用户创建的所有活动
 router.route('/activities/:uid/:token').get((req,res,next) => {
     if(!tokenMap.has(req.params.token)) {
-        failure(res, '参数错误');
+        failure(res, Error.INCORRECT_ARGUMENTS);
         return;
     }
     checkout(db => {
         const users = db.collection(Collection.USER);
         users.count({name: req.params.uid}).then(total => {
             if(total === 0)
-                failure(res, `权限不足,用户不存在`);
+                failure(res, `${Error.NO_RIGHT}`);
             else
                 next();
-        }).catch(reason => failure(res, `查询用户失败 ${reason}`)).then(() => restore(db));
-    }, reason => failure(res,`无法连接数据库 ${reason}`))
+        }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(() => restore(db));
+    }, reason => failure(res,`${Error.DB_CONNECT}: ${reason}`))
 },(req, res, next) => {
     checkout(db => {
         const activities = db.collection(Collection.ACTIVITY);
@@ -113,8 +116,8 @@ router.route('/activities/:uid/:token').get((req,res,next) => {
             }).sort({created: -1}).toArray().then(data => {
             success(res,data);
             removeToken(req.params.token);
-        }).catch(reason => failure(res, `获取活动数据失败 ${reason}`)).then(() => restore(db))
-    },reason => failure(res,`无法连接数据库 ${reason}`))
+        }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(() => restore(db))
+    },reason => failure(res,`${Error.DB_CONNECT}: ${reason}`))
 })
 
 //登录用户获取自己创建的活动
@@ -122,7 +125,7 @@ router.route('/activities').post((req, res, next) => {
     try{
         const owner = res.locals.loginUser.user
     }catch(e){
-        failure(res, `用户权限不足`);
+        failure(res, Error.NO_RIGHT, 403);
         return;
     }
     next();
@@ -137,10 +140,10 @@ router.route('/activities').post((req, res, next) => {
                 description:1, 
                 created:1})
             .sort({ created: -1 }).toArray().then(data => {
-            success(res,data)
-        }).catch(reason => failure(res, `读取活动数据错误 ${reason}`)).then(_ => restore(db));
+                success(res,data)
+        }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(_ => restore(db));
     }, reason => {
-        failure(res, `无法连接数据库：${reason}`)
+        failure(res, `${Error.DB_CONNECT}: ${reason}`)
     })
 });
 
@@ -152,15 +155,15 @@ router.route('/nav').patch((req, res, next) => {
         const pages = db.collection(Collection.PAGES);
         pages.findOneAndUpdate({id},{$set: {active: checked}}).then(() => {
             success(res, '调用成功')
-        }).catch(reason => failure(res, `更新导航数据失败 ${reason}`)).then(() => restore(db))
-    }, reason => failure(res, `无法连接数据库 ${reason}`))
+        }).catch(reason => failure(res, `${Error.DB_WRITE}: ${reason}`)).then(() => restore(db))
+    }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 })
 
 //敏感词接口
 router.route('/word').all((req, res, next) => {
     const word = req.body.word;
     if(!word || word === '' || Object.is(word, undefined) || Object.is(word,null)) {
-        failure(res, `无效参数`);
+        failure(res, Error.INCORRECT_ARGUMENTS);
         return;
     }
     next();
@@ -172,8 +175,8 @@ router.route('/word').all((req, res, next) => {
         words.insert({word, owner}).then(() => {
             success(res, '写入敏感词成功');
             wordAction(WordActions.POST, {word, owner});
-        }).catch(reason => failure(res, `插入数据库失败 ${reason}`)).then(() => restore(db));
-    },reason => failure(res, `无法连接数据库 ${reason}`))
+        }).catch(reason => failure(res, `${Error.DB_WRITE}: ${reason}`)).then(() => restore(db));
+    },reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 }).delete((req, res, next) => {
     checkout(db => {
         const owner = res.locals.loginUser.user;
@@ -182,8 +185,8 @@ router.route('/word').all((req, res, next) => {
         words.findOneAndDelete({word, owner}).then(() => {
             success(res,`删除成功 ${word}`);
             wordAction(WordActions.DELETE, {word, owner});
-        }).catch(reason => failure(res, `删除敏感词失败 ${reason}`)).then(() => restore(db));
-    }, reason => failure(res, `无法连接数据库 ${reason}`))
+        }).catch(reason => failure(res, `${Error.DB_WRITE}: ${reason}`)).then(() => restore(db));
+    }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 })
 
 //表情接口
@@ -192,8 +195,8 @@ router.route('/emotions').get((req, res, next) => {
         const emotions = db.collection(Collection.EMOTION);
         emotions.find({},{_id:0,tag:1,url:1}).toArray().then(data => {
             success(res,data);
-        }).catch(reason => failure(res, `读取表情数据失败: ${reason}`)).then(() => restore(db));
-    },reason => failure(res, `获取表情失败:${reason}`))
+        }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(() => restore(db));
+    },reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 })
 
 /**
@@ -288,9 +291,9 @@ function createAct(req:IRequest, res:IRespond): void {
             }).then(() => {
                 restore(db);
             });
-        }, reason => failure(res, `获取id生成错误 ${reason}`))
+        }, reason => failure(res, `${Error.DB_READ}: ${reason}`))
     }, reason => {
-        failure(res, `无法连接数据库 ${req.params.rid}`)
+        failure(res, `${Error.DB_CONNECT}: ${reason} > ${req.params.rid}`)
     })
 }
 
@@ -301,10 +304,10 @@ function deleteAct(req:IRequest, res:IRespond): void {
             //活动删除成功
             success(res);
         }, reason => {
-            failure(res, `删除活动失败 ${reason}`)
+            failure(res, `${Error.DB_WRITE}: ${reason}`)
         }).then(() => restore(db));
     }, reason => {
-        failure(res, `无法连接数据库 ${req.params.rid}`)
+        failure(res, `${Error.DB_CONNECT}: ${reason} > ${req.params.rid}`)
     })
 }
 

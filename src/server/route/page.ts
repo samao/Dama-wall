@@ -16,6 +16,8 @@ import { log, error } from '../../utils/log';
 import { call } from '../../utils/ticker';
 import { cache, get } from '../../utils/caches';
 import { failure, success } from '../../utils/feedback';
+import { Error } from '../error/error';
+import { secret } from '../config/conf';
 
 const router = express.Router();
 
@@ -107,15 +109,15 @@ router.route([
             if (data.length > 0) {
                 setupNavigatorInfo(data, `/${path.parse(pathName).base}`, res, next);
             } else {
-                failure(res, '没有导航数据');
+                failure(res, Error.NO_DATA);
             }
         }, reason => {
-            failure(res, reason);
+            failure(res, `${Error.DB_READ}: ${reason}`);
         }).then(() => {
             restore(db);
         })
     }, reason => {
-        failure(res, reason);
+        failure(res, `${Error.DB_CONNECT}: ${reason}`);
     })
 })
 
@@ -141,7 +143,7 @@ router.route('/login').get((req, res, next) =>{
 }).post((req, res, next) => {
     let {username,pwd} = req.body;
     checkout(db => {
-        db.collection(Collection.USER).findOne({name:username,pwd: md5(pwd)}).then(data => {
+        db.collection(Collection.USER).findOne({name:username,pwd: md5(pwd + secret)}).then(data => {
             if(data) {
                 const {name:user,isAdmin = false, level} = data;
                 let session:ISessionData = {expires: Date.now() + SESSION_LIVE , user}
@@ -151,11 +153,11 @@ router.route('/login').get((req, res, next) =>{
                 sessions().set(<string>req.sessionID, session);
                 success(res);
             }else{
-                failure(res, '用户名或者密码错误')
+                failure(res, Error.INCORRECT_USER_PASSWORD)
             }
-        }).then(() => restore(db));
+        }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(() => restore(db));
     }, reason => {
-        failure(res, reason);
+        failure(res, `${Error.DB_CONNECT}: ${reason}`);
     })
 })
 
@@ -171,7 +173,7 @@ router.route('/register').get((req, res, next) => {
         let userTable = db.collection(Collection.USER);
         userTable.findOne({ name: req.body.username }).then(data => {
             if (data) {
-                failure(res, '已存在用户名，请更换其他昵称')
+                failure(res, Error.REPEATED_USER)
             } else {
                 getAutoKey(Collection.USER).then(_id => {
                     log('注册用户密码: ', md5(req.body.pwd));
@@ -179,7 +181,7 @@ router.route('/register').get((req, res, next) => {
                     insert<IUserDB>(userTable,{
                         _id, 
                         name: req.body.username,
-                        pwd: md5(req.body.pwd),
+                        pwd: md5(req.body.pwd + secret),
                         tel: req.body.tel,
                         mail: req.body.mail,
                         isAdmin: false,
@@ -189,17 +191,17 @@ router.route('/register').get((req, res, next) => {
                         success(res, '注册成功')
                     },reason => {
                         log(reason);
-                        failure(res, '注册用户写入数据库失败');
+                        failure(res, Error.DB_WRITE);
                     })
                 },reason => failure(res, `获取自动增长id失败 ${Collection.USER}`))
             }
         }, reason => {
-            failure(res, reason)
+            failure(res, `${Error.DB_READ}: ${reason}`)
         }).then(() => {
             restore(db);
         })
     }, reason => {
-        failure(res, reason)
+        failure(res, `${Error.DB_CONNECT}: ${reason}`)
     })
 })
 
@@ -224,13 +226,13 @@ router.get('/qr/:rid', (req, res, next) => {
             if(data) {
                 res.sendFile(path.resolve('public', 'images', 'qr', `${req.params.rid}.png`))
             }else {
-                failure(res, '不存在的活动')
+                failure(res, Error.NO_DATA)
             }
         }, reason => {
-            failure(res, '查询数据库活动错误')
+            failure(res, `${Error.DB_READ}: ${reason}`)
         }).then(() => restore(db));
     }, reason => {
-        failure(res, '无法连接数据库')
+        failure(res, `${Error.DB_CONNECT}: ${reason}`)
     })
 });
 

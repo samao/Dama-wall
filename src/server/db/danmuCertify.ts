@@ -12,6 +12,7 @@ import { log, error } from "../../utils/log";
 import { Collection } from "./collection";
 import { call, remove } from "../../utils/ticker";
 import { dfa } from '../../utils/dfa/DFA';
+import { Error } from '../error/error';
 
 interface IBanedWord {
     word: string;
@@ -38,12 +39,12 @@ export class DanmuCertify {
                     this.groupBans(all);
                     res(all)
                 },reason => {
-                    error(reason)
+                    error(`${Error.DB_READ}: ${reason}`)
                 }).then(() => {
                     restore(db);
                 })
             }, reason => {
-                error(`获取全局敏感词失败 ${reason}`)
+                error(`${Error.DB_CONNECT}: ${reason}`)
             })
         })
     }

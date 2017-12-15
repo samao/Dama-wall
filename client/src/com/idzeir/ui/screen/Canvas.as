@@ -18,6 +18,7 @@ package com.idzeir.ui.screen
 	import com.idzeir.media.impl.MediaProxyStates;
 	import com.idzeir.media.impl.MediaProxyType;
 	import com.idzeir.media.video.VideoPlayer;
+	import com.idzeir.utils.Log;
 	
 	import flash.filesystem.File;
 	import flash.geom.Rectangle;
@@ -62,12 +63,12 @@ package com.idzeir.ui.screen
 		{
 			switch(code) {
 				case MediaProxyStates.STREAM_STOP:
-					trace('播放结束，重新播放');
+					Log.info('播放结束，重新播放');
 					_video.time = 0;
 					_video.start();
 					break;
 				case MediaProxyStates.CONNECT_NOTIFY:
-					trace('播放吧老板');
+					Log.info('播放吧老板');
 					break;
 				case MediaProxyStates.DURATION_NOTIFY:
 					fire(EventType.DURATION_UPDATE);

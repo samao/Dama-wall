@@ -11,6 +11,7 @@ declare interface IRespond {
     json(data: {ok: boolean, [index: string]: any}): any;
     sendFile(path: string): any;
     setHeader(key: string, value: string): any;
+    sendStatus(code: number): IRespond;
 }
 
 declare interface IRequest {

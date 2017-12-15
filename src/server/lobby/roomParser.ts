@@ -10,6 +10,7 @@ import * as url from 'url';
 import { checkout, restore } from "../db/pool";
 import { log, error } from "../../utils/log";
 import { Collection } from "../db/collection";
+import { Error, IOError } from '../error/error';
 /**
 * 返回 ts Promise<any>
 * @param path 用户连接的ws路径
@@ -29,15 +30,15 @@ export function roomParser(path: string|undefined): Promise<{roomid: string, own
                         if(data) {
                             setImmediate(res, {roomid: data.rid, owner: data.master})
                         }else{
-                            rej(`不存在的活动id: ${roomid}`);
+                            rej(`${IOError.INCORRECT_PATH}: ${roomid}`);
                         }
                     }, reason => {
-                        rej(`读取活动 ${roomid} 错误 ${reason}`);
+                        rej(`${Error.DB_READ}: ${reason} > ${roomid}`);
                     }).then(() => {
                         restore(db)
                     })
                 },reason => {
-                    rej(`无法链接数据库 ${reason}`)
+                    rej(`${Error.DB_CONNECT}: ${reason}`)
                 })
             }else{
                 setImmediate(rej,'illegal path!!!')

@@ -10,6 +10,7 @@ export const DOMAIN = 'localhost'
 export const HOST = `http://${DOMAIN}`;
 
 export const secret = "idzeir$";
+
 export const ports:{web:number,ws:number,db:number} = {
     web: 3000,
     ws: 8080,

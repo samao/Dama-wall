@@ -13,6 +13,7 @@ package
 	import com.idzeir.business.Queue;
 	import com.idzeir.business.task.EstablishConnection;
 	import com.idzeir.business.task.ObtainEmotions;
+	import com.idzeir.components.v2.Style;
 	import com.idzeir.components.v2.VBox;
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.draw.Mirro;
@@ -30,11 +31,14 @@ package
 	import com.idzeir.ui.PlayList;
 	import com.idzeir.ui.components.HLine;
 	import com.idzeir.ui.windows.CastScreen;
+	import com.idzeir.utils.Log;
 	
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeWindow;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
+	import flash.system.IME;
 	
 	[SWF(width="600", height="480", backgroundColor="#F2F2F2", frameRate="60")]
 	public class DamaClient extends App
@@ -47,6 +51,8 @@ package
 		private var _videoList:PlayList;
 		//同步屏窗口
 		private var _win:CastScreen;
+		
+		private const _VERSION_:String = '1.0.1';
 		
 		public function DamaClient() {}
 		
@@ -76,6 +82,23 @@ package
 		
 		override protected function preInit():void
 		{
+			Log.level = 4;
+			Log.useTracer = true;
+			//debug
+			Log.info("======运行环境======");
+			Log.info("系统类型:",Capabilities.os);
+			Log.info("系统语言:",Capabilities.language);
+			Log.info("系统CPU:",Capabilities.cpuArchitecture);
+			Log.info("系统IME:","conversionMode="+IME.conversionMode,"enabled="+IME.enabled,"isSupported="+IME.isSupported);
+			Log.info("插件:",Capabilities.playerType,Capabilities.version,"调试版本："+Capabilities.isDebugger);
+			Log.info("插件容器类型:",Capabilities.manufacturer);
+			Log.info("播放器版本:",_VERSION_);
+			Log.info("日志级别:",Log.level);
+			Log.info("StageFPS:",stage.frameRate);
+			Log.info("默认使用字体:",Style.font);
+			Log.info("====================");
+
+			
 			//1、注册ui事件
 			addViewListener();
 			//2、注入全局内容
@@ -105,7 +128,7 @@ package
 				.add(new EstablishConnection())
 				.excute(function(...results):void 
 				{
-					trace('启动完成');
+					Log.info('启动完成');
 					mock();
 				});
 		}
