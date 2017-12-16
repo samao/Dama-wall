@@ -140,7 +140,7 @@ package
 		{
 			const colors:Array = ['#ffffff','#999999','#e6151e','#9d22b1','#6738b8','#3d50b6','#03a9f4','#009688','#259b24','#8bc34a']
 			const msgs:Array = ['[亲亲][害羞][无奈]','法论打发[痛苦]好','政治迫害国民','66666']
-			Ticker.getInstance().call(500,function():void
+			Ticker.getInstance().call(1500,function():void
 			{
 				var color:String = colors.shift();
 				colors.push(color);
