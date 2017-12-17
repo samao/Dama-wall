@@ -2,10 +2,11 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:28:35 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-16 14:10:14
+ * @Last Modified time: 2017-12-17 13:44:27
  */
 
 import * as WebSocket from 'ws';
+import { Db } from "mongodb";
 
 import { checkout, restore } from './pool';
 import { log, error } from "../../utils/log";
@@ -27,29 +28,38 @@ export class DanmuCertify {
      */
     private _cMap: Map<string, string[]> = new Map();
 
+    private _regExp: RegExp;
+    private _emotions: {tag: string}[];
+
     constructor() {}
 
+    async init(db: Db) {
+        let emotions = await db.collection(Collection.EMOTION).find({active:true},{_id: 0, tag: 1}).toArray();
+        let badwords = await db.collection(Collection.SENSITIVE).find({}, {_id:0}).toArray();
+
+        return {emotions, badwords};
+    }
     /**
      * 主线程获取敏感词
      */
-    setup(): Promise<{word: string, owner: string}[]> {
+    setup(): Promise<{emotions:any[],badwords:any[]}> {
         return new Promise((res,rej) => {
             checkout(db => {
-                db.collection(Collection.SENSITIVE).find({},{_id:0}).toArray().then((all) => {
-                    this.groupBans(all);
-                    res(all)
-                },reason => {
+                this.init(db).then(data => {
+                    this.groupBans(data.badwords);
+                    this.regExp = data.emotions;
+                    res(data)
+                }).catch(reason => {
                     error(`${Error.DB_READ}: ${reason}`)
-                }).then(() => {
-                    restore(db);
-                })
+                    rej(reason);
+                }).then(() => restore(db));
             }, reason => {
                 error(`${Error.DB_CONNECT}: ${reason}`)
             })
         })
     }
 
-    groupBans(words:{word: string, owner: string}[]):void {
+    groupBans(words:IBanedWord[]):void {
         this._cMap.clear();
         for(const {word, owner} of words) {
             const userBans = this._cMap.get(owner) || [];
@@ -67,6 +77,21 @@ export class DanmuCertify {
         log(`DFA检测 ${content.length} 字符,发现敏感词: ${result.badwords.length} 个,耗时: ${Date.now() - now}`)*/
     }
 
+    /** 初始化表情数据 */
+    set regExp(emotions:{tag:string}[]) {
+        const _tagMap: string[] = [];
+		emotions && emotions.forEach(({tag}) =>
+		{
+			_tagMap.push(tag.replace(/\[(.+)\]/ig,'(\\[$1\\])'));
+		});
+        this._regExp = new RegExp(_tagMap.join('|'),'ig');
+        this._emotions = emotions;
+    }
+
+    get emotions(): {tag: string}[] {
+        return this._emotions;
+    }
+
     get systemWords(): string[] {
         return this._cMap.get('admin')||[]
     }
@@ -75,8 +100,9 @@ export class DanmuCertify {
      * 从主线程获取敏感词
      * @param words 子线程环境变量中传入的敏感词
      */
-    setupFromMaster(words: {word: string, owner: string}[]): void {
+    setupFromMaster({emotions, badwords: words}: {emotions: {tag:string}[], badwords:IBanedWord[]}): void {
         this.groupBans(words);
+        this.regExp = emotions;
     }
 
     /**
@@ -104,11 +130,11 @@ export class DanmuCertify {
     }
 
     /**
-     * 弹幕内容过长
+     * 弹幕内容过长,一个表情3个字符
      * @param msg 弹幕内容
      */
     toolong(msg: string): boolean {
-        return msg.length > MAX_MESSAGE_LENGTH;
+        return msg.replace(this._regExp,'AAAAA').length > MAX_MESSAGE_LENGTH;
     }
     /**
      * 发送弹幕来源是否在cd中

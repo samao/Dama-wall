@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:29:54 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-11-15 18:35:25
+ * @Last Modified time: 2017-12-17 13:17:01
  */
 
 import * as express from "express";
@@ -59,7 +59,10 @@ router.route('/:rid').all((req, res, next) => {
             db.collection(Collection.EMOTION).find({active:true}).sort({id:1}).toArray().then(data => {
                 if(data){
                     syEmoj = cache(data)
-                    res.render('danmu', {title:'弹幕墙HTTP发送端', emojMap: get<IEmoj[]>(syEmoj)});
+                    res.render('danmu', {
+                        title:'弹幕墙HTTP发送端', 
+                        emojMap: get<IEmoj[]>(syEmoj)
+                    });
                 }else{
                     failure(res, '没有表情数据')
                 }

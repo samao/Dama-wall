@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:27:36 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-12-05 12:04:01
+ * @Last Modified time: 2017-12-17 13:46:00
  */
 
 import * as $ from 'jquery';
@@ -60,12 +60,29 @@ $(() => {
         return source.substr(0,length);
     }
 
+    //按照页面表情标签生成正则
+    function createReg() {
+        const tags: string[] = [];
+        $('li[data-tag]').each((index,li) => {
+            let tag = $(li).attr('data-tag')||'';
+            tags.push(tag.replace(/\[(.+)\]/ig,'(\\[$1\\])'));
+        })
+        return new RegExp(tags.join('|'),'ig');
+    }
+    //计算聊天信息字符长，兼容表情
+    function length(msg: string): number {
+        //一个表情占3个字符
+        return msg.replace(regexp, 'AAAAA').length;
+    }
+
     applyStorage()
+    //表情匹配正则
+    const regexp = createReg();
 
     input.on('input', () => {
         let putStr = input.val();
         if(typeof putStr === 'string') {
-            let left = MAX_INPUT - putStr.length;
+            let left = MAX_INPUT - length(putStr);
             remain.text(left);
         }
     }).focus(() => hidenPop());
