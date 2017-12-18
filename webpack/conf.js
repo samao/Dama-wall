@@ -33,7 +33,7 @@ function parserMap(data,pKey = '') {
         let value = Reflect.get(data, key);
         if(typeof value === 'string') {
             Reflect.set(entry, join(pKey, key), value);
-            log(`编译文件配置: ${join(pKey, key)}, 入口: ${value}`);
+            //log(`编译文件配置: ${join(pKey, key)}, 入口: ${value}`);
         }else{
             parserMap(value, join(pKey, key));
         }

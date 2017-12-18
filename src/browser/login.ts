@@ -6,6 +6,7 @@
  */
 
 import * as $ from 'jquery';
+import * as md5 from 'md5';
 import { log, error } from "../utils/log";
 import { parse } from 'querystring';
 import { SuccessType, FailType, isSuccessType } from "../utils/feedback";
@@ -21,7 +22,7 @@ $(() => {
 
         $.post('/login',{
             username,
-            pwd
+            pwd:md5(pwd),
         }, (data: SuccessType|FailType) => {
             let responseTxt = $('.info');
             log(JSON.stringify(data));

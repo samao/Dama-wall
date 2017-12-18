@@ -1,4 +1,6 @@
 import * as $ from 'jquery';
+import htmlParser from '../../utils/htmlParser';
+
 import { log, error } from '../../utils/log';
 import { loadPug } from '../utils/pugUtil';
 import { SuccessType, FailType, isSuccessType } from "../../utils/feedback";
@@ -21,14 +23,14 @@ $(() => {
         log('构建表格');
         actBody.children().remove();
         var html = '';
-        data.forEach(tr => {
-            const url = `http://dama.cn:3000/danmu/${tr.rid}`;
-            const qr = `http://dama.cn:3000/qr/${tr.rid}`;
+        data.forEach(({rid,title,description}) => {
+            const url = `http://dama.cn:3000/danmu/${rid}`;
+            const qr = `http://dama.cn:3000/qr/${rid}`;
             html += '<tr>';
-            html += `<td>${tr.rid}</td>`;
-            html += `<td>${tr.title}</td>`;
-            html += `<td>${tr.description}</td>`;
-            html += `<td><a href="${url}" target="_blank">${url}</a></td>`
+            html += `<td>${htmlParser(rid)}</td>`;
+            html += `<td>${htmlParser(title)}</td>`;
+            html += `<td>${htmlParser(description)}</td>`;
+            html += `<td><a href="${url}" target="_blank">${htmlParser(url)}</a></td>`
             html += `<td><a href="${qr}" target="_blank"><image src="${qr}"></a></td>`
             html += `<td><button class="btn btn-primary btn-xs">修改</button></td>`;
             html += '</tr>'
