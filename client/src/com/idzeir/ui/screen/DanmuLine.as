@@ -58,9 +58,9 @@ package com.idzeir.ui.screen
 			danmu.y = LINE_H - danmu.height >> 1;
 			_danmuBox.addChild(danmu);
 			//匀速
-			const SPEED:uint = 100 + 6 * _index;
+			const SPEED:uint = (START_X + 40) / 10 + 6 * _index;
 			
-			TweenNano.to(danmu, (960 + danmu.width) / SPEED, {x: -danmu.width,onComplete:function():void
+			TweenNano.to(danmu, (START_X + danmu.width) / SPEED, {x: -danmu.width,onComplete:function():void
 			{
 				DanmuElement.recyleDanmu(danmu);
 			}, ease:Linear.easeNone})
