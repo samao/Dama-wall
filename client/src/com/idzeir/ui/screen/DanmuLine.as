@@ -33,6 +33,8 @@ package com.idzeir.ui.screen
 		
 		private var _danmuBox:Sprite;
 		
+		private const SPEED:uint = uint(Mirro.getInstance().width / 50);
+		
 		public function DanmuLine(index:uint)
 		{
 			super();
@@ -54,9 +56,11 @@ package com.idzeir.ui.screen
 			var danmu:DanmuElement = DanmuElement.createDanmu(msg, size);
 			danmu.x = START_X;
 			danmu.y = LINE_H - danmu.height >> 1;
-			addChild(danmu);
+			_danmuBox.addChild(danmu);
+			//匀速
+			const SPEED:uint = 100 + 6 * _index;
 			
-			TweenNano.to(danmu, 10, {x: -danmu.width,onComplete:function():void
+			TweenNano.to(danmu, (960 + danmu.width) / SPEED, {x: -danmu.width,onComplete:function():void
 			{
 				DanmuElement.recyleDanmu(danmu);
 			}, ease:Linear.easeNone})

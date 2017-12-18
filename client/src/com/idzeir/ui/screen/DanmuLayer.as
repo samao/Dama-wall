@@ -10,6 +10,8 @@
 package com.idzeir.ui.screen
 {
 	import com.idzeir.draw.Mirro;
+	import com.idzeir.timer.api.ITicker;
+	import com.idzeir.timer.impl.Ticker;
 	
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
@@ -27,12 +29,16 @@ package com.idzeir.ui.screen
 		 */		
 		private const DANMU_GAP:uint = 80;
 		
+		private var _ticker:ITicker;
+		
 		public function DanmuLayer()
 		{
 			super();
 			const _mirr:Mirro = Mirro.getInstance();
 			setSize(_mirr.width, _mirr.height);
 			createDanmuLine();
+			
+			_ticker = Ticker.getInstance();
 		}
 		
 		public function setSize(w:Number, h:Number):void
@@ -48,7 +54,7 @@ package com.idzeir.ui.screen
 		{
 			for(var i:uint = 0; i < _height - DanmuLine.LINE_H; i += DanmuLine.LINE_H)
 			{
-				const line:DanmuLine = new DanmuLine(i);
+				const line:DanmuLine = new DanmuLine(i/DanmuLine.LINE_H);
 				line.y = i;
 				_lineMap.push(line);
 				addChild(line);
@@ -62,7 +68,7 @@ package com.idzeir.ui.screen
 		public function addDanmu(message:Object):void
 		{
 			const line:DanmuLine = getFreeLine();
-			line && line.addDanmu(message);
+			line.addDanmu(message);
 		}
 		
 		/**

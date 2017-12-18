@@ -15,9 +15,11 @@ package com.idzeir.ui.screen
 	import com.idzeir.manager.ContextType;
 	import com.idzeir.manager.emotion.api.IEmotion;
 	import com.idzeir.manager.emotion.impl.DanmuPart;
+	import com.idzeir.ui.utils.DrawUtil;
 	import com.idzeir.ui.utils.FilterUtil;
 	
-	import flash.geom.Point;
+	import flash.display.Shape;
+	import flash.display.Sprite;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.engine.BreakOpportunity;
@@ -108,11 +110,8 @@ package com.idzeir.ui.screen
 				const line:TextLine = _textBlock.createTextLine();
 				addChild(line);
 				//矫正图文混排位置
-				var leftTop:Point = line.getBounds(this).topLeft;
-				line.x = -leftTop.x;
-				line.y = -leftTop.y;
-				
-				setSize(line.width, line.height);
+				line.y = line.totalAscent;
+				setSize(line.width, line.totalHeight);
 			}
 			FilterUtil.danmu(this);
 		}
@@ -135,13 +134,31 @@ package com.idzeir.ui.screen
 				if(e.type === DanmuPart.IMAGE)
 				{
 					var image:Image = new Image(e.data);
-					image.setSize(30, 30);
-					map.push(new GraphicElement(image, image.width, image.height, elf));
+					image.setSize(26, 26);
+					var eBox:UIContainer = createAlphaLayer(32, 32, image);
+					map.push(new GraphicElement(eBox, eBox.width, eBox.height, elf));
 				}else{
 					map.push(new TextElement(e.data, elf));
 				}
 			});
 			return new GroupElement(map, elf);
+		}
+		
+		private function createAlphaLayer(w:Number, h:Number, image:Image):UIContainer
+		{
+			var layer:UIContainer = new UIContainer();
+			var bg:Shape = DrawUtil.drawRectRound(w, h, 0, 0);
+			bg.alpha = 0;
+			layer.addChild(bg);
+			layer.setSize(w,h);
+			image.move(w - image.width >> 1, h - image.height >> 1);
+			layer.addChild(image);
+			return layer;
+		}
+		
+		override public function set x(value:Number):void
+		{
+			super.x = Math.round(value);
 		}
 		
 		/**

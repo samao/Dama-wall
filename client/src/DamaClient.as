@@ -138,9 +138,9 @@ package
 		 */		
 		private function mock():void
 		{
-			const colors:Array = ['#ffffff','#999999','#e6151e','#9d22b1','#6738b8','#3d50b6','#03a9f4','#009688','#259b24','#8bc34a']
-			const msgs:Array = ['[亲亲][害羞][无奈]','法论打发[痛苦]好','政治迫害国民','66666']
-			Ticker.getInstance().call(1500,function():void
+			const colors:Array = ['#ffffff','#000000','#ff0000','#00ff00','#0000ff','#ffff00','#00ffff','#ff00ff','#259b24','#8bc34a'];
+			const msgs:Array = ['[cleanser]猪八戒背媳妇[skeleton]','11111111','天王gay地虎','23333333333','[ha][money][ha]','历史为骨,艺术为翼','中华文明,宏扬百世[ha]','66666']
+			Ticker.getInstance().call(200,function():void
 			{
 				var color:String = colors.shift();
 				colors.push(color);
