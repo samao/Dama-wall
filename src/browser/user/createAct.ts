@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 
-import { hasTag } from '../../utils/htmlParser';
+import { hasTag } from '../utils/htmlParser';
 import { log, error } from '../../utils/log';
 import { loadPug } from '../utils/pugUtil';
 import { SuccessType, FailType, isSuccessType } from "../../utils/feedback";

@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import htmlParser from '../../utils/htmlParser';
+import htmlParser from '../utils/htmlParser';
 
 import { log, error } from '../../utils/log';
 import { loadPug } from '../utils/pugUtil';
