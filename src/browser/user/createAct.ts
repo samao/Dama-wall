@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-12-19 12:27:54 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-12-19 12:27:54 
+ */
+
 import * as $ from 'jquery';
 
 import { hasTag } from '../utils/htmlParser';

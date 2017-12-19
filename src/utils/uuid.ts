@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-12-19 12:29:07 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-12-19 12:29:07 
+ */
+
 import * as crypto from 'crypto';
 
 const hex: string[] = [];

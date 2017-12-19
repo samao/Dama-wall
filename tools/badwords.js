@@ -1,3 +1,12 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-12-19 12:27:20 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-12-19 12:29:33
+ */
+
+ //----- 敏感词写入工具
+
 const readline = require('readline');
 const fs = require('fs');
 
@@ -12,7 +21,7 @@ MongoClient.connect('mongodb://localhost:27017/dama', (err,db) => {
 	const table = db.collection('sensitive')
 
 	const rl = readline.createInterface({
-		input:fs.createReadStream('chinese_dictionary.txt')
+		input:fs.createReadStream('./chinese_dictionary.txt')
 	})
 
 	const banwords = [];

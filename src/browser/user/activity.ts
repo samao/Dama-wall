@@ -1,3 +1,10 @@
+/*
+ * @Author: iDzeir 
+ * @Date: 2017-12-19 12:27:45 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2017-12-19 12:27:45 
+ */
+
 import * as $ from 'jquery';
 import htmlParser from '../utils/htmlParser';
 
