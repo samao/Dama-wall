@@ -34,10 +34,10 @@ export class DanmuCertify {
     constructor() {}
 
     async init(db: Db) {
-        let emotions = await db.collection(Collection.EMOTION).find({active:true},{_id: 0, tag: 1}).toArray();
-        let badwords = await db.collection(Collection.SENSITIVE).find({}, {_id:0}).toArray();
+        let emotions = db.collection(Collection.EMOTION).find({active:true},{_id: 0, tag: 1}).toArray();
+        let badwords = db.collection(Collection.SENSITIVE).find({}, {_id:0}).toArray();
 
-        return {emotions, badwords};
+        return await Promise.all([emotions, badwords])
     }
     /**
      * 主线程获取敏感词
@@ -45,10 +45,10 @@ export class DanmuCertify {
     setup(): Promise<{emotions:any[],badwords:any[]}> {
         return new Promise((res,rej) => {
             checkout(db => {
-                this.init(db).then(data => {
-                    this.groupBans(data.badwords);
-                    this.regExp = data.emotions;
-                    res(data)
+                this.init(db).then(([emotions, badwords]) => {
+                    this.groupBans(badwords);
+                    this.regExp = emotions;
+                    res({emotions, badwords})
                 }).catch(reason => {
                     error(`${Error.DB_READ}: ${reason}`)
                     rej(reason);
