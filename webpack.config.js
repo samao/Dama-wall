@@ -35,7 +35,10 @@ module.exports = {
             },
         }),
         new webpack.DefinePlugin({
-            __VERSION__:`"${require('./package').version}"`
+            __VERSION__: `"${require('./package').version}"`,
+            'process.env':{
+                'NODE_ENV': JSON.stringify('production')
+            }
         })
     ],
     externals: {
