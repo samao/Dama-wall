@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:30:59 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2017-11-08 10:30:59 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2017-12-25 15:38:32
  */
 
 import { log, error } from "./log";
@@ -28,6 +28,7 @@ function isSuccessType(data: SuccessType | FailType): data is SuccessType {
  */
 function failure(res:IRespond, reason: string, code: number = 200): void {
     error(reason);
+    res.statusCode = 403;
     res.json({ok:false, reason});
 }
 /**

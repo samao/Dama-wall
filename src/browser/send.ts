@@ -2,10 +2,11 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:27:36 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-12-17 13:46:00
+ * @Last Modified time: 2017-12-25 15:43:32
  */
 
 import * as $ from 'jquery';
+import * as md5 from 'md5';
 import { log, error } from "../utils/log";
 import { SuccessType, FailType, isSuccessType } from "../utils/feedback";
 import { Storages } from './storage';
@@ -74,6 +75,13 @@ $(() => {
         //一个表情占3个字符
         return msg.replace(regexp, 'AAAAA').length;
     }
+    //生成秘钥
+    const createToken = () => {
+        const time = Math.floor(Date.now()/1000).toString();
+        const nonce = Math.floor(Math.random() * 0xFFFFFF).toString();
+        const secret = md5(`${time}_${location.pathname}_${input.val()}_${nonce}`);
+        return {time, nonce, secret}
+    }
 
     applyStorage()
     //表情匹配正则
@@ -90,17 +98,22 @@ $(() => {
     $('#sendBtn').click(() => {
         let putStr = input.val();
         if(typeof putStr === 'string' && putStr.trim().length !== 0) {
-            //log(`发送弹幕：${input.val()}<${color}>`);
-            $.post(location.href, {
-                message:input.val(),
-                color:`0x${color}`
-            },(data: SuccessType|FailType) => {
+            const token = createToken();
+            $.ajax({
+                url:location.href,
+                type:'POST',
+                headers: token,
+                data: {
+                    message:input.val(),
+                    color:`0x${color}`
+                }
+            }).done((data:SuccessType|FailType) => {
                 log(JSON.stringify(data));
-                if(isSuccessType(data)) 
-                    tips('发送成功:'+ data.data.message);
+                if(isSuccessType(data))
+                    tips(`弹幕发送成功: ${data.data.message}`);
                 else
-                    tips(data.reason);
-            })
+                    tips(data.reason)
+            }).fail(() => tips('弹幕发送失败！！！')).catch(() => tips('弹幕发送失败##'))
             reset();
         }else{
             tips('发送内容不能为空');

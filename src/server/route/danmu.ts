@@ -2,11 +2,12 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:29:54 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-12-17 13:17:01
+ * @Last Modified time: 2017-12-25 15:47:45
  */
 
 import * as express from "express";
 import * as cluster from "cluster";
+import * as md5 from 'md5';
 
 import danmuCertify, { MAX_MESSAGE_LENGTH } from "../db/danmuCertify";
 
@@ -85,6 +86,16 @@ router.route('/:rid').all((req, res, next) => {
         failure(res, `不要频繁发送弹幕`)
         return;
     }
+
+    const secret = req.header('secret');
+    const nonce = req.header('nonce');
+    const time = req.header('time');
+    
+    if(secret !== md5(`${time}_${req.originalUrl}_${req.body.message}_${nonce}`)) {
+        failure(res, `非法数据提交`);
+        return;
+    }
+
     //加工敏感词
     req.body.message = danmuCertify.filter(req.body.message,res.locals.owner).out;
     const resonseBody = {

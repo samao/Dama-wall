@@ -44,7 +44,7 @@
 
 //http 发送弹幕
 (function(){
-    $.post('http://localhost:3000/danmu/9999',{message:'又说那话'}, data => {
+    $.post('http://localhost:3000/danmu/jiafeiyan',{message:'又说那话',color:'0xFF0000'}, data => {
         if(data.ok) 
             console.log('发送成功:'+ data.data)
         else
