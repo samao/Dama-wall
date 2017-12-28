@@ -1,2 +1,2 @@
 *.as linguist-language = typescript
-./public/*.js linguist-language = typescript
+public/**/*.js linguist-language = typescript
