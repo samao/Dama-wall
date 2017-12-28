@@ -1,1 +1,2 @@
 *.as linguist-language = typescript
+/public linguist-language = typescript
