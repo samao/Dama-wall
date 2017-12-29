@@ -42,6 +42,8 @@ module.exports = {
         })
     ],
     externals: {
-        'jquery':'jQuery'
+        'jquery':'jQuery',
+        'react':"React",
+        'react-dom':'ReactDOM'
     }
 }
