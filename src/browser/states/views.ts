@@ -1,0 +1,1 @@
+export let view: number = 0;

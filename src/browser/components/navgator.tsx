@@ -1,25 +1,21 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { Link } from '../states/links';
+import { Reducer } from '../reducers';
+import { linkTo } from '../actions';
 import NavLink from './navLink';
 
-interface linkProps {
-    label: string;
-    to: string;
-}
-
 interface NavgatorDispatch {
-    onNavTo?: any;
+    linkTo?: any;
 }
 interface NavgatorProps extends NavgatorDispatch{
-    navlinks: linkProps[];
+    navlinks: Link[];
 }
 
 class Navgator extends React.Component<NavgatorProps> {
     render() {
-        const { navlinks, onNavTo} = this.props;
-        console.log('====');
-        console.log(navlinks)
+        const { navlinks, linkTo} = this.props;
         return (
             <section className="nav">
                 <ul className="list-unstyled list-inline">
@@ -27,7 +23,7 @@ class Navgator extends React.Component<NavgatorProps> {
                         navlinks.map(e => {
                             return (
                                 <NavLink>
-                                    <a onClick={() => onNavTo(e.to)}>{e.label}</a>
+                                    <a onClick={() => linkTo(e.to)}>{e.label}</a>
                                 </NavLink> 
                             )
                         })
@@ -38,15 +34,14 @@ class Navgator extends React.Component<NavgatorProps> {
     }
 }
 
-function stateToProps(state:any): NavgatorProps {
-    const { navlinks } = state;
+function stateToProps(state: {navlinks: Link[]}): NavgatorProps {
     return state;
 }
 
 function dispathToProps(dispatch: any): NavgatorDispatch {
     return {
-        onNavTo: (to: string) => {
-            dispatch({type: 'daohang', to})
+        linkTo: (to: string) => {
+            dispatch(linkTo(to));
         }
     };
 }
