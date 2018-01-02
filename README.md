@@ -8,7 +8,7 @@ Node.js, Express, Typescript, Mongodb
 
 ### 浏览器端
 
-Typescript, Less, Bootstrap, Pug, JQuery, Webpack
+Typescript, Less, Bootstrap, Pug, JQuery, Webpack, React.js
 
 ### 客户端 
 
