@@ -2,6 +2,7 @@ export enum LinkTo {
     ACT,
     FILTER,
     ACCOUNT,
+    CREATE_ROOM,
 }
 
 export interface Link {

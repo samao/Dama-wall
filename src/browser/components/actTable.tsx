@@ -44,31 +44,9 @@ class ActTable extends React.Component<ActTableProps> {
 }
 
 function stateToProps(state: any): ActTableProps {
-    console.log(state.rooms)
     return {
         rooms: state.rooms
     }
-    /*
-    return {
-        rooms: [
-            {
-                rid:'jiafeiyan',
-                title:'dota',
-                description:'十大经典战役',
-            },
-            {
-                rid:'maobo',
-                title:'二次元美女',
-                description:'洛丽塔美少女战士',
-            },
-            {
-                rid:'chibo',
-                title:'风暴英雄',
-                description:'白痴叫你打游戏',
-            }
-        ]
-    }
-    */
 }
 
 export default connect(stateToProps)(ActTable);

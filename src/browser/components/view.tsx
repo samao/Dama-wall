@@ -2,20 +2,19 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { LinkTo } from '../states/links';
-import ActTable from './actTable';
+import ActBox from './actBox';
+import CreateAct from './createAct';
 
 //view 映射
 const viewStacks = [
-    <div className="activity" >
-        <button className="btn btn-default" id="create">新建活动</button>
-        <ActTable />
-    </div>,
+    <ActBox />,
     <div>
         敏感词
     </div>,
     <div>
         账号管理
-    </div>
+    </div>,
+    <CreateAct />
 ]
 
 class View extends React.Component<{index: number}> {
