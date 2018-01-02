@@ -4,13 +4,14 @@ header
             img(src='/static/images/logo.png')
     p.title 用户中心
     .pull-right #{user.user}
-section.nav
-    ul.list-unstyled.list-inline
-        li
-            a(data ='user_act') 活动配置
-        li 
-            a(data ='user_filter') 个人敏感词
-        li 
-            a(data ='user_security') 账号管理
-.wraper
-    include ../template/user_act
+#app
+    section.nav
+        ul.list-unstyled.list-inline
+            li
+                a(data ='user_act') 活动配置
+            li 
+                a(data ='user_filter') 个人敏感词
+            li 
+                a(data ='user_security') 账号管理
+    .wraper
+        include ../template/user_act
