@@ -40,7 +40,7 @@ function stateToProps(state: {navlinks: Link[]}): NavgatorProps {
 
 function dispathToProps(dispatch: any): NavgatorDispatch {
     return {
-        linkTo: (to: string) => {
+        linkTo: (to: number) => {
             dispatch(linkTo(to));
         }
     };

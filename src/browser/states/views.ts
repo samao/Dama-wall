@@ -1,1 +1,3 @@
-export let view: number = 0;
+import {LinkTo} from './links';
+
+export let view: number = LinkTo.ACT;

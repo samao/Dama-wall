@@ -23,7 +23,7 @@ class ActBox extends React.Component<ActBoxProps> {
 function dispatchToProps(dispatch: any): ActBoxProps {
     return {
         onCreate: () => {
-            dispatch(linkTo(LinkTo.CREATE_ROOM.toString()))
+            dispatch(linkTo(LinkTo.CREATE_ROOM))
         }
     }
 }

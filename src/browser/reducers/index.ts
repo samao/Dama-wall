@@ -11,6 +11,8 @@ function roomsReducer(state: RoomData[] = rooms, action: Action): RoomData[] {
     switch(action.type) {
         case Type.ROOM_READY:
             return action.data;
+        case Type.CREATE_ACT_SUCCESS:
+            return [action.data, ...state];
     }
     return state;
 }
@@ -23,7 +25,15 @@ function views(state:number = view ,action: Action): number {
     return state;
 }
 
-const combine = {navlinks, rooms:roomsReducer, views};
+function createAct(state: boolean = false, action: Action): boolean {
+    switch(action.type) {
+        case Type.CREATE_ACT:
+            return true;
+    }
+    return false;
+}
+
+const combine = {navlinks, rooms:roomsReducer, views, createAct};
 
 type Reducer = typeof combine;
 
