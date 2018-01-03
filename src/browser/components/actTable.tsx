@@ -19,19 +19,22 @@ class ActTable extends React.Component<ActTableProps> {
         this.onDelAct = this.onDelAct.bind(this);
     }
 
+    async delActByid(rid: string) {
+        const {data} = await axios.delete(`http://dama.cn:3000/api/activity/${rid}`);
+        return data;
+    }
+
     //删除活动
     onDelAct(rid: string) {
         const { delAct } = this.props;
-
-        axios.delete(`http://dama.cn:3000/api/activity/${rid}`)
-            .then(({data}: {data: SuccessType|FailType}) => {
-                if(isSuccessType(data)){
-                    log('删除成功', rid);
-                    delAct(rid);
-                }else{
-                    error('删除失败');
-                }
-            })
+        this.delActByid(rid).then((data: SuccessType|FailType) => {
+            if(isSuccessType(data)){
+                log('删除成功', rid);
+                delAct(rid);
+            }else{
+                error('删除失败');
+            }
+        })
     }
 
     render() {

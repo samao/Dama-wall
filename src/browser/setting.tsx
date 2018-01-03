@@ -2,11 +2,12 @@
  * @Author: iDzeir 
  * @Date: 2017-12-19 12:28:33 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-03 15:48:12
+ * @Last Modified time: 2018-01-03 17:19:24
  */
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import axios from 'axios';
 import UserCenter from "./components/center";
 import reducer from './reducers';
 import { RoomData } from './states/rooms'
@@ -21,7 +22,8 @@ import { log, error } from '../utils/log';
 const store = createStore(reducer);
 
 async function getActis() {
-    return await $.post('http://dama.cn:3000/api/activities')
+    const { data } = await axios.post('http://dama.cn:3000/api/activities');
+    return data;
 }
 
 getActis().then((data:SuccessType|FailType) => {

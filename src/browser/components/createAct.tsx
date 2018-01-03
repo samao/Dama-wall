@@ -32,6 +32,11 @@ class CreateAct extends React.Component<CreateActProps> {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+    async createAct(url: string, reqBody: any = {}) {
+        const { data } = await axios.post(url, reqBody);
+        return data;
+    }
+
     onSubmit() {
         if(this.roomInput && this.titleInput && this.desInput) {
             const { onCreate, onBack, created } = this.props;
@@ -48,8 +53,8 @@ class CreateAct extends React.Component<CreateActProps> {
                     error('输入活动名称太长');
                 }else {
                     onCreate();
-                    axios.post(`http://dama.cn:3000/api/activity/${aid}`,reqData)
-                        .then(({data}:{data:SuccessType|FailType}) => {
+                    this.createAct(`http://dama.cn:3000/api/activity/${aid}`,reqData)
+                        .then((data:SuccessType | FailType) => {
                             if(isSuccessType(data)){
                                 log('创建成功');
                                 created({...reqData, rid: aid});
