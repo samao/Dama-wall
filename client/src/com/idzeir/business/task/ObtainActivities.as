@@ -14,6 +14,7 @@ package com.idzeir.business.task
 	import com.idzeir.conf.Host;
 	import com.idzeir.manager.ContextType;
 	import com.idzeir.manager.activity.api.IActivity;
+	import com.idzeir.manager.user.api.IUser;
 	
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -36,10 +37,11 @@ package com.idzeir.business.task
 		 * @param user 登录用户名
 		 * @param pwd 登录密码
 		 */		
-		public function ObtainActivities(user:String = '', pwd:String = 'admin')
+		public function ObtainActivities(user:String = 'admin', pwd:String = 'admin')
 		{
 			this._user = user;
 			this._pwd = pwd;
+			($(ContextType.USER) as IUser).save(user, pwd);
 		}
 		
 		public function enter(next:Function, error:Function = null):void

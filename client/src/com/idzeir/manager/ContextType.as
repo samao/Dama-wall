@@ -26,5 +26,10 @@ package com.idzeir.manager
 		 * 播放器 
 		 */		
 		public static const PLAYER:String = 'player';
+		
+		/**
+		 * 用户信息
+		 */
+		public static const USER:String = 'user';
 	}
 }

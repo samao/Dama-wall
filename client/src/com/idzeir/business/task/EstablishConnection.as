@@ -12,14 +12,15 @@ package com.idzeir.business.task
 	import com.adobe.crypto.MD5;
 	import com.idzeir.business.ITask;
 	import com.idzeir.conf.Host;
+	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.event.EventType;
+	import com.idzeir.manager.ContextType;
+	import com.idzeir.manager.user.api.IUser;
 	import com.idzeir.timer.impl.Ticker;
 	import com.idzeir.utils.Log;
 	import com.worlize.websocket.WebSocket;
 	import com.worlize.websocket.WebSocketErrorEvent;
 	import com.worlize.websocket.WebSocketEvent;
-	
-	import flash.events.Event;
 
 	/**
 	 * 建立聊天长连接
@@ -30,22 +31,54 @@ package com.idzeir.business.task
 		
 		public function enter(next:Function, error:Function = null):void
 		{
-			_ws = new WebSocket('ws://' + Host.DOMAIN + ':' + Host.WS_PORT + '/jiafeiyan', '*');
-			_ws.addEventListener(WebSocketEvent.OPEN,function():void
+			//_ws = new WebSocket('ws://' + Host.DOMAIN + ':' + Host.WS_PORT + '/jiafeiyan', '*');
+			
+			function ioHandler(e:WebSocketEvent):void
 			{
-				Log.info('OPEN')
-				next();
-			});
-			_ws.addEventListener(WebSocketEvent.CLOSED,function(e:Event):void
+				switch(e.type) {
+					case WebSocketEvent.OPEN:
+						Log.info('OPEN')
+						next();
+						break;
+					case WebSocketEvent.CLOSED:
+					case WebSocketErrorEvent.ABNORMAL_CLOSE:
+					case WebSocketErrorEvent.CONNECTION_FAIL:
+						Log.info('连接关闭',e)
+						break;
+					case WebSocketEvent.MESSAGE:
+						handlerMessage(e);
+						break;
+				}
+			}
+			
+			function addListener():void
 			{
-				Log.info('连接关闭',e)
-			});
-			_ws.addEventListener(WebSocketErrorEvent.ABNORMAL_CLOSE,function():void
+				_ws.addEventListener(WebSocketEvent.OPEN,ioHandler);
+				_ws.addEventListener(WebSocketEvent.CLOSED,ioHandler);
+				_ws.addEventListener(WebSocketErrorEvent.ABNORMAL_CLOSE,ioHandler);
+				_ws.addEventListener(WebSocketEvent.MESSAGE,ioHandler);
+			}
+			
+			function clear():void
 			{
-				Log.info('abnormal')
+				Ticker.getInstance().remove(heartBeat);
+				_ws.removeEventListener(WebSocketEvent.OPEN,ioHandler);
+				_ws.removeEventListener(WebSocketEvent.CLOSED,ioHandler);
+				_ws.removeEventListener(WebSocketErrorEvent.ABNORMAL_CLOSE,ioHandler);
+				_ws.removeEventListener(WebSocketEvent.MESSAGE,ioHandler);
+				_ws = null;
+			}
+			
+			on(EventType.ESTABLISH,function(e:DEvent):void
+			{
+				_ws && clear();
+				_ws = new WebSocket('ws://' + Host.DOMAIN + ':' + Host.WS_PORT + '/' + e.data[0], '*');
+				addListener();
+				_ws.connect();
 			});
-			_ws.addEventListener(WebSocketEvent.MESSAGE,handlerMessage);
-			_ws.connect();
+			
+			//_ws.connect();
+			next();
 		}
 		
 		/**
@@ -71,14 +104,15 @@ package com.idzeir.business.task
 				switch(data.status) 
 				{
 					case 203:
+						const user:IUser = ($(ContextType.USER) as IUser)
 						_ws.sendUTF(JSON.stringify({
 							action:'entry',
 							data:{
-								id:'admin',
-								pwd:MD5.hash('admin'),
-								age:18
+								id: user.name,
+								pwd:MD5.hash(user.pwd)
 							}
 						}))
+						fire(EventType.WS_OPEN)
 						break;
 					case 201:
 						Log.info('用户登录成功')

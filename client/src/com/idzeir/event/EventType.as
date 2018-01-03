@@ -49,5 +49,9 @@ package com.idzeir.event
 		public static const PLAY_URL:String = 'playUrl';
 		/** 登录成功 */
 		public static const LOGIN_IN:String = 'loginIn';
+		/** 连接活动，参数为活动rid */
+		public static const ESTABLISH:String = 'establish';
+		/** ws 连接成功 */
+		public static const WS_OPEN:String = 'wsOpen';
 	}
 }

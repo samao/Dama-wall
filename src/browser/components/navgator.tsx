@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { Link } from '../states/links';
-import { Reducer } from '../reducers';
 import { linkTo } from '../actions';
 import NavLink from './navLink';
 

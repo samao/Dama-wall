@@ -2,15 +2,15 @@
  * @Author: iDzeir 
  * @Date: 2017-12-19 12:28:33 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-03 12:09:31
+ * @Last Modified time: 2018-01-03 15:48:12
  */
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import UserCenter from "./components/center";
 import reducer from './reducers';
-import {RoomData} from './states/rooms'
-import {roomReady} from './actions'
+import { RoomData } from './states/rooms'
+import { roomReady } from './actions'
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';

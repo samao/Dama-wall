@@ -1,10 +1,12 @@
 import { RoomData } from '../states/rooms';
+
 export enum Type {
     Router = 'linkTo',
     ROOM_READY = 'roomReady',
     CREATE_ACT = 'createAct',
     CREATE_ACT_FAIL = 'createActFail',
-    CREATE_ACT_SUCCESS = 'createActSuccess'
+    CREATE_ACT_SUCCESS = 'createActSuccess',
+    ACT_DELETED = 'actDeleted'
 }
 
 export default interface Action {
@@ -26,7 +28,7 @@ export function roomReady(data: RoomData[]): Action {
     }
 }
 
-export const createAct = {
+export const act = {
     create: {
         type:Type.CREATE_ACT
     },
@@ -35,6 +37,10 @@ export const createAct = {
     },
     success: {
         type: Type.CREATE_ACT_SUCCESS
-    }
+    },
+    delete: (rid: string) => ({
+        type: Type.ACT_DELETED,
+        rid
+    })
 };
 

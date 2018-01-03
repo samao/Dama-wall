@@ -1,17 +1,41 @@
 import * as React from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
 
 import Table from './table';
-
-import {RoomData} from '../states/rooms';
+import Action,{ act } from '../actions'
+import { RoomData } from '../states/rooms';
+import { SuccessType, FailType, isSuccessType } from "../../utils/feedback";
+import { log, error } from '../../utils/log';
 
 export interface ActTableProps {
+    delAct: (rid: string) => any;
     rooms: RoomData[];
 }
 
 class ActTable extends React.Component<ActTableProps> {
+
+    componentDidMount(){
+        this.onDelAct = this.onDelAct.bind(this);
+    }
+
+    //删除活动
+    onDelAct(rid: string) {
+        const { delAct } = this.props;
+
+        axios.delete(`http://dama.cn:3000/api/activity/${rid}`)
+            .then(({data}: {data: SuccessType|FailType}) => {
+                if(isSuccessType(data)){
+                    log('删除成功', rid);
+                    delAct(rid);
+                }else{
+                    error('删除失败');
+                }
+            })
+    }
+
     render() {
-        const {rooms} = this.props;
+        const { rooms } = this.props;
         return (
             <Table>
                 <tbody id="actBody">
@@ -32,7 +56,9 @@ class ActTable extends React.Component<ActTableProps> {
                                     </a>
                                 </td>
                                 <td>
-                                    <button className="btn btn-danger btn-xs">删除</button>
+                                    <button 
+                                        className="btn btn-danger btn-xs"
+                                        onClick={() => this.onDelAct(e.rid)}>删除</button>
                                 </td>
                             </tr>
                         )
@@ -43,10 +69,18 @@ class ActTable extends React.Component<ActTableProps> {
     }
 }
 
-function stateToProps(state: any): ActTableProps {
+function stateToProps(state: any) {
     return {
         rooms: state.rooms
     }
 }
 
-export default connect(stateToProps)(ActTable);
+function dispatchToProps(dispatch:(action:Action) => any) {
+    return {
+        delAct: (rid: string) => {
+           dispatch(act.delete(rid));
+        }
+    }
+}
+
+export default connect(stateToProps, dispatchToProps)(ActTable);

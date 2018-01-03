@@ -18,6 +18,7 @@ package com.idzeir.ui
 	import com.idzeir.data.Provider;
 	import com.idzeir.dispatch.DEvent;
 	import com.idzeir.event.EventType;
+	import com.idzeir.timer.impl.Ticker;
 	import com.idzeir.ui.components.DButton;
 	import com.idzeir.ui.components.DropRender;
 	import com.idzeir.ui.utils.DrawUtil;
@@ -126,6 +127,18 @@ package com.idzeir.ui
 				loginBtn.text = '注销';
 				loginBtn.textColor = Color.Red;
 			});
+			
+			on(EventType.ESTABLISH, function():void
+			{
+				status.text = '切换中...';
+			});
+			on(EventType.WS_OPEN, function():void
+			{
+				Ticker.getInstance().call(1000, function():void
+				{
+					status.text = '已连接';
+				},1);
+			});
 		}
 		
 		private function showActList():void
@@ -150,6 +163,8 @@ package com.idzeir.ui
 				{
 					_droplist.removeFromParent();
 					_openListBtn.label = _droplist.selectedItem.data.title;
+					
+					fire(EventType.ESTABLISH, _droplist.selectedItem.data.rid);
 				});
 			}
 			if(contains(_droplist))

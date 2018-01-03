@@ -3,24 +3,34 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 
 import { LinkTo } from '../states/links';
-import { createAct, linkTo } from '../actions';
+import Action, { act, linkTo } from '../actions';
 import { hasTag } from '../utils/htmlParser';
 import { error,log } from '../../utils/log';
 import { SuccessType, FailType, isSuccessType } from "../../utils/feedback";
 
-interface CreateActProps {
-    onCreate: any;
-    onBack: any;
+interface CreateActDispatch {
+    onCreate: () => any;
+    onBack: () => any;
+    created: (data: any) => any;
+}
+
+interface CreateActProps extends CreateActDispatch {
     disabled: boolean;
-    created: any;
     [index: string]: any;
 }
 
 class CreateAct extends React.Component<CreateActProps> {
-    
-    private roomInput: HTMLInputElement|null;
-    private titleInput: HTMLInputElement|null;
-    private desInput: HTMLTextAreaElement|null;
+    constructor(props: CreateActProps, context: any,
+        readonly minLen: number = 5, 
+        readonly maxLen: number = 12,
+        private roomInput:HTMLInputElement | null = null,
+        private titleInput: HTMLInputElement | null = null,
+        private desInput: HTMLTextAreaElement | null = null
+    ) {
+        super(props,context);
+
+        this.onSubmit = this.onSubmit.bind(this);
+    }
 
     onSubmit() {
         if(this.roomInput && this.titleInput && this.desInput) {
@@ -30,57 +40,90 @@ class CreateAct extends React.Component<CreateActProps> {
                 title: this.titleInput.value,
                 description: this.desInput.value
             }
-            if(aid.length >= 5 && !hasTag(aid)) {
-                onCreate();
-                axios.post(`http://dama.cn:3000/api/activity/${aid}`,reqData).then(({data}:{data:SuccessType|FailType}) => {
-                    if(isSuccessType(data)){
-                        log('创建成功');
-                        created({...reqData, rid: aid});
-                        onBack();
-                    }else{
-                        error(data.reason)
-                    }
-                })
+            
+            if(!hasTag(aid)) {
+                if(aid.length < this.minLen) {
+                    error('输入活动名称太短');
+                } else if(aid.length > this.maxLen) {
+                    error('输入活动名称太长');
+                }else {
+                    onCreate();
+                    axios.post(`http://dama.cn:3000/api/activity/${aid}`,reqData)
+                        .then(({data}:{data:SuccessType|FailType}) => {
+                            if(isSuccessType(data)){
+                                log('创建成功');
+                                created({...reqData, rid: aid});
+                                onBack();
+                            }else{
+                                error(`创建活动错误：${data.reason}`)
+                            }
+                    })
+                }
             }else{
                 error('输入活动名称包含敏感内容');
             }
+            
         }
     }
 
     render() {
         const { disabled, onBack } = this.props;
         return (
-            <form className="form-horizontal" role="form" id="create-act" onSubmit={e => {
-                    e.preventDefault();
-                }}>
+            <form 
+                role="form" 
+                id="create-act" 
+                className="form-horizontal" 
+                onSubmit={e => e.preventDefault()}>
                 <fieldset disabled={disabled}>
                     <div className="form-group">
                         <label htmlFor="aid" className="col-sm-2 control-label">活动名称</label>
                         <div className="col-sm-10">
-                            <input ref={ref => {this.roomInput = ref; this.roomInput && this.roomInput.focus()}} id="aid" type="text" placeholder="输入活动名称" required className="form-control"/>
+                            <input 
+                                id="aid" 
+                                type="text" 
+                                placeholder="输入活动名称" 
+                                required 
+                                className="form-control"
+                                ref={input => {
+                                        input && input.focus();
+                                        this.roomInput = input;
+                                    }}
+                                maxLength={this.maxLen} />
                         </div>
                     </div>
                     <div className="form-group">
                         <label htmlFor="atitle" className="col-sm-2 control-label">活动标题</label>
                         <div className="col-sm-10">
-                            <input ref={ref => this.titleInput = ref} id="atitle" type="text" placeholder="活动标题" className="form-control"/>
+                            <input
+                                id="atitle" type="text" 
+                                placeholder="输入活动标题" 
+                                className="form-control"
+                                required
+                                ref={ input => this.titleInput = input } />
                         </div>
                     </div>
                     <div className="form-group">
                         <label htmlFor="ades" className="col-sm-2 control-label">活动描述</label>
                         <div className="col-sm-10">
-                            <textarea ref={ref => this.desInput = ref} id='adescription' rows={5} name="ades" className="form-control" />
+                            <textarea 
+                                id='adescription' 
+                                rows={5} 
+                                name="ades" 
+                                className="form-control" 
+                                ref={ textarea => this.desInput = textarea } />
                         </div>
                     </div>
                     <div className="form-group">
                         <div className="col-sm-offset-2 col-sm-10">
                             <div className="btns">
-                                <button id="cancel" className="btn btn-danger" onClick={() => {
-                                    onBack();
-                                }}>取消</button>
-                                <button id="submit" className="btn btn-primary" onClick={() => {
-                                    this.onSubmit();
-                                }}>创建</button>
+                                <button 
+                                    id="cancel" 
+                                    className="btn btn-danger" 
+                                    onClick={onBack}>取消</button>
+                                <button 
+                                    id="submit" 
+                                    className="btn btn-primary" 
+                                    onClick={this.onSubmit}>创建</button>
                             </div>
                         </div>
                     </div>
@@ -91,22 +134,22 @@ class CreateAct extends React.Component<CreateActProps> {
 }
 
 
+function stateToProps(state: any): {disabled: boolean} {
+    return {disabled: state.createAct}
+}
 
-export default connect((state: any) => {
-    return {
-        disabled: state.createAct
-    }
-},dispatch => {
+function dispatchToProps(dispatch:(action:Action) => any): CreateActDispatch {
     return {
         onCreate: () => {
-            dispatch(createAct.create)
+            dispatch(act.create)
         },
         onBack: () => {
             dispatch(linkTo(LinkTo.ACT))
         },
         created: (data: any) => {
-            console.log({...createAct.success, data})
-            dispatch({...createAct.success, data})
+            dispatch({...act.success, data})
         }
     }
-})(CreateAct);
+}
+
+export default connect(stateToProps,dispatchToProps)(CreateAct);

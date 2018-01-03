@@ -21,6 +21,7 @@ package
 	import com.idzeir.manager.ContextType;
 	import com.idzeir.manager.activity.impl.Activity;
 	import com.idzeir.manager.emotion.impl.Emotion;
+	import com.idzeir.manager.user.impl.User;
 	import com.idzeir.timer.impl.Ticker;
 	import com.idzeir.ui.Body;
 	import com.idzeir.ui.Footer;
@@ -114,6 +115,7 @@ package
 		 */		
 		private function inject():void
 		{
+			$(ContextType.USER, new User())
 			$(ContextType.EMOTION, new Emotion());
 			$(ContextType.ACTIVITY, new Activity());
 		}
@@ -140,7 +142,7 @@ package
 		{
 			const colors:Array = ['#ffffff','#000000','#ff0000','#00ff00','#0000ff','#ffff00','#00ffff','#ff00ff','#259b24','#8bc34a'];
 			const msgs:Array = ['[cleanser]猪八戒背媳妇[skeleton]','11111111','天王gay地虎','23333333333','[ha][money][ha]','历史为骨,艺术为翼','中华文明,宏扬百世[ha]','66666']
-			Ticker.getInstance().call(200,function():void
+			Ticker.getInstance().call(1000,function():void
 			{
 				var color:String = colors.shift();
 				colors.push(color);
