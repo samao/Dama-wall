@@ -1,32 +1,34 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
+/*
+ * @Author: iDzeir 
+ * @Date: 2018-01-04 10:26:47 
+ * @Last Modified by:   iDzeir 
+ * @Last Modified time: 2018-01-04 10:26:47 
+ */
+import * as React from "react";
+import { connect } from "react-redux";
 
-import Thead, {TheadProps} from './thead';
+import Thead, { TheadProps } from "./thead";
 
 interface TableProps {
-    titles: string[];
+	titles: string[];
 }
 
 class Table extends React.Component<TableProps> {
-    render() {
-        const {titles} = this.props;
-        return (
-            <table className="table table-striped table-condensed table-hover text-center">
-                {
-                    titles.length > 0 ? <Thead titles={titles}/> : null                    
-                }
-                {
-                    this.props.children                 
-                }
-            </table>
-        )
-    }
+	render() {
+		const { titles } = this.props;
+		return (
+			<table className="table table-striped table-condensed table-hover text-center">
+				{titles.length > 0 ? <Thead titles={titles} /> : null}
+				{this.props.children}
+			</table>
+		);
+	}
 }
 
 function stateToProps(state: {}): TableProps {
-    return {
-        titles: ['活动号','活动标题','描述','地址','二维码','操作']
-    };
+	return {
+		titles: ["活动号", "活动标题", "描述", "地址", "二维码", "操作"]
+	};
 }
 
 export default connect(stateToProps)(Table);
