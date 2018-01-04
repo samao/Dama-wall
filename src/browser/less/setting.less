@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 18:28:26 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-03 09:58:00
+ * @Last Modified time: 2018-01-04 18:42:42
  */
 
 @import 'base';
@@ -64,6 +64,27 @@
                     margin-right:10px;
                 }
             }
+        }
+        .filter-box {
+            margin:10px 0;
+            padding:5px;
+            width:@block;
+            height: 150px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            .word {
+                margin: 0 5px;
+                span {
+                    border-left: 1px solid skyblue;
+                    margin-left: 5px;
+                    padding-left: 5px;
+                }
+            }
+        }
+        .line {
+            margin: 10px 0 15px 0;
+            border-color: darken(@background,10%);
         }
     }
 }

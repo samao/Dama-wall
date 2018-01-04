@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2018-01-04 10:30:13 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2018-01-04 10:30:13 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2018-01-04 17:43:35
  */
 import * as React from "react";
 import { connect } from "react-redux";
@@ -10,11 +10,12 @@ import { connect } from "react-redux";
 import { LinkTo } from "../states/links";
 import ActBox from "./actBox";
 import CreateAct from "./createAct";
+import FilterBox from "./filterBox";
 
 //view 映射
 const viewStacks = [
 	<ActBox />,
-	<div>敏感词</div>,
+	<FilterBox />,
 	<div>账号管理</div>,
 	<CreateAct />
 ];
