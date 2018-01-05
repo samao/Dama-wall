@@ -190,23 +190,19 @@ async function updateSensitives(db: Db, words: string[], owner: string) {
 }
 
 //敏感词接口
-router.route('/word').get((req, res, next) => {
-    if(!res.locals.loginUser){
-        failure(res, Error.NO_RIGHT, 403);
-    } else {
-        const owner = res.locals.loginUser.user;
-        checkout(db => {
-            sensitives(db, owner).then(data => {
-                success(res, data);
-            }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(() => restore(db));
-        }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`));
-    }
-}).all((req, res, next) => {
+router.route('/word').all((req, res, next) => {
     if(!res.locals.loginUser){
         failure(res, Error.NO_RIGHT, 403);
         return;
     }
     next();
+}).get((req, res, next) => {
+    const owner = res.locals.loginUser.user;
+    checkout(db => {
+        sensitives(db, owner).then(data => {
+            success(res, data);
+        }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(() => restore(db));
+    }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`));
 }).post((req, res, next) => {
     const badwords = req.body.word||[];
     checkout(db => {
