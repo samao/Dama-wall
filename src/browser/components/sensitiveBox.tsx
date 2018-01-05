@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2018-01-04 17:20:47 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-05 16:35:38
+ * @Last Modified time: 2018-01-05 16:41:32
  */
 
 import * as React from "react";
@@ -13,7 +13,7 @@ import axios from "axios";
 import { SuccessType, FailType, isSuccessType } from "../../utils/feedback";
 import { log, error } from "../../utils/log";
 
-class FilterBox extends React.Component<{ uBans: string[] }> {
+class SensitiveBox extends React.Component<{ uBans: string[] }> {
 	constructor(props: any) {
 		super(props);
 		this.post = this.post.bind(this);
@@ -60,4 +60,4 @@ function stateToProps(state: any) {
 	};
 }
 
-export default connect(stateToProps)(FilterBox);
+export default connect(stateToProps)(SensitiveBox);

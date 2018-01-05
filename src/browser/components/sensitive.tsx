@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2018-01-04 17:25:59 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-05 16:35:10
+ * @Last Modified time: 2018-01-05 16:40:29
  */
 import * as React from "react";
 import { connect } from "react-redux";
@@ -10,12 +10,12 @@ import { connect } from "react-redux";
 import Action, { sensitive } from "../actions";
 import Word from "./word";
 
-interface FilterDispatch {
+interface SensitiveDispatch {
 	add: (word: string) => any;
 	pop: () => void;
 }
 
-export interface FilterProps extends FilterDispatch {
+export interface SensitiveProps extends SensitiveDispatch {
 	words: { sBans: string[]; uBans: string[] };
 	disabled: boolean;
 }
@@ -30,10 +30,10 @@ enum KEY {
 	COMMA = 188
 }
 
-class Filter extends React.Component<FilterProps> {
+class Sensitive extends React.Component<SensitiveProps> {
 	private input: HTMLInputElement | null;
 
-	constructor(props: FilterProps) {
+	constructor(props: SensitiveProps) {
 		super(props);
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onKeyUp = this.onKeyUp.bind(this);
@@ -91,7 +91,7 @@ class Filter extends React.Component<FilterProps> {
 
 function stateToProps(state: any) {
 	return {
-		words: state.banwords //state.filter.filter(e => e.owner === 'admin')
+		words: state.banwords
 	};
 }
 
@@ -106,4 +106,4 @@ function dispatchToProps(dispatch: (action: Action) => any) {
 	};
 }
 
-export default connect(stateToProps, dispatchToProps)(Filter);
+export default connect(stateToProps, dispatchToProps)(Sensitive);
