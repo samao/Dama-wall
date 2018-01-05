@@ -7,7 +7,15 @@
 import Action, { Type } from "../actions";
 
 import { combineReducers } from "redux";
-import { links, Link, view, RoomData, rooms } from "../states";
+import {
+	links,
+	Link,
+	view,
+	RoomData,
+	rooms,
+	sensitives,
+	SensitiveData
+} from "../states";
 
 //顶部导航数据
 function navlinks(state: Link[] = links, action: Action): Link[] {
@@ -45,8 +53,30 @@ function act(state: boolean = false, action: Action): boolean {
 	return false;
 }
 
+function has({ sBans, uBans }: SensitiveData, word: string): boolean {
+	return sBans.indexOf(word) !== -1 || uBans.indexOf(word) !== -1;
+}
+
+function banwords(
+	sen: SensitiveData = sensitives,
+	action: Action
+): SensitiveData {
+	switch (action.type) {
+		case Type.SENSITIVE_READY:
+			return action.data;
+		case Type.SENSITIVE_ADD:
+			if (has(sen, action.word)) return sen;
+			return { ...sen, uBans: [...sen.uBans, action.word] };
+		case Type.SENSITIVE_DEL:
+			return { ...sen, uBans: sen.uBans.filter(e => e !== action.word) };
+		case Type.SENSITIVE_POP:
+			return { ...sen, uBans: sen.uBans.slice(0, -1) };
+	}
+	return sen;
+}
+
 //reducer组合数据
-const combine = { navlinks, rooms: roomsReducer, views, act };
+const combine = { navlinks, rooms: roomsReducer, views, act, banwords };
 
 type Reducer = typeof combine;
 

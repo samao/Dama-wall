@@ -9,6 +9,7 @@ import * as express from "express";
 import * as QRCode from "qrcode";
 import * as path from 'path';
 import * as md5 from 'md5';
+import { Db } from 'mongodb'
 
 import uuid from '../../utils/uuid';
 import { checkout, restore, insert, IActivityDB, getAutoKey } from "../db/pool";
@@ -28,7 +29,7 @@ import { secret } from '../config/conf';
  */
 interface IWordData {
     owner: string;
-    word: string;
+    word: string[];
     [index: string]: any;
 }
 
@@ -159,23 +160,68 @@ router.route('/nav').patch((req, res, next) => {
     }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 })
 
+/**
+ * 获取当前用户相关的所有敏感词
+ * @param db 
+ * @param owner 
+ */
+async function sensitives(db: Db, owner: string) {
+    const table = db.collection(Collection.SENSITIVE);
+    const uBans = await table.find({owner},{_id: 0, word: 1}).toArray();
+    const sBans = await table.find({owner: 'admin'}, {_id: 0, word: 1}).toArray();
+    
+    return {
+        uBans:uBans.map(e => e.word),
+        sBans:sBans.map(e => e.word)
+    };
+}
+
+/**
+ * 更新用户自定义敏感词
+ * @param db 
+ * @param words 
+ * @param owner 
+ */
+async function updateSensitives(db: Db, words: string[], owner: string) {
+    const table = db.collection(Collection.SENSITIVE);
+    await table.remove({owner});
+    if(words.length > 0)
+        await table.insertMany(words.map(word => ({word, owner})));
+}
+
 //敏感词接口
-router.route('/word').all((req, res, next) => {
-    const word = req.body.word;
-    if(!word || word === '' || Object.is(word, undefined) || Object.is(word,null)) {
+router.route('/word').get((req, res, next) => {
+    if(!res.locals.loginUser){
+        failure(res, Error.NO_RIGHT, 403);
+    } else {
+        const owner = res.locals.loginUser.user;
+        checkout(db => {
+            sensitives(db, owner).then(data => {
+                success(res, data);
+            }).catch(reason => failure(res, `${Error.DB_READ}: ${reason}`)).then(() => restore(db));
+        }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`));
+    }
+}).all((req, res, next) => {
+    const words = req.body.word;
+    if(!words || words === '' || Object.is(words, undefined) || Object.is(words,null)) {
         failure(res, Error.INCORRECT_ARGUMENTS);
         return;
     }
+    res.locals.banwords = words;
     next();
 }).post((req, res, next) => {
     checkout(db => {
         const owner = res.locals.loginUser.user
-        const word = req.body.word;
-        const words = db.collection(Collection.SENSITIVE);
-        words.insert({word, owner}).then(() => {
-            success(res, '写入敏感词成功');
-            wordAction(WordActions.POST, {word, owner});
-        }).catch(reason => failure(res, `${Error.DB_WRITE}: ${reason}`)).then(() => restore(db));
+        updateSensitives(db, res.locals.banwords,owner)
+            .catch(reason => failure(res, `${Error.DB_WRITE}: ${reason}`))
+            .then(() => {
+                restore(db);
+                success(res,'更新完成');
+                wordAction(WordActions.POST,{
+                    word:res.locals.banwords,
+                    owner
+                })
+            })
     },reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 }).delete((req, res, next) => {
     checkout(db => {
@@ -184,7 +230,7 @@ router.route('/word').all((req, res, next) => {
         const words = db.collection(Collection.SENSITIVE);
         words.findOneAndDelete({word, owner}).then(() => {
             success(res,`删除成功 ${word}`);
-            wordAction(WordActions.DELETE, {word, owner});
+            wordAction(WordActions.DELETE, {word:[word], owner});
         }).catch(reason => failure(res, `${Error.DB_WRITE}: ${reason}`)).then(() => restore(db));
     }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`))
 })
@@ -245,10 +291,10 @@ function wordAction(action: WordActions, data: IWordData): void {
             dfa.addBadWord(word, owner)
         break;
         case WordActions.DELETE:
-            dfa.removeBadWord(word, owner);
+            dfa.removeBadWord(word[0], owner);
         break;
     }
-    syncTransfer({action,data}, cluster.worker);
+    syncTransfer({action, data}, cluster.worker);
 }
 
 /**

@@ -10,12 +10,12 @@ import { connect } from "react-redux";
 import { LinkTo } from "../states/links";
 import ActBox from "./actBox";
 import CreateAct from "./createAct";
-import FilterBox from "./filterBox";
+import SensitiveBox from "./sensitiveBox";
 
 //view 映射
 const viewStacks = [
 	<ActBox />,
-	<FilterBox />,
+	<SensitiveBox />,
 	<div>账号管理</div>,
 	<CreateAct />
 ];

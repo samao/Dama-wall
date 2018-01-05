@@ -11,7 +11,7 @@ import axios from "axios";
 import UserCenter from "./components/center";
 import reducer from "./reducers";
 import { RoomData } from "./states/rooms";
-import { roomReady } from "./actions";
+import { roomReady, bansReady } from "./actions";
 
 import { Provider } from "react-redux";
 import { createStore } from "redux";
@@ -21,22 +21,30 @@ import { log, error } from "../utils/log";
 
 const store = createStore(reducer);
 
-async function getActis() {
+async function getActis(): Promise<RoomData[]> {
 	const { data } = await axios.post("http://dama.cn:3000/api/activities");
-	return data;
+	if (isSuccessType(data)) return data.data;
+	return [];
 }
 
-getActis().then((data: SuccessType | FailType) => {
-	if (isSuccessType(data)) {
-		store.dispatch(roomReady(data.data));
-	} else {
-		error(`获取活动数据失败 ${data.reason}`);
-	}
-});
+async function getBans(): Promise<{ uBans: string[]; sBans: string[] }> {
+	const { data } = await axios.get("http://dama.cn:3000/api/word");
+	if (isSuccessType(data)) return data.data;
+	return { uBans: [], sBans: [] };
+}
 
-ReactDOM.render(
-	<Provider store={store}>
-		<UserCenter />
-	</Provider>,
-	document.querySelector("#app")
-);
+Promise.all([getActis(), getBans()])
+	.then(([acts, bans]) => {
+		store.dispatch(roomReady(acts));
+		store.dispatch(bansReady(bans));
+
+		ReactDOM.render(
+			<Provider store={store}>
+				<UserCenter />
+			</Provider>,
+			document.querySelector("#app")
+		);
+	})
+	.catch(e => {
+		ReactDOM.render(<p>{e}</p>, document.querySelector("#app"));
+	});

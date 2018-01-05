@@ -78,23 +78,25 @@ class DFA {
      * @param word 敏感词
      * @param owner 房主昵称
      */
-    addBadWord(word: string, owner: string): void {
-        let node = this._sensitiveMap.get(owner);
-        if(!node) {
-            node = new Map<string, any>();
-            this._sensitiveMap.set(owner, node);
-        }
-
-        for(const char of word) {
-            if(whiteChars.has(char)) continue;
-            if(!node.has(char)) {
-                let map: Map<string, any> = new Map();
-                map.set(DFA_TAG.TAG, DFA_TAG.DEFAULT)
-                node.set(char.toLocaleLowerCase(), map);
+    addBadWord(words: string[], owner: string): void {
+        this._sensitiveMap.delete(owner);
+        words.length > 0 && words.forEach(word => {
+            let node = this._sensitiveMap.get(owner);
+            if(!node) {
+                node = new Map<string, any>();
+                this._sensitiveMap.set(owner, node);
             }
-            node = <Map<string, any>>node.get(char.toLocaleLowerCase())
-        }
-        node.set(DFA_TAG.TAG, DFA_TAG.END);
+            for(const char of word) {
+                if(whiteChars.has(char)) continue;
+                if(!node.has(char)) {
+                    let map: Map<string, any> = new Map();
+                    map.set(DFA_TAG.TAG, DFA_TAG.DEFAULT)
+                    node.set(char.toLocaleLowerCase(), map);
+                }
+                node = <Map<string, any>>node.get(char.toLocaleLowerCase())
+            }
+            node.set(DFA_TAG.TAG, DFA_TAG.END);
+        })
     }
 
     /**
@@ -103,6 +105,7 @@ class DFA {
      * @param owner 房主昵称
      */
     removeBadWord(word: string, owner: string): void {
+        
         let nodes: INode[] = [];
         
         let node = this._sensitiveMap.get(owner);

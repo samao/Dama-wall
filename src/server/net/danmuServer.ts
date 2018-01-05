@@ -88,7 +88,7 @@ class DanmuServer {
                     dfa.addBadWord(data.word, data.owner);
                 break;
                 case WordActions.DELETE:
-                    dfa.removeBadWord(data.word, data.owner);
+                    dfa.removeBadWord(data.word[0], data.owner);
                 break;
                 
             }
