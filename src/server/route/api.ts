@@ -202,17 +202,16 @@ router.route('/word').get((req, res, next) => {
         }, reason => failure(res, `${Error.DB_CONNECT}: ${reason}`));
     }
 }).all((req, res, next) => {
-    const words = req.body.word;
-    if(!words || words === '' || Object.is(words, undefined) || Object.is(words,null)) {
-        failure(res, Error.INCORRECT_ARGUMENTS);
+    if(!res.locals.loginUser){
+        failure(res, Error.NO_RIGHT, 403);
         return;
     }
-    res.locals.banwords = words;
     next();
 }).post((req, res, next) => {
+    const badwords = req.body.word||[];
     checkout(db => {
         const owner = res.locals.loginUser.user
-        updateSensitives(db, res.locals.banwords,owner)
+        updateSensitives(db, badwords, owner)
             .catch(reason => failure(res, `${Error.DB_WRITE}: ${reason}`))
             .then(() => {
                 restore(db);
