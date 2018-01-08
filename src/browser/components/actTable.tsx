@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2018-01-04 10:18:35 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-04 10:22:33
+ * @Last Modified time: 2018-01-08 18:40:41
  */
 
 import * as React from "react";
@@ -89,9 +89,9 @@ class ActTable extends React.Component<ActTableProps> {
 	}
 }
 
-function stateToProps(state: any) {
+function stateToProps({ room: { data: rooms } }: any) {
 	return {
-		rooms: state.rooms
+		rooms
 	};
 }
 

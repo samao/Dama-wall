@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2017-11-08 10:25:29 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2017-12-14 17:35:00
+ * @Last Modified time: 2018-01-08 19:13:38
  */
 import * as cluster from 'cluster';
 import * as express from "express";
@@ -213,7 +213,7 @@ router.route('/word').all((req, res, next) => {
                 restore(db);
                 success(res,'更新完成');
                 wordAction(WordActions.POST,{
-                    word:res.locals.banwords,
+                    word: badwords,
                     owner
                 })
             })

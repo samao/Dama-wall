@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2018-01-04 17:25:59 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-05 16:40:29
+ * @Last Modified time: 2018-01-08 18:05:31
  */
 import * as React from "react";
 import { connect } from "react-redux";
@@ -89,9 +89,9 @@ class Sensitive extends React.Component<SensitiveProps> {
 	}
 }
 
-function stateToProps(state: any) {
+function stateToProps({ banwords: { data: words } }: any) {
 	return {
-		words: state.banwords
+		words
 	};
 }
 
