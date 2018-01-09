@@ -18,6 +18,7 @@ import { log, error } from "../../utils/log";
 export interface ActTableProps {
 	delAct: (rid: string) => any;
 	rooms: RoomData[];
+	ready: boolean;
 }
 
 class ActTable extends React.Component<ActTableProps> {
@@ -45,52 +46,56 @@ class ActTable extends React.Component<ActTableProps> {
 		});
 	}
 
-	render() {
-		const { rooms } = this.props;
-		return (
-			<Table>
+	createBody(rooms: RoomData[]) {
+		return rooms.map(e => {
+			return (
 				<tbody id="actBody">
-					{rooms.map(e => {
-						return (
-							<tr>
-								<td>{e.rid}</td>
-								<td>{e.title}</td>
-								<td>{e.description}</td>
-								<td>
-									<a
-										target="_blank"
-										href={`http://dama.cn:3000/danmu/${e.rid}`}
-									>
-										{`http://dama.cn:3000/danmu/${e.rid}`}
-									</a>
-								</td>
-								<td>
-									<a target="_blank" href={`http://dama.cn:3000/qr/${e.rid}`}>
-										<img
-											src={`http://dama.cn:3000/qr/${e.rid}`}
-											alt={e.title}
-										/>
-									</a>
-								</td>
-								<td>
-									<button
-										className="btn btn-danger btn-xs"
-										onClick={() => this.onDelAct(e.rid)}
-									>
-										删除
-									</button>
-								</td>
-							</tr>
-						);
-					})}
+					<tr>
+						<td>{e.rid}</td>
+						<td>{e.title}</td>
+						<td>{e.description}</td>
+						<td>
+							<a target="_blank" href={`http://dama.cn:3000/danmu/${e.rid}`}>
+								{`http://dama.cn:3000/danmu/${e.rid}`}
+							</a>
+						</td>
+						<td>
+							<a target="_blank" href={`http://dama.cn:3000/qr/${e.rid}`}>
+								<img src={`http://dama.cn:3000/qr/${e.rid}`} alt={e.title} />
+							</a>
+						</td>
+						<td>
+							<button
+								className="btn btn-danger btn-xs"
+								onClick={() => this.onDelAct(e.rid)}
+							>
+								删除
+							</button>
+						</td>
+					</tr>
 				</tbody>
-			</Table>
+			);
+		});
+	}
+
+	render() {
+		const { rooms, ready } = this.props;
+		return (
+			<div>
+				<Table>{this.createBody(rooms)}</Table>
+				{!ready ? (
+					<h2 className="text-center">加载中...</h2>
+				) : rooms.length === 0 ? (
+					<h2 className="text-center">暂无数据</h2>
+				) : null}
+			</div>
 		);
 	}
 }
 
-function stateToProps({ room: { data: rooms } }: any) {
+function stateToProps({ room: { data: rooms, ready } }: any) {
 	return {
+		ready,
 		rooms
 	};
 }

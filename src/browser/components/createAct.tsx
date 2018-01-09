@@ -21,7 +21,7 @@ interface CreateActDispatch {
 }
 
 interface CreateActProps extends CreateActDispatch {
-	disabled: boolean;
+	pending: boolean;
 	[index: string]: any;
 }
 
@@ -81,7 +81,7 @@ class CreateAct extends React.Component<CreateActProps> {
 	}
 
 	render() {
-		const { disabled, onBack } = this.props;
+		const { pending, onBack } = this.props;
 		return (
 			<form
 				role="form"
@@ -89,7 +89,7 @@ class CreateAct extends React.Component<CreateActProps> {
 				className="form-horizontal"
 				onSubmit={e => e.preventDefault()}
 			>
-				<fieldset disabled={disabled}>
+				<fieldset disabled={pending}>
 					<div className="form-group">
 						<label htmlFor="aid" className="col-sm-2 control-label">
 							活动名称
@@ -160,8 +160,8 @@ class CreateAct extends React.Component<CreateActProps> {
 	}
 }
 
-function stateToProps(state: any): { disabled: boolean } {
-	return { disabled: state.createAct };
+function stateToProps(state: any): { pending: boolean } {
+	return { pending: state.pending };
 }
 
 function dispatchToProps(dispatch: (action: Action) => any): CreateActDispatch {

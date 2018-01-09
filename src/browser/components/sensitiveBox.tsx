@@ -60,6 +60,10 @@ class SensitiveBox extends React.Component<SensitiveBoxProps> {
 			.catch(reason => error("更新失败", reason));
 	}
 
+	createBody(){
+		return <div></div>
+	}
+
 	render() {
 		return (
 			<div className="container-fluid">
