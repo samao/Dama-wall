@@ -71,19 +71,23 @@ class Sensitive extends React.Component<SensitiveProps> {
 		const words = disabled ? this.props.words.sBans : this.props.words.uBans;
 		return (
 			<fieldset disabled={disabled}>
-				<div className="filter-box">
-					{words.map(e => {
-						return <Word disabled={disabled} word={e} />;
-					})}
-					{!disabled ? (
-						<input
-							ref={input => (this.input = input)}
-							onKeyUp={this.onKeyUp}
-							onKeyDown={this.onKeyDown}
-							maxLength={5}
-						/>
-					) : null}
-				</div>
+				{disabled && words.length === 0 ? (
+					<h2 className="text-center">暂无数据</h2>
+				) : (
+					<div className="filter-box">
+						{words.map(e => {
+							return <Word disabled={disabled} word={e} />;
+						})}
+						{!disabled ? (
+							<input
+								ref={input => (this.input = input)}
+								onKeyUp={this.onKeyUp}
+								onKeyDown={this.onKeyDown}
+								maxLength={5}
+							/>
+						) : null}
+					</div>
+				)}
 			</fieldset>
 		);
 	}

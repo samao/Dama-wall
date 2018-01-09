@@ -60,11 +60,7 @@ class SensitiveBox extends React.Component<SensitiveBoxProps> {
 			.catch(reason => error("更新失败", reason));
 	}
 
-	createBody(){
-		return <div></div>
-	}
-
-	render() {
+	createBody() {
 		return (
 			<div className="container-fluid">
 				<h4>系统敏感词</h4>
@@ -76,6 +72,15 @@ class SensitiveBox extends React.Component<SensitiveBoxProps> {
 					应用
 				</button>
 			</div>
+		);
+	}
+
+	render() {
+		const { ready, uBans } = this.props;
+		return !ready ? (
+			<h2 className="text-center">加载中...</h2>
+		) : (
+			this.createBody()
 		);
 	}
 }
