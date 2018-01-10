@@ -8,11 +8,19 @@ import * as React from "react";
 import { connect } from "react-redux";
 import Action, { sensitive } from "../actions";
 
-class FilterWord extends React.Component<{
+interface WordProps {
 	word: string;
 	disabled: boolean;
 	onDeleted: (word: string) => any;
-}> {
+}
+
+class FilterWord extends React.Component<WordProps> {
+
+	shouldComponentUpdate(nextProps: WordProps) {
+		//字符不同重新渲染
+		return nextProps.word !== this.props.word;
+	}
+
 	render() {
 		const { onDeleted, disabled, word } = this.props;
 		return (

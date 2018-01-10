@@ -19,6 +19,11 @@ interface NavgatorProps extends NavgatorDispatch {
 }
 
 class Navgator extends React.Component<NavgatorProps> {
+	
+	shouldComponentUpdate() {
+		//后续不再更新
+		return false;
+	}
 	render() {
 		const { navlinks, linkTo } = this.props;
 		return (

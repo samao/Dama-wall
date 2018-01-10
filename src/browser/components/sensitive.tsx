@@ -66,6 +66,11 @@ class Sensitive extends React.Component<SensitiveProps> {
 		}
 	}
 
+	shouldComponentUpdate() {
+		const { disabled } = this.props;
+		return !disabled;
+	}
+
 	render() {
 		const { disabled } = this.props;
 		const words = disabled ? this.props.words.sBans : this.props.words.uBans;

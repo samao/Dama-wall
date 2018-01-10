@@ -11,7 +11,7 @@ export interface TheadProps {
 	[index: string]: any;
 }
 
-export default class Thead extends React.Component<TheadProps> {
+export default class Thead extends React.PureComponent<TheadProps> {
 	render() {
 		const { titles } = this.props;
 		return (
