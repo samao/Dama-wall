@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2018-01-04 10:26:47 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2018-01-04 10:26:47 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2018-01-12 14:19:50
  */
 import * as React from "react";
 import { connect } from "react-redux";
@@ -11,9 +11,15 @@ import Thead, { TheadProps } from "./thead";
 
 interface TableProps {
 	titles: string[];
+	children?: React.ReactNode;
 }
 
 class Table extends React.Component<TableProps> {
+
+	shouldComponentUpdate(nextProps:TableProps) {
+		return this.props.children !== nextProps.children;
+	}
+
 	render() {
 		const { titles } = this.props;
 		return (
@@ -25,9 +31,9 @@ class Table extends React.Component<TableProps> {
 	}
 }
 
-function stateToProps(state: {}): TableProps {
+function stateToProps({ titles }: { titles: string[] }): TableProps {
 	return {
-		titles: ["活动号", "活动标题", "描述", "地址", "二维码", "操作"]
+		titles
 	};
 }
 

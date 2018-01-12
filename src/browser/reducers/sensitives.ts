@@ -1,6 +1,7 @@
 import Action, { Type } from "../actions";
 
 import { sensitives, SensitiveData } from "../states";
+import { log } from "../../utils/log";
 
 interface SensitiveReducer {
 	ready: boolean;
@@ -15,7 +16,7 @@ export default function banwords(
 	sen: SensitiveReducer = sensitives,
 	action: Action
 ): SensitiveReducer {
-    console.log('Reducer', action.type)
+	log(action.type);
 	switch (action.type) {
 		case Type.SENSITIVE_READY:
 			return { ready: true, data: action.data };

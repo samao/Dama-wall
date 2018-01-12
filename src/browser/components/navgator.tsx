@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2018-01-04 10:25:57 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-04 10:26:29
+ * @Last Modified time: 2018-01-12 14:35:52
  */
 import * as React from "react";
 import { connect } from "react-redux";
@@ -18,7 +18,7 @@ interface NavgatorProps extends NavgatorDispatch {
 	navlinks: Link[];
 }
 
-class Navgator extends React.Component<NavgatorProps> {
+class Navgator extends React.PureComponent<NavgatorProps> {
 	
 	shouldComponentUpdate() {
 		//后续不再更新

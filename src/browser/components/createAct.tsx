@@ -1,8 +1,8 @@
 /*
  * @Author: iDzeir 
  * @Date: 2018-01-04 10:24:01 
- * @Last Modified by:   iDzeir 
- * @Last Modified time: 2018-01-04 10:24:01 
+ * @Last Modified by: iDzeir
+ * @Last Modified time: 2018-01-12 14:37:13
  */
 import * as React from "react";
 import axios from "axios";
@@ -78,6 +78,10 @@ class CreateAct extends React.Component<CreateActProps> {
 				error("输入活动名称包含敏感内容");
 			}
 		}
+	}
+
+	shouldComponentUpdate(nextProps:CreateActProps) {
+		return nextProps.pending !== this.props.pending;
 	}
 
 	render() {

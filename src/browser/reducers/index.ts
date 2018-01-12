@@ -2,7 +2,7 @@
  * @Author: iDzeir 
  * @Date: 2018-01-04 10:30:36 
  * @Last Modified by: iDzeir
- * @Last Modified time: 2018-01-08 17:59:53
+ * @Last Modified time: 2018-01-12 14:13:57
  */
 import Action, { Type } from "../actions";
 
@@ -13,6 +13,7 @@ import sensitivesReducer from "./sensitives";
 import navlinks from "./navs";
 import views from './views';
 import pending from './createPending';
+import titles from './titles';
 
 //reducer组合数据
 const combine = {
@@ -20,7 +21,8 @@ const combine = {
 	room: roomsReducer,
 	views,
 	pending,
-	banwords: sensitivesReducer
+	banwords: sensitivesReducer,
+	titles
 };
 
 type Reducer = typeof combine;

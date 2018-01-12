@@ -92,6 +92,15 @@ app.use('/api', apiRouter);
 //管理员路由
 app.use(adminApp);
 
+//flash crossdomain.xml
+app.use('/crossdomain.xml', (req, res, next) => {
+    res.contentType('xml');
+    res.end(`<?xml version="1.0" encoding="UTF-8"?>
+            <cross-domain-policy>
+                    <allow-access-from domain="*"/>
+            </cross-domain-policy>`)
+})
+
 app.use((req, res, next) => {
     log('访问未知页面',req.url);
     res.redirect(`/error/?url=${req.url}`);
