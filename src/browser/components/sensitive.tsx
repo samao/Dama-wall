@@ -37,6 +37,8 @@ class Sensitive extends React.Component<SensitiveProps> {
 		super(props);
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onKeyUp = this.onKeyUp.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onBlur = this.onBlur.bind(this);
 	}
 
 	onKeyUp({ keyCode }: React.KeyboardEvent<HTMLInputElement>) {
@@ -66,6 +68,16 @@ class Sensitive extends React.Component<SensitiveProps> {
 		}
 	}
 
+	onFocus() {
+		if(this.input)
+			this.input.placeholder = '';
+	}
+
+	onBlur() {
+		if(this.input)
+			this.input.placeholder = '输入标签';
+	}
+
 	shouldComponentUpdate() {
 		const { disabled } = this.props;
 		return !disabled;
@@ -89,6 +101,9 @@ class Sensitive extends React.Component<SensitiveProps> {
 								onKeyUp={this.onKeyUp}
 								onKeyDown={this.onKeyDown}
 								maxLength={5}
+								onFocus={this.onFocus}
+								onBlur={this.onBlur}
+								placeholder="输入标签"
 							/>
 						) : null}
 					</div>
