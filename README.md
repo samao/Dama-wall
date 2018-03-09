@@ -1,7 +1,5 @@
 # 线下弹幕墙
 
----
-
 ### 一、使用场景
 
 
@@ -16,7 +14,7 @@ __ 参与活动用户可以扫码进入发弹幕页面，参与互(吐)动(槽) 
 
 ### 二、使用技术
 
-> __ 客户端 使用Flash Air 开发 __
+> 客户端 使用Flash Air 开发
 
 
 ![](help/client.png)
@@ -26,14 +24,14 @@ __ 参与活动用户可以扫码进入发弹幕页面，参与互(吐)动(槽) 
 功能包括合成本地资源文字，图片，视频，摄像头，并连接后端websocket服务器。最终合成图像投屏到第二屏。使用Flash air开发可以做到夸平台，window和mac共用一套代码。
 
 
-> __ 服务端 使用`Typescript`开发, 涉及 `Node.js`, `Express`, `Mongodb` __ 
+> 服务端 使用`Typescript`开发, 涉及 `Node.js`, `Express`, `Mongodb`
 
 
 ![](help/server.png)
 
 功能包括`http + websocket` 弹幕服务，敏感词系统。web前端数据支持，`pug`模板渲染。数据库采用`mongodb`，服务器框架为`express`，使用cluster充分利用服务器cpu。
 
-> __ 浏览器（前后台）使用`Typescript`开发。涉及 `React.js`,`jQuery`__
+> 浏览器（前后台）使用`Typescript`开发。涉及 `React.js`,`jQuery`
 
 + 产品展示前后台
 
@@ -59,4 +57,4 @@ __ 参与活动用户可以扫码进入发弹幕页面，参与互(吐)动(槽) 
 
 ### 五、联系方式
 
-![](help/Wechat.jpg =150x150)
+![](help/Wechat.jpg)
