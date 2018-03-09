@@ -19,7 +19,7 @@ __ 参与活动用户可以扫码进入发弹幕页面，参与互(吐)动(槽) 
 > __ 客户端 使用Flash Air 开发 __
 
 
-![](help/client.png =300x250)
+![](help/client.png)
 
 依赖组件库 <https://github.com/samao/LazyDodu>
 
@@ -29,7 +29,7 @@ __ 参与活动用户可以扫码进入发弹幕页面，参与互(吐)动(槽) 
 > __ 服务端 使用`Typescript`开发, 涉及 `Node.js`, `Express`, `Mongodb` __ 
 
 
-![](help/server.jpg =300x220)
+![](help/server.png)
 
 功能包括`http + websocket` 弹幕服务，敏感词系统。web前端数据支持，`pug`模板渲染。数据库采用`mongodb`，服务器框架为`express`，使用cluster充分利用服务器cpu。
 
@@ -37,15 +37,15 @@ __ 参与活动用户可以扫码进入发弹幕页面，参与互(吐)动(槽) 
 
 + 产品展示前后台
 
-![](help/font.jpg =300x200)
-![](help/ucenter.jpg =500x220)
+![](help/font.png)
+![](help/ucenter.png)
 
 主要用于之后的推广宣传，用户注册，用户自定义活动，自定义敏感词。
 
 
 + Web端发送弹幕
 
-![](help/sender.jpg =300x200)
+![](help/sender.png)
 
 用户扫码进入，发送弹幕，参与活动。
 
