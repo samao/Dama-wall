@@ -2,7 +2,7 @@
  * ===================================
  * Author:	iDzeir					
  * Email:	qiyanlong@wozine.com	
- * Company:	http://www.acfun.tv		
+ * Company:	http://www.youtv.tv		
  * Created:	Jan 3, 2018 4:17:57 PM
  * ===================================
  */
